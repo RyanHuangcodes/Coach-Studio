@@ -3,7 +3,7 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 
-from app.routers import auth, drafts, groups, players, plans, practices, tiers
+from app.routers import auth, drafts, drills, groups, insights, players, plans, practices, tiers
 
 app = FastAPI(title="Coach Studio")
 
@@ -14,6 +14,8 @@ app.include_router(tiers.router)
 app.include_router(players.router)
 app.include_router(practices.router)
 app.include_router(groups.router)
+app.include_router(drills.router)
+app.include_router(insights.router)
 
 _FRONTEND_PATH = Path(__file__).resolve().parent / "static" / "Front.html"
 

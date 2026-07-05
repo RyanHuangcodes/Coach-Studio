@@ -58,3 +58,16 @@ def create_plan(
     db.commit()
     db.refresh(plan)
     return plan
+
+
+@router.delete("/{plan_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_plan(
+    plan_id: str,
+    current_user: User = Depends(get_current_user),
+    db: DbSession = Depends(get_db),
+):
+    plan = db.query(Plan).filter(Plan.id == plan_id, Plan.user_id == current_user.id).first()
+    if plan is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Plan not found")
+    db.delete(plan)
+    db.commit()

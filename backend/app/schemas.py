@@ -62,6 +62,43 @@ class PlanOut(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class DrillCreate(BaseModel):
+    name: str = Field(min_length=1, max_length=80)
+    duration_minutes: int = Field(ge=1, le=240)
+    repeats: int = Field(default=1, ge=1, le=20)
+    notes: Optional[str] = Field(default=None, max_length=4000)
+
+    @field_validator("name")
+    @classmethod
+    def _strip_name(cls, value: str) -> str:
+        stripped = value.strip()
+        if not stripped:
+            raise ValueError("name must not be blank")
+        return stripped
+
+
+class DrillOut(BaseModel):
+    id: str
+    name: str
+    duration_minutes: int
+    repeats: int
+    notes: Optional[str]
+    position: int
+
+    model_config = {"from_attributes": True}
+
+
+class DrillMove(BaseModel):
+    direction: str
+
+    @field_validator("direction")
+    @classmethod
+    def _validate_direction(cls, value: str) -> str:
+        if value not in ("up", "down"):
+            raise ValueError("direction must be 'up' or 'down'")
+        return value
+
+
 class TierCreate(BaseModel):
     name: str = Field(min_length=1, max_length=40)
 
@@ -183,3 +220,28 @@ class SavedGroupsOut(BaseModel):
     practice_id: str
     saved_at: Optional[datetime]
     groups: list[GroupOut]
+
+
+class InsightRequest(BaseModel):
+    objective: str = Field(min_length=3, max_length=500)
+    plan_id: Optional[str] = None
+
+    @field_validator("objective")
+    @classmethod
+    def _strip_objective(cls, value: str) -> str:
+        stripped = value.strip()
+        if not stripped:
+            raise ValueError("objective must not be blank")
+        return stripped
+
+
+class InsightDrill(BaseModel):
+    name: str
+    duration_minutes: int
+    description: str
+
+
+class InsightOut(BaseModel):
+    focus: str
+    drills: list[InsightDrill]
+    coaching_points: list[str]

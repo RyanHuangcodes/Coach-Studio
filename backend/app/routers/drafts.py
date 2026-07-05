@@ -89,3 +89,14 @@ def promote_draft(
     db.commit()
     db.refresh(plan)
     return plan
+
+
+@router.delete("/{draft_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_draft(
+    draft_id: str,
+    current_user: User = Depends(get_current_user),
+    db: DbSession = Depends(get_db),
+):
+    draft = _get_owned_draft(db, draft_id, current_user)
+    db.delete(draft)
+    db.commit()

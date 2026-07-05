@@ -877,6 +877,88 @@
 			color: #fff;
 		}
 
+		.insight {
+			overflow-y: auto;
+		}
+
+		.insight-form {
+			display: flex;
+			gap: 10px;
+			margin-bottom: 14px;
+		}
+
+		.insight-form input {
+			flex: 1;
+			min-width: 0;
+			border: 1px solid rgba(255, 255, 255, 0.08);
+			background: rgba(255, 255, 255, 0.04);
+			color: var(--text);
+			border-radius: 18px;
+			padding: 12px 16px;
+			font: inherit;
+			font-size: 0.9rem;
+		}
+
+		.insight-form input::placeholder {
+			color: rgba(245, 242, 236, 0.36);
+		}
+
+		.insight-form .secondary-button {
+			padding: 12px 16px;
+			flex: 0 0 auto;
+		}
+
+		.insight-result {
+			display: grid;
+			gap: 12px;
+		}
+
+		.insight-focus {
+			margin: 0;
+			font-size: 0.98rem;
+			line-height: 1.6;
+			color: #fff;
+			font-weight: 700;
+		}
+
+		.insight-drill {
+			padding: 12px 14px;
+			border-radius: 16px;
+			background: rgba(255, 255, 255, 0.04);
+			border: 1px solid rgba(255, 255, 255, 0.06);
+		}
+
+		.insight-drill-name {
+			display: flex;
+			align-items: baseline;
+			gap: 8px;
+			font-weight: 800;
+			font-size: 0.92rem;
+			margin-bottom: 4px;
+		}
+
+		.insight-drill-minutes {
+			font-size: 0.7rem;
+			font-weight: 800;
+			letter-spacing: 0.06em;
+			text-transform: uppercase;
+			color: var(--accent);
+		}
+
+		.insight-drill-desc {
+			color: var(--muted);
+			font-size: 0.85rem;
+			line-height: 1.5;
+		}
+
+		.insight-cues {
+			margin: 0;
+			padding-left: 18px;
+			color: rgba(245, 242, 236, 0.74);
+			font-size: 0.88rem;
+			line-height: 1.6;
+		}
+
 		.nav {
 			grid-column: 1 / -1;
 			grid-row: 3;
@@ -1277,6 +1359,272 @@
 			font-weight: 700;
 		}
 
+		.planner-plan-row {
+			display: flex;
+			gap: 10px;
+		}
+
+		.planner-plan-row select {
+			flex: 1;
+			min-width: 0;
+		}
+
+		.planner-plan-row .secondary-button {
+			flex: 0 0 auto;
+			padding: 12px 16px;
+		}
+
+		.draft-load {
+			flex: 1;
+			min-width: 0;
+			background: transparent;
+			border: 0;
+			color: inherit;
+			font: inherit;
+			text-align: left;
+			cursor: pointer;
+			padding: 0;
+		}
+
+		.draft-side {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			color: var(--muted);
+			font-size: 0.92rem;
+			flex: 0 0 auto;
+		}
+
+		.plan-item-button {
+			width: 100%;
+			font: inherit;
+			text-align: left;
+			cursor: pointer;
+			appearance: none;
+			-webkit-appearance: none;
+			color: var(--text);
+			transition: border-color 0.15s ease, transform 0.15s ease;
+		}
+
+		.plan-item-button:hover {
+			border-color: rgba(236, 241, 32, 0.24);
+			transform: translateY(-1px);
+		}
+
+		.drills-list {
+			display: grid;
+			gap: 10px;
+		}
+
+		.drill-item {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			padding: 14px 16px;
+			border-radius: 20px;
+			background: linear-gradient(180deg, rgba(42, 42, 46, 0.98), rgba(20, 20, 22, 0.98));
+			border: 1px solid rgba(255, 255, 255, 0.06);
+		}
+
+		.drill-info {
+			display: grid;
+			gap: 4px;
+			min-width: 0;
+			flex: 1;
+		}
+
+		.drill-name-row {
+			display: flex;
+			align-items: baseline;
+			gap: 10px;
+			flex-wrap: wrap;
+		}
+
+		.drill-name {
+			font-size: 1rem;
+			font-weight: 800;
+			letter-spacing: -0.02em;
+		}
+
+		.drill-minutes {
+			font-size: 0.78rem;
+			font-weight: 800;
+			letter-spacing: 0.06em;
+			text-transform: uppercase;
+			color: var(--accent);
+		}
+
+		.drill-notes {
+			color: var(--muted);
+			font-size: 0.85rem;
+			line-height: 1.4;
+		}
+
+		.drill-total {
+			color: var(--muted);
+			font-size: 0.88rem;
+			font-weight: 700;
+		}
+
+		.drill-total:empty {
+			display: none;
+		}
+
+		.drill-total strong {
+			color: var(--text);
+		}
+
+		.drill-add-form {
+			display: grid;
+			gap: 14px;
+			padding-top: 6px;
+			border-top: 1px solid rgba(255, 255, 255, 0.06);
+		}
+
+		.timer-overlay {
+			position: fixed;
+			inset: 0;
+			z-index: 90;
+			display: none;
+			grid-template-rows: auto 1fr auto;
+			gap: 12px;
+			padding: 24px;
+			background:
+				radial-gradient(circle at top left, rgba(154, 67, 31, 0.28), transparent 28%),
+				radial-gradient(circle at 82% 14%, rgba(236, 241, 32, 0.12), transparent 14%),
+				linear-gradient(180deg, #1d0907 0%, #090909 22%, #050505 100%);
+		}
+
+		.timer-overlay.is-active {
+			display: grid;
+		}
+
+		.timer-overlay {
+			grid-template-rows: auto auto 1fr auto;
+		}
+
+		.timer-picker {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 10px;
+		}
+
+		.timer-picker select {
+			width: 100%;
+			appearance: none;
+			border: 1px solid rgba(255, 255, 255, 0.08);
+			background: rgba(255, 255, 255, 0.04);
+			color: var(--text);
+			border-radius: 18px;
+			padding: 12px 16px;
+			font: inherit;
+		}
+
+		.timer-topbar {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.timer-eyebrow {
+			font-size: 0.8rem;
+			letter-spacing: 0.22em;
+			text-transform: uppercase;
+			color: var(--accent);
+			font-weight: 800;
+		}
+
+		.timer-stage {
+			display: grid;
+			grid-template-columns: auto minmax(0, 1fr) auto;
+			align-items: center;
+			gap: 10px;
+			min-height: 0;
+		}
+
+		.timer-adjust {
+			width: clamp(56px, 10vw, 88px);
+			height: clamp(120px, 40vh, 300px);
+			border: 0;
+			border-radius: 28px;
+			background: rgba(255, 255, 255, 0.06);
+			color: var(--text);
+			font: inherit;
+			font-size: 2rem;
+			font-weight: 900;
+			cursor: pointer;
+		}
+
+		.timer-adjust:active {
+			background: rgba(236, 241, 32, 0.18);
+		}
+
+		.timer-ring-frame {
+			position: relative;
+			display: grid;
+			place-items: center;
+			height: 100%;
+			min-height: 0;
+		}
+
+		.timer-ring {
+			width: min(100%, min(64vh, 480px));
+			aspect-ratio: 1;
+			border-radius: 50%;
+			background:
+				radial-gradient(circle at center, rgba(8, 8, 10, 1) 0 60%, transparent 61%),
+				conic-gradient(rgba(236, 241, 32, 0.9) 0 var(--timer-progress, 0%), rgba(255, 255, 255, 0.08) var(--timer-progress, 0%) 100%);
+			box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04), 0 24px 60px rgba(0, 0, 0, 0.45);
+		}
+
+		.timer-overlay.is-finished .timer-ring {
+			animation: timer-flash 0.6s ease-in-out infinite alternate;
+		}
+
+		@keyframes timer-flash {
+			from { filter: brightness(1); }
+			to { filter: brightness(1.9); }
+		}
+
+		.timer-center {
+			position: absolute;
+			inset: 50% auto auto 50%;
+			transform: translate(-50%, -50%);
+			text-align: center;
+			pointer-events: none;
+		}
+
+		.timer-clock {
+			font-size: clamp(3.4rem, 14vw, 7rem);
+			font-weight: 900;
+			letter-spacing: -0.06em;
+			line-height: 1;
+			font-variant-numeric: tabular-nums;
+		}
+
+		.timer-sub {
+			margin-top: 10px;
+			font-size: 0.85rem;
+			letter-spacing: 0.2em;
+			text-transform: uppercase;
+			color: var(--muted);
+			font-weight: 800;
+		}
+
+		.timer-controls {
+			display: flex;
+			justify-content: center;
+			gap: 12px;
+			flex-wrap: wrap;
+		}
+
+		.timer-start-button {
+			min-width: 160px;
+			font-size: 1.05rem;
+			text-transform: uppercase;
+			letter-spacing: -0.02em;
+		}
+
 		@media (min-width: 720px) {
 			.dashboard {
 				padding: 14px 18px 10px;
@@ -1522,7 +1870,7 @@
 		<div class="home-content">
 		<header class="topbar">
 			<div>
-				<div class="date">Fri, Oct 24</div>
+				<div class="date" data-home-date></div>
 				<h1 class="brand">Coach <span data-display-name>Ryan</span></h1>
 			</div>
 			<div class="topbar-actions">
@@ -1537,21 +1885,21 @@
 				<div class="calendar" aria-hidden="true"></div>
 			</div>
 
-			<h2 class="session-title">Elite Squad Training</h2>
-			<p class="session-subtitle">Offense &amp; transition focus</p>
+			<h2 class="session-title" data-hero-title>Welcome to Coach Studio</h2>
+			<p class="session-subtitle" data-hero-subtitle>Create your first plan to get started.</p>
 
 			<div class="stats">
 				<div>
 					<div class="stat-label">Duration</div>
-					<div class="stat-value">90 <span class="stat-unit">m</span></div>
+					<div class="stat-value"><span data-stat-duration>—</span> <span class="stat-unit">m</span></div>
 				</div>
 				<div>
 					<div class="stat-label">Roster</div>
-					<div class="stat-value">24 <span class="stat-unit">p</span></div>
+					<div class="stat-value"><span data-stat-roster>—</span> <span class="stat-unit">p</span></div>
 				</div>
 			</div>
 
-			<button class="primary-action" type="button">
+			<button class="primary-action" type="button" data-open-timer>
 				<span class="play">&gt;</span>
 				<span>Start Session</span>
 			</button>
@@ -1598,10 +1946,48 @@
 		</section>
 
 		<section class="page-shell" data-page-panel="planner" aria-label="Planner page">
-			<div class="blank-panel">
-				<div class="blank-eyebrow">Planner</div>
-				<h2>Blank planning space</h2>
-				<p>This page is intentionally blank for now so you can build the planning workflow later.</p>
+			<div class="blank-panel plans-panel">
+				<div class="plans-header">
+					<div>
+						<div class="blank-eyebrow">Planner</div>
+						<h2>Session builder</h2>
+					</div>
+					<p>Arrange drills for a plan: order, duration, and coaching cues.</p>
+				</div>
+				<div class="field">
+					<label for="planner-plan-select">Plan</label>
+					<div class="planner-plan-row">
+						<select id="planner-plan-select"></select>
+						<button class="secondary-button" type="button" data-delete-plan>Delete</button>
+					</div>
+				</div>
+				<div class="drills-list" data-drills-list></div>
+				<div class="drill-total" data-drill-total></div>
+				<form class="drill-add-form" id="drill-form">
+					<div class="form-grid">
+						<div class="field">
+							<label for="drill-name-input">Drill</label>
+							<input id="drill-name-input" type="text" placeholder="Drill name" autocomplete="off" required>
+						</div>
+						<div class="field">
+							<label for="drill-minutes-input">Minutes per rep</label>
+							<input id="drill-minutes-input" type="number" min="1" max="240" value="10" required>
+						</div>
+						<div class="field">
+							<label for="drill-repeats-input">Repeats</label>
+							<input id="drill-repeats-input" type="number" min="1" max="20" value="1" required>
+						</div>
+					</div>
+					<div class="field">
+						<label for="drill-notes-input">Coach's notes</label>
+						<textarea id="drill-notes-input" placeholder="Technical cues, talking points (optional)"></textarea>
+					</div>
+					<p class="field-error" data-drill-error></p>
+					<div class="modal-actions">
+						<button class="secondary-button" type="button" data-drill-cancel-edit hidden>Cancel edit</button>
+						<button class="primary-button" type="submit" data-drill-submit>Add drill</button>
+					</div>
+				</form>
 			</div>
 		</section>
 
@@ -1618,9 +2004,16 @@
 
 		<section class="insight" aria-label="AI strategy insight">
 			<h2 class="insight-title">AI Strategy Insight</h2>
-			<p class="insight-copy">
-				Based on yesterday's metrics, focusing on <strong>rapid transition defense</strong> will optimize the next training block.
-			</p>
+			<form class="insight-form" id="insight-form">
+				<input id="insight-objective-input" type="text" placeholder="Today's objective, e.g. faster transition defense" autocomplete="off" maxlength="500">
+				<button class="secondary-button" type="submit" data-insight-generate>Suggest</button>
+			</form>
+			<p class="field-error" data-insight-error></p>
+			<div class="insight-result" data-insight-result>
+				<p class="insight-copy">
+					Type today's training objective above and I'll suggest a focus, drills, and coaching cues based on your roster and attendance.
+				</p>
+			</div>
 		</section>
 
 		<nav class="nav" aria-label="Primary navigation">
@@ -1815,6 +2208,33 @@
 		</div>
 	</div>
 
+	<div class="timer-overlay" data-timer-overlay aria-hidden="true">
+		<div class="timer-topbar">
+			<div class="timer-eyebrow">Precision Timer</div>
+			<button class="modal-close" type="button" data-timer-close aria-label="Close timer">x</button>
+		</div>
+		<div class="timer-picker">
+			<select data-timer-plan-select aria-label="Plan"></select>
+			<select data-timer-drill-select aria-label="Drill"></select>
+		</div>
+		<div class="timer-stage">
+			<button class="timer-adjust" type="button" data-timer-adjust="-60" aria-label="Subtract one minute">&minus;</button>
+			<div class="timer-ring-frame">
+				<div class="timer-ring" data-timer-ring></div>
+				<div class="timer-center">
+					<div class="timer-clock" data-timer-clock>15:00</div>
+					<div class="timer-sub" data-timer-sub>Ready</div>
+				</div>
+			</div>
+			<button class="timer-adjust" type="button" data-timer-adjust="60" aria-label="Add one minute">+</button>
+		</div>
+		<div class="timer-controls">
+			<button class="secondary-button" type="button" data-timer-reset>Reset</button>
+			<button class="primary-button timer-start-button" type="button" data-timer-toggle>Start</button>
+			<button class="secondary-button" type="button" data-timer-finish>Finish drill</button>
+		</div>
+	</div>
+
 	<script>
 		(() => {
 			const dashboard = document.querySelector('.dashboard');
@@ -1855,6 +2275,34 @@
 			const groupsStatus = document.querySelector('[data-groups-status]');
 			const groupsResult = document.querySelector('[data-groups-result]');
 			const saveGroupsButton = document.querySelector('[data-save-groups]');
+			const timerOverlay = document.querySelector('[data-timer-overlay]');
+			const timerRing = document.querySelector('[data-timer-ring]');
+			const timerClock = document.querySelector('[data-timer-clock]');
+			const timerSub = document.querySelector('[data-timer-sub]');
+			const timerToggleButton = document.querySelector('[data-timer-toggle]');
+			const homeDateEl = document.querySelector('[data-home-date]');
+			const heroTitleEl = document.querySelector('[data-hero-title]');
+			const heroSubtitleEl = document.querySelector('[data-hero-subtitle]');
+			const statDurationEl = document.querySelector('[data-stat-duration]');
+			const statRosterEl = document.querySelector('[data-stat-roster]');
+			const insightForm = document.getElementById('insight-form');
+			const insightObjectiveInput = document.getElementById('insight-objective-input');
+			const insightGenerateButton = document.querySelector('[data-insight-generate]');
+			const insightError = document.querySelector('[data-insight-error]');
+			const insightResult = document.querySelector('[data-insight-result]');
+			const timerPlanSelect = document.querySelector('[data-timer-plan-select]');
+			const timerDrillSelect = document.querySelector('[data-timer-drill-select]');
+			const plannerPlanSelect = document.getElementById('planner-plan-select');
+			const drillsList = document.querySelector('[data-drills-list]');
+			const drillTotal = document.querySelector('[data-drill-total]');
+			const drillForm = document.getElementById('drill-form');
+			const drillNameInput = document.getElementById('drill-name-input');
+			const drillMinutesInput = document.getElementById('drill-minutes-input');
+			const drillRepeatsInput = document.getElementById('drill-repeats-input');
+			const drillNotesInput = document.getElementById('drill-notes-input');
+			const drillError = document.querySelector('[data-drill-error]');
+			const drillSubmitButton = document.querySelector('[data-drill-submit]');
+			const drillCancelEditButton = document.querySelector('[data-drill-cancel-edit]');
 			const modals = Array.from(document.querySelectorAll('[data-modal]'));
 			const navButtons = Array.from(document.querySelectorAll('.nav-item[data-page]'));
 			const standardSports = ['Soccer', 'Basketball', 'Baseball', 'Football', 'Tennis'];
@@ -1870,6 +2318,9 @@
 			let playersPageLoaded = false;
 			let practices = [];
 			let lastGeneratedGroups = null;
+			let plannerSelectedPlanId = null;
+			let activeDrillId = null;
+			let drills = [];
 
 			const escapeHtml = (value) => value
 				.replace(/&/g, '&amp;')
@@ -1954,13 +2405,16 @@
 				}
 
 				draftList.innerHTML = drafts.map((draft) => `
-					<button class="draft-item" type="button" data-draft-id="${escapeHtml(draft.id)}">
-						<div>
+					<div class="draft-item">
+						<button class="draft-load" type="button" data-draft-id="${escapeHtml(draft.id)}">
 							<strong>${escapeHtml(draft.sport)}</strong>
 							<span>${escapeHtml(formatDate(draft.updated_at))}</span>
+						</button>
+						<div class="draft-side">
+							<span>${escapeHtml(formatDuration(draft.duration_minutes))}</span>
+							<button class="player-edit-button" type="button" data-delete-draft="${escapeHtml(draft.id)}" aria-label="Delete draft">x</button>
 						</div>
-						<span>${escapeHtml(formatDuration(draft.duration_minutes))}</span>
-					</button>
+					</div>
 				`).join('');
 			};
 
@@ -1971,13 +2425,13 @@
 				}
 
 				plansList.innerHTML = plans.map((plan) => `
-					<div class="plan-item">
+					<button class="plan-item plan-item-button" type="button" data-plan-open="${escapeHtml(plan.id)}">
 						<div class="plan-name">${escapeHtml(plan.sport)}</div>
 						<div class="plan-meta">
 							<div class="plan-date">${escapeHtml(formatDate(plan.created_at))}</div>
 							<div class="plan-time">${escapeHtml(formatDuration(plan.duration_minutes))}</div>
 						</div>
-					</div>
+					</button>
 				`).join('');
 			};
 
@@ -2138,6 +2592,9 @@
 				if (page === 'players') {
 					loadPlayersPageData();
 				}
+				if (page === 'planner') {
+					loadPlannerData();
+				}
 			};
 
 			const openModal = (name, options = {}) => {
@@ -2234,6 +2691,24 @@
 				renderDrafts();
 			}
 
+			const updateHomeHero = () => {
+				homeDateEl.textContent = new Date().toLocaleDateString(undefined, {
+					weekday: 'short',
+					month: 'short',
+					day: 'numeric',
+				});
+				if (plans.length) {
+					heroTitleEl.textContent = `${plans[0].sport} Session`;
+					heroSubtitleEl.textContent = `Latest plan — created ${formatDate(plans[0].created_at)}`;
+					statDurationEl.textContent = String(plans[0].duration_minutes);
+				} else {
+					heroTitleEl.textContent = 'Welcome to Coach Studio';
+					heroSubtitleEl.textContent = 'Create your first plan to get started.';
+					statDurationEl.textContent = '—';
+				}
+				statRosterEl.textContent = players.length ? String(players.length) : '—';
+			};
+
 			async function loadPlans() {
 				const response = await fetch('/api/plans', { credentials: 'include' });
 				if (response.status === 401) {
@@ -2242,6 +2717,7 @@
 				}
 				plans = await response.json();
 				renderPlans();
+				updateHomeHero();
 			}
 
 			async function loadTiers() {
@@ -2263,6 +2739,7 @@
 				}
 				players = await response.json();
 				renderPlayers();
+				updateHomeHero();
 			}
 
 			async function loadTodayAttendance() {
@@ -2355,7 +2832,7 @@
 					setPage('home');
 				}
 
-				await Promise.all([loadPlans(), loadDrafts()]);
+				await Promise.all([loadPlans(), loadDrafts(), loadPlayers()]);
 			}
 
 			function setAuthMode(mode) {
@@ -2452,6 +2929,13 @@
 					return;
 				}
 
+				const openTimerButton = event.target.closest('[data-open-timer]');
+				if (openTimerButton) {
+					closeAllModals();
+					openTimer();
+					return;
+				}
+
 				const modalOpenButton = event.target.closest('[data-modal-open]');
 				if (modalOpenButton) {
 						closeAllModals();
@@ -2480,6 +2964,32 @@
 				const saveGroupsBtn = event.target.closest('[data-save-groups]');
 				if (saveGroupsBtn) {
 					handleSaveGroups();
+					return;
+				}
+
+				const moveDrillButton = event.target.closest('[data-move-drill]');
+				if (moveDrillButton) {
+					handleMoveDrill(moveDrillButton.dataset.drillId, moveDrillButton.dataset.direction);
+					return;
+				}
+
+				const editDrillButton = event.target.closest('[data-edit-drill]');
+				if (editDrillButton) {
+					startEditDrill(editDrillButton.dataset.drillId);
+					return;
+				}
+
+				const deleteDrillButton = event.target.closest('[data-delete-drill]');
+				if (deleteDrillButton) {
+					handleDeleteDrill(deleteDrillButton.dataset.drillId);
+					return;
+				}
+
+				const planCard = event.target.closest('[data-plan-open]');
+				if (planCard) {
+					plannerSelectedPlanId = planCard.dataset.planOpen;
+					closeAllModals();
+					setPage('planner');
 					return;
 				}
 
@@ -2872,6 +3382,508 @@
 
 			document.addEventListener('keydown', (event) => {
 				if (event.key === 'Escape') closeAllModals();
+			});
+
+			// --- AI Strategy Insight ---
+			const renderInsight = (insight) => {
+				const drills = insight.drills.map((drill) => `
+					<div class="insight-drill">
+						<div class="insight-drill-name">
+							<span>${escapeHtml(drill.name)}</span>
+							<span class="insight-drill-minutes">${drill.duration_minutes} min</span>
+						</div>
+						<div class="insight-drill-desc">${escapeHtml(drill.description)}</div>
+					</div>
+				`).join('');
+				const cues = insight.coaching_points.map((cue) => `<li>${escapeHtml(cue)}</li>`).join('');
+				insightResult.innerHTML = `
+					<p class="insight-focus">${escapeHtml(insight.focus)}</p>
+					${drills}
+					${cues ? `<ul class="insight-cues">${cues}</ul>` : ''}
+				`;
+			};
+
+			insightForm.addEventListener('submit', async (event) => {
+				event.preventDefault();
+				const objective = insightObjectiveInput.value.trim();
+				if (objective.length < 3) {
+					insightObjectiveInput.focus();
+					return;
+				}
+
+				insightError.textContent = '';
+				insightGenerateButton.disabled = true;
+				insightGenerateButton.textContent = 'Thinking…';
+
+				try {
+					const response = await fetch('/api/insights/generate', {
+						method: 'POST',
+						credentials: 'include',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ objective }),
+					});
+
+					if (response.status === 401) {
+						showAuthGate();
+						return;
+					}
+					if (!response.ok) {
+						insightError.textContent = await parseErrorMessage(response);
+						return;
+					}
+
+					renderInsight(await response.json());
+				} catch (error) {
+					insightError.textContent = 'Could not reach the server — try again.';
+				} finally {
+					insightGenerateButton.disabled = false;
+					insightGenerateButton.textContent = 'Suggest';
+				}
+			});
+
+			// --- Planner / drill builder ---
+			const resetDrillForm = () => {
+				activeDrillId = null;
+				drillNameInput.value = '';
+				drillMinutesInput.value = '10';
+				drillRepeatsInput.value = '1';
+				drillNotesInput.value = '';
+				drillError.textContent = '';
+				drillSubmitButton.textContent = 'Add drill';
+				drillCancelEditButton.hidden = true;
+			};
+
+			const drillTimeLabel = (drill) => drill.repeats > 1
+				? `${drill.repeats} × ${drill.duration_minutes} min`
+				: `${drill.duration_minutes} min`;
+
+			const renderDrills = () => {
+				if (!plannerSelectedPlanId) {
+					drillsList.innerHTML = '<div class="plan-empty">Create a plan first, then build its session here.</div>';
+					drillTotal.textContent = '';
+					return;
+				}
+				if (!drills.length) {
+					drillsList.innerHTML = '<div class="plan-empty">No drills yet — add the first block below.</div>';
+					drillTotal.textContent = '';
+					return;
+				}
+
+				drillsList.innerHTML = drills.map((drill, index) => `
+					<div class="drill-item">
+						<div class="player-move-buttons">
+							<button class="player-move-button" type="button" data-move-drill data-direction="up" data-drill-id="${escapeHtml(drill.id)}" ${index === 0 ? 'disabled' : ''} aria-label="Move up">^</button>
+							<button class="player-move-button" type="button" data-move-drill data-direction="down" data-drill-id="${escapeHtml(drill.id)}" ${index === drills.length - 1 ? 'disabled' : ''} aria-label="Move down">v</button>
+						</div>
+						<div class="drill-info">
+							<div class="drill-name-row">
+								<span class="drill-name">${escapeHtml(drill.name)}</span>
+								<span class="drill-minutes">${drillTimeLabel(drill)}</span>
+							</div>
+							${drill.notes ? `<div class="drill-notes">${escapeHtml(drill.notes)}</div>` : ''}
+						</div>
+						<div class="player-actions">
+							<button class="player-edit-button" type="button" data-edit-drill data-drill-id="${escapeHtml(drill.id)}" aria-label="Edit drill">E</button>
+							<button class="player-edit-button" type="button" data-delete-drill data-drill-id="${escapeHtml(drill.id)}" aria-label="Delete drill">x</button>
+						</div>
+					</div>
+				`).join('');
+
+				const totalMinutes = drills.reduce((sum, drill) => sum + drill.duration_minutes * drill.repeats, 0);
+				const selectedPlan = plans.find((plan) => plan.id === plannerSelectedPlanId);
+				drillTotal.innerHTML = selectedPlan
+					? `Planned: <strong>${totalMinutes} min</strong> of ${selectedPlan.duration_minutes} min session`
+					: `Planned: <strong>${totalMinutes} min</strong>`;
+			};
+
+			async function loadDrills() {
+				if (!plannerSelectedPlanId) {
+					drills = [];
+					renderDrills();
+					return;
+				}
+				const response = await fetch(`/api/plans/${plannerSelectedPlanId}/drills`, { credentials: 'include' });
+				if (response.status === 401) {
+					showAuthGate();
+					return;
+				}
+				if (!response.ok) {
+					drills = [];
+					renderDrills();
+					return;
+				}
+				drills = await response.json();
+				renderDrills();
+			}
+
+			async function loadPlannerData() {
+				await loadPlans();
+
+				plannerPlanSelect.innerHTML = '';
+				plans.forEach((plan) => {
+					const option = document.createElement('option');
+					option.value = plan.id;
+					option.textContent = `${plan.sport} — ${plan.duration_minutes} min (${formatDate(plan.created_at)})`;
+					plannerPlanSelect.appendChild(option);
+				});
+
+				if (!plans.length) {
+					plannerSelectedPlanId = null;
+				} else if (!plans.some((plan) => plan.id === plannerSelectedPlanId)) {
+					plannerSelectedPlanId = plans[0].id;
+				}
+				if (plannerSelectedPlanId) {
+					plannerPlanSelect.value = plannerSelectedPlanId;
+				}
+				resetDrillForm();
+				await loadDrills();
+			}
+
+			plannerPlanSelect.addEventListener('change', () => {
+				plannerSelectedPlanId = plannerPlanSelect.value || null;
+				resetDrillForm();
+				loadDrills();
+			});
+
+			drillForm.addEventListener('submit', async (event) => {
+				event.preventDefault();
+				if (!plannerSelectedPlanId) {
+					drillError.textContent = 'Create a plan first';
+					return;
+				}
+				const name = drillNameInput.value.trim();
+				const minutes = Number.parseInt(drillMinutesInput.value, 10);
+				if (!name) {
+					drillNameInput.focus();
+					return;
+				}
+				const body = {
+					name,
+					duration_minutes: minutes,
+					repeats: Number.parseInt(drillRepeatsInput.value, 10) || 1,
+					notes: drillNotesInput.value.trim() || null,
+				};
+				const endpoint = activeDrillId
+					? `/api/drills/${activeDrillId}`
+					: `/api/plans/${plannerSelectedPlanId}/drills`;
+				const response = await fetch(endpoint, {
+					method: activeDrillId ? 'PATCH' : 'POST',
+					credentials: 'include',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify(body),
+				});
+				if (response.status === 401) {
+					showAuthGate();
+					return;
+				}
+				if (!response.ok) {
+					drillError.textContent = await parseErrorMessage(response);
+					return;
+				}
+				resetDrillForm();
+				await loadDrills();
+			});
+
+			async function handleMoveDrill(drillId, direction) {
+				const response = await fetch(`/api/drills/${drillId}/move`, {
+					method: 'POST',
+					credentials: 'include',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ direction }),
+				});
+				if (response.status === 401) {
+					showAuthGate();
+					return;
+				}
+				if (response.ok) await loadDrills();
+			}
+
+			async function handleDeleteDrill(drillId) {
+				const response = await fetch(`/api/drills/${drillId}`, {
+					method: 'DELETE',
+					credentials: 'include',
+				});
+				if (response.status === 401) {
+					showAuthGate();
+					return;
+				}
+				if (activeDrillId === drillId) resetDrillForm();
+				await loadDrills();
+			}
+
+			const startEditDrill = (drillId) => {
+				const drill = drills.find((item) => item.id === drillId);
+				if (!drill) return;
+				activeDrillId = drill.id;
+				drillNameInput.value = drill.name;
+				drillMinutesInput.value = String(drill.duration_minutes);
+				drillRepeatsInput.value = String(drill.repeats || 1);
+				drillNotesInput.value = drill.notes || '';
+				drillError.textContent = '';
+				drillSubmitButton.textContent = 'Save drill';
+				drillCancelEditButton.hidden = false;
+				drillNameInput.focus();
+			};
+
+			drillCancelEditButton.addEventListener('click', resetDrillForm);
+
+			// --- Precision Timer ---
+			// Countdown state lives entirely client-side. While running, remaining time
+			// derives from an end timestamp rather than interval ticks, so a throttled
+			// or backgrounded tab never drifts the clock.
+			const TIMER_MIN_SECONDS = 60;
+			const TIMER_MAX_SECONDS = 4 * 60 * 60;
+			let timerDurationSeconds = 15 * 60;
+			let timerRemainingSeconds = timerDurationSeconds;
+			let timerEndAt = null;
+			let timerIntervalId = null;
+			let timerRepeats = 1;
+			let timerCurrentRep = 1;
+			let timerDrillLabel = null;
+			let timerDrillOptions = [];
+
+			const timerIsRunning = () => timerIntervalId !== null;
+
+			const vibrate = (pattern) => {
+				if (navigator.vibrate) navigator.vibrate(pattern);
+			};
+
+			const timerStatusLabel = (state) => {
+				if (timerRepeats > 1) {
+					const prefix = timerDrillLabel ? `${timerDrillLabel} — ` : '';
+					return `${prefix}Rep ${timerCurrentRep}/${timerRepeats} — ${state}`;
+				}
+				return timerDrillLabel ? `${timerDrillLabel} — ${state}` : state;
+			};
+
+			const renderTimer = () => {
+				const remaining = Math.max(0, Math.round(timerRemainingSeconds));
+				const minutes = Math.floor(remaining / 60);
+				const seconds = remaining % 60;
+				timerClock.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+				const elapsedFraction = timerDurationSeconds > 0 ? 1 - remaining / timerDurationSeconds : 1;
+				timerRing.style.setProperty('--timer-progress', `${Math.min(100, Math.max(0, elapsedFraction * 100))}%`);
+			};
+
+			const setTimerSub = (text) => {
+				timerSub.textContent = text;
+			};
+
+			const stopTimerInterval = () => {
+				if (timerIntervalId !== null) {
+					clearInterval(timerIntervalId);
+					timerIntervalId = null;
+				}
+				timerEndAt = null;
+			};
+
+			const timerFinished = () => {
+				stopTimerInterval();
+				timerRemainingSeconds = 0;
+				renderTimer();
+				timerOverlay.classList.add('is-finished');
+				setTimerSub(timerStatusLabel('Done'));
+				timerToggleButton.textContent = 'Start';
+				vibrate([300, 120, 300, 120, 600]);
+			};
+
+			// A rep hitting zero either rolls into the next rep (strong buzz, clock
+			// restarts, no tap needed) or ends the drill if it was the last one.
+			const handleTimerZero = () => {
+				if (timerCurrentRep < timerRepeats) {
+					timerCurrentRep += 1;
+					timerRemainingSeconds = timerDurationSeconds;
+					timerEndAt = Date.now() + timerDurationSeconds * 1000;
+					setTimerSub(timerStatusLabel('Running'));
+					renderTimer();
+					vibrate([250, 100, 250]);
+					return;
+				}
+				timerFinished();
+			};
+
+			const timerTick = () => {
+				timerRemainingSeconds = (timerEndAt - Date.now()) / 1000;
+				if (timerRemainingSeconds <= 0) {
+					handleTimerZero();
+					return;
+				}
+				renderTimer();
+			};
+
+			const startTimer = () => {
+				if (timerRemainingSeconds <= 0) {
+					timerRemainingSeconds = timerDurationSeconds;
+					timerCurrentRep = 1;
+					timerOverlay.classList.remove('is-finished');
+				}
+				timerEndAt = Date.now() + timerRemainingSeconds * 1000;
+				timerIntervalId = setInterval(timerTick, 250);
+				timerToggleButton.textContent = 'Pause';
+				setTimerSub(timerStatusLabel('Running'));
+				vibrate(40);
+			};
+
+			const pauseTimer = () => {
+				timerRemainingSeconds = Math.max(0, (timerEndAt - Date.now()) / 1000);
+				stopTimerInterval();
+				timerToggleButton.textContent = 'Resume';
+				setTimerSub(timerStatusLabel('Paused'));
+			};
+
+			const resetTimer = () => {
+				stopTimerInterval();
+				timerOverlay.classList.remove('is-finished');
+				timerRemainingSeconds = timerDurationSeconds;
+				timerCurrentRep = 1;
+				renderTimer();
+				timerToggleButton.textContent = 'Start';
+				setTimerSub(timerStatusLabel('Ready'));
+			};
+
+			const adjustTimer = (deltaSeconds) => {
+				if (timerIsRunning()) {
+					const newRemaining = Math.min(
+						TIMER_MAX_SECONDS,
+						Math.max(TIMER_MIN_SECONDS, (timerEndAt - Date.now()) / 1000 + deltaSeconds),
+					);
+					timerEndAt = Date.now() + newRemaining * 1000;
+					timerDurationSeconds = Math.max(timerDurationSeconds, newRemaining);
+					timerTick();
+				} else {
+					timerDurationSeconds = Math.min(
+						TIMER_MAX_SECONDS,
+						Math.max(TIMER_MIN_SECONDS, timerDurationSeconds + deltaSeconds),
+					);
+					timerRemainingSeconds = timerDurationSeconds;
+					timerOverlay.classList.remove('is-finished');
+					setTimerSub(timerStatusLabel('Ready'));
+					timerToggleButton.textContent = 'Start';
+					renderTimer();
+				}
+				vibrate(20);
+			};
+
+			const applyTimerDrill = (drill) => {
+				stopTimerInterval();
+				timerOverlay.classList.remove('is-finished');
+				if (drill) {
+					timerDurationSeconds = drill.duration_minutes * 60;
+					timerRepeats = drill.repeats || 1;
+					timerDrillLabel = drill.name;
+				} else {
+					timerRepeats = 1;
+					timerDrillLabel = null;
+				}
+				timerCurrentRep = 1;
+				timerRemainingSeconds = timerDurationSeconds;
+				timerToggleButton.textContent = 'Start';
+				setTimerSub(timerStatusLabel('Ready'));
+				renderTimer();
+			};
+
+			const renderTimerDrillOptions = () => {
+				timerDrillSelect.innerHTML = '';
+				const freestyle = document.createElement('option');
+				freestyle.value = '';
+				freestyle.textContent = 'Freestyle (manual time)';
+				timerDrillSelect.appendChild(freestyle);
+				timerDrillOptions.forEach((drill) => {
+					const option = document.createElement('option');
+					option.value = drill.id;
+					option.textContent = drill.repeats > 1
+						? `${drill.name} (${drill.repeats} × ${drill.duration_minutes} min)`
+						: `${drill.name} (${drill.duration_minutes} min)`;
+					timerDrillSelect.appendChild(option);
+				});
+			};
+
+			async function loadTimerDrills() {
+				const planId = timerPlanSelect.value;
+				timerDrillOptions = [];
+				if (planId) {
+					const response = await fetch(`/api/plans/${planId}/drills`, { credentials: 'include' });
+					if (response.status === 401) {
+						showAuthGate();
+						return;
+					}
+					if (response.ok) {
+						timerDrillOptions = await response.json();
+					}
+				}
+				renderTimerDrillOptions();
+				applyTimerDrill(null);
+			}
+
+			async function loadTimerPicker() {
+				await loadPlans();
+				timerPlanSelect.innerHTML = '';
+				const noPlan = document.createElement('option');
+				noPlan.value = '';
+				noPlan.textContent = 'No plan';
+				timerPlanSelect.appendChild(noPlan);
+				plans.forEach((plan) => {
+					const option = document.createElement('option');
+					option.value = plan.id;
+					option.textContent = `${plan.sport} — ${formatDate(plan.created_at)}`;
+					timerPlanSelect.appendChild(option);
+				});
+				if (plans.length) {
+					timerPlanSelect.value = plans[0].id;
+				}
+				await loadTimerDrills();
+			}
+
+			timerPlanSelect.addEventListener('change', loadTimerDrills);
+			timerDrillSelect.addEventListener('change', () => {
+				const drill = timerDrillOptions.find((item) => item.id === timerDrillSelect.value) || null;
+				applyTimerDrill(drill);
+			});
+
+			const openTimer = () => {
+				timerOverlay.classList.add('is-active');
+				timerOverlay.setAttribute('aria-hidden', 'false');
+				document.body.style.overflow = 'hidden';
+				renderTimer();
+				loadTimerPicker();
+			};
+
+			const closeTimer = () => {
+				stopTimerInterval();
+				timerOverlay.classList.remove('is-active', 'is-finished');
+				timerOverlay.setAttribute('aria-hidden', 'true');
+				document.body.style.overflow = '';
+				timerCurrentRep = 1;
+				timerRemainingSeconds = timerDurationSeconds;
+				timerToggleButton.textContent = 'Start';
+				setTimerSub(timerStatusLabel('Ready'));
+			};
+
+			timerOverlay.addEventListener('click', (event) => {
+				const adjustButton = event.target.closest('[data-timer-adjust]');
+				if (adjustButton) {
+					adjustTimer(Number.parseInt(adjustButton.dataset.timerAdjust, 10));
+					return;
+				}
+				if (event.target.closest('[data-timer-toggle]')) {
+					if (timerIsRunning()) {
+						pauseTimer();
+					} else {
+						startTimer();
+					}
+					return;
+				}
+				if (event.target.closest('[data-timer-reset]')) {
+					resetTimer();
+					return;
+				}
+				if (event.target.closest('[data-timer-finish]')) {
+					timerFinished();
+					return;
+				}
+				if (event.target.closest('[data-timer-close]')) {
+					closeTimer();
+				}
 			});
 
 			(async () => {

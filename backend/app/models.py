@@ -78,6 +78,26 @@ class Plan(Base):
     )
 
 
+class Drill(Base):
+    __tablename__ = "drills"
+
+    id: Mapped[str] = mapped_column(UUID(as_uuid=False), primary_key=True, default=_uuid)
+    plan_id: Mapped[str] = mapped_column(
+        UUID(as_uuid=False), ForeignKey("plans.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    name: Mapped[str] = mapped_column(String(80), nullable=False)
+    duration_minutes: Mapped[int] = mapped_column(Integer, nullable=False)
+    repeats: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    position: Mapped[int] = mapped_column(Integer, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, nullable=False)
+
+    __table_args__ = (
+        CheckConstraint("duration_minutes >= 1 AND duration_minutes <= 240", name="drill_duration_range"),
+        CheckConstraint("repeats >= 1 AND repeats <= 20", name="drill_repeats_range"),
+    )
+
+
 class Tier(Base):
     __tablename__ = "tiers"
 

@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     cookie_secure: bool = True
     session_cookie_name: str = "session"
     session_ttl_hours: int = 24 * 14
+    anthropic_api_key: str = ""
 
 
 settings = Settings()
