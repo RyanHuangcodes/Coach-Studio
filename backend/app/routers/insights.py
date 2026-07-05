@@ -1,4 +1,5 @@
 import json
+from typing import Optional
 
 import anthropic
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -8,7 +9,7 @@ from app.config import settings
 from app.database import get_db
 from app.models import AttendanceRecord, Drill, Plan, Player, Tier, User
 from app.routers.practices import get_or_create_today_practice_row
-from app.schemas import InsightOut, InsightRequest
+from app.schemas import InsightOut, InsightRequest, ObjectiveIdeasOut, ObjectiveIdeasRequest
 from app.security import get_current_user
 
 router = APIRouter(prefix="/api/insights", tags=["insights"])
@@ -45,7 +46,20 @@ _INSIGHT_SCHEMA = {
     },
 }
 
-_SYSTEM_PROMPT = (
+_OBJECTIVES_SCHEMA = {
+    "type": "object",
+    "additionalProperties": False,
+    "required": ["objectives"],
+    "properties": {
+        "objectives": {
+            "type": "array",
+            "items": {"type": "string"},
+            "description": "Exactly three distinct, specific training objectives, each under 15 words",
+        },
+    },
+}
+
+_INSIGHT_SYSTEM_PROMPT = (
     "You are an assistant for a professional sports coach using a training-management app. "
     "Given the coach's objective for today's session and context about their roster and "
     "attendance, suggest a tactical focus, 3-5 concrete drills (with realistic durations "
@@ -53,13 +67,22 @@ _SYSTEM_PROMPT = (
     "roster size and skill tiers provided. Be specific and practical, not generic."
 )
 
+_OBJECTIVES_SYSTEM_PROMPT = (
+    "You are an assistant for a professional sports coach using a training-management app. "
+    "The coach is not sure what to work on today. Given their roster, attendance, and any "
+    "recent plan context, propose exactly three distinct training objectives they could pick "
+    "from — varied in emphasis (e.g. one technical, one tactical, one physical/mental). Each "
+    "objective must be one short phrase under 15 words, concrete enough to design drills from."
+)
 
-def _build_context(db: DbSession, current_user: User, plan_id) -> str:
+
+def _build_context(db: DbSession, current_user: User, plan_id, sport: Optional[str]) -> str:
     lines = []
+    if sport:
+        lines.append(f"Sport: {sport}")
 
     tiers = db.query(Tier).filter(Tier.user_id == current_user.id).order_by(Tier.sort_order).all()
     players = db.query(Player).filter(Player.user_id == current_user.id).all()
-    tier_names = {t.id: t.name for t in tiers}
 
     lines.append(f"Roster: {len(players)} players")
     for tier in tiers:
@@ -94,34 +117,22 @@ def _build_context(db: DbSession, current_user: User, plan_id) -> str:
     return "\n".join(lines)
 
 
-@router.post("/generate", response_model=InsightOut)
-def generate_insight(
-    payload: InsightRequest,
-    current_user: User = Depends(get_current_user),
-    db: DbSession = Depends(get_db),
-):
+def _call_claude(system_prompt: str, user_content: str, schema: dict) -> dict:
     if not settings.anthropic_api_key:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="AI insights are not configured yet — add ANTHROPIC_API_KEY to backend/.env",
         )
 
-    context = _build_context(db, current_user, payload.plan_id)
     client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
-
     try:
         response = client.messages.create(
             model=_MODEL,
             max_tokens=2000,
             thinking={"type": "adaptive"},
-            system=_SYSTEM_PROMPT,
-            output_config={"format": {"type": "json_schema", "schema": _INSIGHT_SCHEMA}},
-            messages=[
-                {
-                    "role": "user",
-                    "content": f"Today's objective: {payload.objective}\n\n{context}",
-                }
-            ],
+            system=system_prompt,
+            output_config={"format": {"type": "json_schema", "schema": schema}},
+            messages=[{"role": "user", "content": user_content}],
         )
     except anthropic.AuthenticationError as exc:
         raise HTTPException(
@@ -147,7 +158,7 @@ def generate_insight(
     if response.stop_reason == "refusal" or not response.content:
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
-            detail="The AI declined to answer this objective — try rephrasing it",
+            detail="The AI declined this request — try rephrasing it",
         )
 
     text_blocks = [block.text for block in response.content if block.type == "text"]
@@ -158,3 +169,33 @@ def generate_insight(
             status_code=status.HTTP_502_BAD_GATEWAY,
             detail="AI returned an unreadable response — try again",
         ) from exc
+
+
+@router.post("/generate", response_model=InsightOut)
+def generate_insight(
+    payload: InsightRequest,
+    current_user: User = Depends(get_current_user),
+    db: DbSession = Depends(get_db),
+):
+    context = _build_context(db, current_user, payload.plan_id, payload.sport)
+    return _call_claude(
+        _INSIGHT_SYSTEM_PROMPT,
+        f"Today's objective: {payload.objective}\n\n{context}",
+        _INSIGHT_SCHEMA,
+    )
+
+
+@router.post("/objectives", response_model=ObjectiveIdeasOut)
+def suggest_objectives(
+    payload: ObjectiveIdeasRequest,
+    current_user: User = Depends(get_current_user),
+    db: DbSession = Depends(get_db),
+):
+    context = _build_context(db, current_user, None, payload.sport)
+    result = _call_claude(
+        _OBJECTIVES_SYSTEM_PROMPT,
+        f"Suggest three training objectives for today.\n\n{context}",
+        _OBJECTIVES_SCHEMA,
+    )
+    result["objectives"] = result.get("objectives", [])[:3]
+    return result

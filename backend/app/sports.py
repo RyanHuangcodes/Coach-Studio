@@ -4,7 +4,9 @@ from typing import Optional
 STANDARD_SPORTS = ["Soccer", "Basketball", "Baseball", "Football", "Tennis"]
 OTHER_SPORT_VALUE = "__other__"
 
-_CUSTOM_SPORT_PATTERN = re.compile(r"^[A-Za-z0-9 '\-]+$")
+# Letters (including Latin-1 accents, e.g. "Fútbol"), digits, spaces, hyphens,
+# apostrophes — still blocks HTML/script-shaped input at the boundary.
+_CUSTOM_SPORT_PATTERN = re.compile(r"^[A-Za-zÀ-ÖØ-öø-ÿ0-9 '\-]+$")
 _CUSTOM_SPORT_MAX_LENGTH = 40
 
 

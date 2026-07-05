@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session as DbSession
 
 from app.database import get_db
@@ -29,7 +30,12 @@ def signup(payload: UserCreate, response: Response, db: DbSession = Depends(get_
         display_name=payload.display_name,
     )
     db.add(user)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        # A concurrent signup for the same email won the race.
+        db.rollback()
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
     db.refresh(user)
 
     for index, tier_name in enumerate(DEFAULT_TIERS):

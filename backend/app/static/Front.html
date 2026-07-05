@@ -882,9 +882,69 @@
 		}
 
 		.insight-form {
-			display: flex;
+			display: grid;
 			gap: 10px;
 			margin-bottom: 14px;
+		}
+
+		.insight-row {
+			display: flex;
+			gap: 10px;
+			min-width: 0;
+		}
+
+		.insight-form select {
+			flex: 1;
+			min-width: 0;
+			appearance: none;
+			border: 1px solid rgba(255, 255, 255, 0.08);
+			background: rgba(255, 255, 255, 0.04);
+			color: var(--text);
+			border-radius: 18px;
+			padding: 12px 16px;
+			font: inherit;
+			font-size: 0.9rem;
+		}
+
+		.insight-ideas-button {
+			border: 0;
+			background: transparent;
+			color: var(--accent);
+			font: inherit;
+			font-size: 0.82rem;
+			font-weight: 800;
+			cursor: pointer;
+			text-align: left;
+			padding: 0;
+		}
+
+		.insight-ideas-button:disabled {
+			opacity: 0.5;
+			cursor: default;
+		}
+
+		.insight-objective-option {
+			width: 100%;
+			text-align: left;
+			font: inherit;
+			font-size: 0.88rem;
+			font-weight: 700;
+			color: var(--text);
+			cursor: pointer;
+			padding: 12px 14px;
+			border-radius: 16px;
+			background: rgba(255, 255, 255, 0.04);
+			border: 1px solid rgba(255, 255, 255, 0.06);
+			transition: border-color 0.15s ease;
+		}
+
+		.insight-objective-option:hover {
+			border-color: rgba(236, 241, 32, 0.24);
+		}
+
+		.insight-save-button {
+			justify-self: start;
+			margin-top: 4px;
 		}
 
 		.insight-form input {
@@ -1500,7 +1560,59 @@
 		}
 
 		.timer-overlay {
-			grid-template-rows: auto auto 1fr auto;
+			grid-template-rows: auto auto 1fr auto auto;
+		}
+
+		.timer-drills {
+			display: grid;
+			gap: 8px;
+			overflow-y: auto;
+			max-height: 24vh;
+			padding-right: 4px;
+		}
+
+		.timer-drills[hidden] {
+			display: none;
+		}
+
+		.timer-drill-card {
+			width: 100%;
+			text-align: left;
+			font: inherit;
+			color: var(--text);
+			cursor: pointer;
+			padding: 10px 14px;
+			border-radius: 16px;
+			background: rgba(255, 255, 255, 0.04);
+			border: 1px solid rgba(255, 255, 255, 0.06);
+		}
+
+		.timer-drill-card.is-active {
+			border-color: rgba(236, 241, 32, 0.45);
+			background: rgba(236, 241, 32, 0.07);
+		}
+
+		.timer-drill-card-name {
+			display: flex;
+			align-items: baseline;
+			gap: 8px;
+			font-weight: 800;
+			font-size: 0.9rem;
+		}
+
+		.timer-drill-card-time {
+			font-size: 0.68rem;
+			font-weight: 800;
+			letter-spacing: 0.06em;
+			text-transform: uppercase;
+			color: var(--accent);
+		}
+
+		.timer-drill-card-notes {
+			margin-top: 4px;
+			color: var(--muted);
+			font-size: 0.82rem;
+			line-height: 1.45;
 		}
 
 		.timer-picker {
@@ -2005,8 +2117,15 @@
 		<section class="insight" aria-label="AI strategy insight">
 			<h2 class="insight-title">AI Strategy Insight</h2>
 			<form class="insight-form" id="insight-form">
-				<input id="insight-objective-input" type="text" placeholder="Today's objective, e.g. faster transition defense" autocomplete="off" maxlength="500">
-				<button class="secondary-button" type="submit" data-insight-generate>Suggest</button>
+				<div class="insight-row">
+					<select id="insight-sport-select" aria-label="Sport"></select>
+					<input id="insight-custom-sport-input" type="text" placeholder="Sport name" autocomplete="off" maxlength="40" hidden>
+				</div>
+				<div class="insight-row">
+					<input id="insight-objective-input" type="text" placeholder="Today's objective, e.g. faster transition defense" autocomplete="off" maxlength="500">
+					<button class="secondary-button" type="submit" data-insight-generate>Suggest</button>
+				</div>
+				<button class="insight-ideas-button" type="button" data-insight-ideas>Not sure what to work on? Get 3 ideas</button>
 			</form>
 			<p class="field-error" data-insight-error></p>
 			<div class="insight-result" data-insight-result>
@@ -2228,6 +2347,7 @@
 			</div>
 			<button class="timer-adjust" type="button" data-timer-adjust="60" aria-label="Add one minute">+</button>
 		</div>
+		<div class="timer-drills" data-timer-drills hidden></div>
 		<div class="timer-controls">
 			<button class="secondary-button" type="button" data-timer-reset>Reset</button>
 			<button class="primary-button timer-start-button" type="button" data-timer-toggle>Start</button>
@@ -2287,6 +2407,9 @@
 			const statRosterEl = document.querySelector('[data-stat-roster]');
 			const insightForm = document.getElementById('insight-form');
 			const insightObjectiveInput = document.getElementById('insight-objective-input');
+			const insightSportSelect = document.getElementById('insight-sport-select');
+			const insightCustomSportInput = document.getElementById('insight-custom-sport-input');
+			const insightIdeasButton = document.querySelector('[data-insight-ideas]');
 			const insightGenerateButton = document.querySelector('[data-insight-generate]');
 			const insightError = document.querySelector('[data-insight-error]');
 			const insightResult = document.querySelector('[data-insight-result]');
@@ -2336,6 +2459,9 @@
 				month: 'short',
 				day: 'numeric',
 			});
+
+			// The browser's local calendar date as YYYY-MM-DD (en-CA formats ISO-style).
+			const localDateString = () => new Date().toLocaleDateString('en-CA');
 
 			// UI-only clamp for the live duration ring/slider feedback. The server
 			// independently validates duration on every write; this never determines
@@ -2746,6 +2872,8 @@
 				const practiceResponse = await fetch('/api/practices/today', {
 					method: 'POST',
 					credentials: 'include',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ date: localDateString() }),
 				});
 				if (practiceResponse.status === 401) {
 					showAuthGate();
@@ -2918,6 +3046,18 @@
 			durationDisplay.addEventListener('input', (event) => syncDuration(event.target.value));
 
 			document.addEventListener('click', (event) => {
+				const deleteDraftButton = event.target.closest('[data-delete-draft]');
+				if (deleteDraftButton) {
+					handleDeleteDraft(deleteDraftButton.dataset.deleteDraft);
+					return;
+				}
+
+				const deletePlanButton = event.target.closest('[data-delete-plan]');
+				if (deletePlanButton) {
+					handleDeletePlan();
+					return;
+				}
+
 				const draftButton = event.target.closest('[data-draft-id]');
 				if (draftButton) {
 					const draft = drafts.find((item) => item.id === draftButton.dataset.draftId);
@@ -3243,7 +3383,12 @@
 
 			async function loadPracticesIntoPicker() {
 				// Ensure today's session exists so it's always pickable, then list all.
-				const todayResponse = await fetch('/api/practices/today', { method: 'POST', credentials: 'include' });
+				const todayResponse = await fetch('/api/practices/today', {
+					method: 'POST',
+					credentials: 'include',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ date: localDateString() }),
+				});
 				if (todayResponse.status === 401) {
 					showAuthGate();
 					return;
@@ -3374,6 +3519,16 @@
 
 			groupSessionSelect.addEventListener('change', loadSavedGroupsForSelectedSession);
 
+			// The server requires group_size >= 2 but num_groups >= 1 — keep the
+			// input's constraints in sync with the selected mode.
+			groupModeSelect.addEventListener('change', () => {
+				const min = groupModeSelect.value === 'group_size' ? 2 : 1;
+				groupValueInput.min = String(min);
+				if (Number.parseInt(groupValueInput.value, 10) < min) {
+					groupValueInput.value = String(min);
+				}
+			});
+
 			tierManageList.addEventListener('change', (event) => {
 				const input = event.target.closest('[data-tier-rename]');
 				if (!input) return;
@@ -3385,7 +3540,39 @@
 			});
 
 			// --- AI Strategy Insight ---
+			let lastInsight = null;
+
+			const initInsightSportSelect = () => {
+				insightSportSelect.innerHTML = '';
+				standardSports.forEach((sport) => {
+					const option = document.createElement('option');
+					option.value = sport;
+					option.textContent = sport;
+					insightSportSelect.appendChild(option);
+				});
+				const other = document.createElement('option');
+				other.value = '__other__';
+				other.textContent = 'Other sport…';
+				insightSportSelect.appendChild(other);
+			};
+			initInsightSportSelect();
+
+			insightSportSelect.addEventListener('change', () => {
+				insightCustomSportInput.hidden = insightSportSelect.value !== '__other__';
+				if (!insightCustomSportInput.hidden) insightCustomSportInput.focus();
+			});
+
+			// Returns the human-readable sport name for prompts, or null if Other is
+			// selected with no name typed yet.
+			const insightSportName = () => {
+				if (insightSportSelect.value === '__other__') {
+					return insightCustomSportInput.value.trim() || null;
+				}
+				return insightSportSelect.value;
+			};
+
 			const renderInsight = (insight) => {
+				lastInsight = insight;
 				const drills = insight.drills.map((drill) => `
 					<div class="insight-drill">
 						<div class="insight-drill-name">
@@ -3400,6 +3587,16 @@
 					<p class="insight-focus">${escapeHtml(insight.focus)}</p>
 					${drills}
 					${cues ? `<ul class="insight-cues">${cues}</ul>` : ''}
+					${insight.drills.length ? '<button class="primary-button insight-save-button" type="button" data-insight-save>Save drills as a new plan</button>' : ''}
+				`;
+			};
+
+			const renderObjectiveOptions = (objectives) => {
+				insightResult.innerHTML = `
+					<p class="insight-copy">Pick an objective to build today's session around:</p>
+					${objectives.map((objective) => `
+						<button class="insight-objective-option" type="button" data-objective-option="${escapeHtml(objective)}">${escapeHtml(objective)}</button>
+					`).join('')}
 				`;
 			};
 
@@ -3420,7 +3617,7 @@
 						method: 'POST',
 						credentials: 'include',
 						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify({ objective }),
+						body: JSON.stringify({ objective, sport: insightSportName() }),
 					});
 
 					if (response.status === 401) {
@@ -3440,6 +3637,157 @@
 					insightGenerateButton.textContent = 'Suggest';
 				}
 			});
+
+			insightIdeasButton.addEventListener('click', async () => {
+				insightError.textContent = '';
+				insightIdeasButton.disabled = true;
+				insightIdeasButton.textContent = 'Thinking…';
+
+				try {
+					const response = await fetch('/api/insights/objectives', {
+						method: 'POST',
+						credentials: 'include',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ sport: insightSportName() }),
+					});
+
+					if (response.status === 401) {
+						showAuthGate();
+						return;
+					}
+					if (!response.ok) {
+						insightError.textContent = await parseErrorMessage(response);
+						return;
+					}
+
+					const data = await response.json();
+					renderObjectiveOptions(data.objectives);
+				} catch (error) {
+					insightError.textContent = 'Could not reach the server — try again.';
+				} finally {
+					insightIdeasButton.disabled = false;
+					insightIdeasButton.textContent = 'Not sure what to work on? Get 3 ideas';
+				}
+			});
+
+			async function handleSaveInsightAsPlan(saveButton) {
+				if (!lastInsight || !lastInsight.drills.length) return;
+
+				const isCustom = insightSportSelect.value === '__other__';
+				if (isCustom && !insightCustomSportInput.value.trim()) {
+					insightError.textContent = 'Type the sport name first';
+					insightCustomSportInput.hidden = false;
+					insightCustomSportInput.focus();
+					return;
+				}
+
+				saveButton.disabled = true;
+				saveButton.textContent = 'Saving…';
+				insightError.textContent = '';
+
+				try {
+					const totalMinutes = lastInsight.drills.reduce((sum, d) => sum + d.duration_minutes, 0);
+					// Plan duration must be a multiple of 5 within 5-240; drill durations
+					// themselves are stored exactly as suggested.
+					const planDuration = Math.min(240, Math.max(5, Math.ceil(totalMinutes / 5) * 5));
+
+					const planResponse = await fetch('/api/plans', {
+						method: 'POST',
+						credentials: 'include',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							sport: insightSportSelect.value,
+							custom_sport: isCustom ? insightCustomSportInput.value.trim() : null,
+							duration_minutes: planDuration,
+						}),
+					});
+					if (planResponse.status === 401) {
+						showAuthGate();
+						return;
+					}
+					if (!planResponse.ok) {
+						insightError.textContent = await parseErrorMessage(planResponse);
+						return;
+					}
+					const plan = await planResponse.json();
+
+					for (const drill of lastInsight.drills) {
+						const drillResponse = await fetch(`/api/plans/${plan.id}/drills`, {
+							method: 'POST',
+							credentials: 'include',
+							headers: { 'Content-Type': 'application/json' },
+							body: JSON.stringify({
+								name: drill.name.slice(0, 80),
+								duration_minutes: Math.min(240, Math.max(1, drill.duration_minutes)),
+								notes: drill.description ? drill.description.slice(0, 4000) : null,
+							}),
+						});
+						if (!drillResponse.ok) {
+							insightError.textContent = 'Plan created, but some drills failed to save — check the planner.';
+							break;
+						}
+					}
+
+					plannerSelectedPlanId = plan.id;
+					lastInsight = null;
+					insightResult.innerHTML = `
+						<p class="insight-copy">Saved! The drills are now in your planner — tweak, reorder, or time them from Start Session.</p>
+					`;
+					insightObjectiveInput.value = '';
+					await loadPlans();
+					setPage('planner');
+				} catch (error) {
+					insightError.textContent = 'Could not reach the server — try again.';
+				} finally {
+					saveButton.disabled = false;
+					saveButton.textContent = 'Save drills as a new plan';
+				}
+			}
+
+			insightResult.addEventListener('click', (event) => {
+				const optionButton = event.target.closest('[data-objective-option]');
+				if (optionButton) {
+					insightObjectiveInput.value = optionButton.dataset.objectiveOption;
+					insightForm.requestSubmit();
+					return;
+				}
+				const saveButton = event.target.closest('[data-insight-save]');
+				if (saveButton) {
+					handleSaveInsightAsPlan(saveButton);
+				}
+			});
+
+			async function handleDeleteDraft(draftId) {
+				if (!window.confirm('Delete this draft?')) return;
+				const response = await fetch(`/api/drafts/${draftId}`, {
+					method: 'DELETE',
+					credentials: 'include',
+				});
+				if (response.status === 401) {
+					showAuthGate();
+					return;
+				}
+				if (activeDraftId === draftId) activeDraftId = null;
+				await loadDrafts();
+			}
+
+			async function handleDeletePlan() {
+				if (!plannerSelectedPlanId) return;
+				const plan = plans.find((item) => item.id === plannerSelectedPlanId);
+				const label = plan ? `${plan.sport} (${plan.duration_minutes} min)` : 'this plan';
+				if (!window.confirm(`Delete ${label} and all of its drills? This cannot be undone.`)) return;
+
+				const response = await fetch(`/api/plans/${plannerSelectedPlanId}`, {
+					method: 'DELETE',
+					credentials: 'include',
+				});
+				if (response.status === 401) {
+					showAuthGate();
+					return;
+				}
+				plannerSelectedPlanId = null;
+				await loadPlannerData();
+			}
 
 			// --- Planner / drill builder ---
 			const resetDrillForm = () => {
@@ -3641,6 +3989,8 @@
 			let timerCurrentRep = 1;
 			let timerDrillLabel = null;
 			let timerDrillOptions = [];
+			let timerSelectedDrillId = null;
+			const timerDrillsPanel = document.querySelector('[data-timer-drills]');
 
 			const timerIsRunning = () => timerIntervalId !== null;
 
@@ -3751,6 +4101,10 @@
 					timerDurationSeconds = Math.max(timerDurationSeconds, newRemaining);
 					timerTick();
 				} else {
+					// Adjusting after a finished drill means "run it again" — reset to rep 1.
+					if (timerOverlay.classList.contains('is-finished')) {
+						timerCurrentRep = 1;
+					}
 					timerDurationSeconds = Math.min(
 						TIMER_MAX_SECONDS,
 						Math.max(TIMER_MIN_SECONDS, timerDurationSeconds + deltaSeconds),
@@ -3764,6 +4118,24 @@
 				vibrate(20);
 			};
 
+			const renderTimerDrillList = () => {
+				if (!timerDrillOptions.length) {
+					timerDrillsPanel.hidden = true;
+					timerDrillsPanel.innerHTML = '';
+					return;
+				}
+				timerDrillsPanel.hidden = false;
+				timerDrillsPanel.innerHTML = timerDrillOptions.map((drill) => `
+					<button class="timer-drill-card ${drill.id === timerSelectedDrillId ? 'is-active' : ''}" type="button" data-timer-drill-card="${escapeHtml(drill.id)}">
+						<div class="timer-drill-card-name">
+							<span>${escapeHtml(drill.name)}</span>
+							<span class="timer-drill-card-time">${drill.repeats > 1 ? `${drill.repeats} × ${drill.duration_minutes}` : drill.duration_minutes} min</span>
+						</div>
+						${drill.notes ? `<div class="timer-drill-card-notes">${escapeHtml(drill.notes)}</div>` : ''}
+					</button>
+				`).join('');
+			};
+
 			const applyTimerDrill = (drill) => {
 				stopTimerInterval();
 				timerOverlay.classList.remove('is-finished');
@@ -3771,15 +4143,18 @@
 					timerDurationSeconds = drill.duration_minutes * 60;
 					timerRepeats = drill.repeats || 1;
 					timerDrillLabel = drill.name;
+					timerSelectedDrillId = drill.id;
 				} else {
 					timerRepeats = 1;
 					timerDrillLabel = null;
+					timerSelectedDrillId = null;
 				}
 				timerCurrentRep = 1;
 				timerRemainingSeconds = timerDurationSeconds;
 				timerToggleButton.textContent = 'Start';
 				setTimerSub(timerStatusLabel('Ready'));
 				renderTimer();
+				renderTimerDrillList();
 			};
 
 			const renderTimerDrillOptions = () => {
@@ -3860,6 +4235,16 @@
 			};
 
 			timerOverlay.addEventListener('click', (event) => {
+				const drillCard = event.target.closest('[data-timer-drill-card]');
+				if (drillCard) {
+					const drill = timerDrillOptions.find((item) => item.id === drillCard.dataset.timerDrillCard) || null;
+					if (drill) {
+						timerDrillSelect.value = drill.id;
+						applyTimerDrill(drill);
+					}
+					return;
+				}
+
 				const adjustButton = event.target.closest('[data-timer-adjust]');
 				if (adjustButton) {
 					adjustTimer(Number.parseInt(adjustButton.dataset.timerAdjust, 10));

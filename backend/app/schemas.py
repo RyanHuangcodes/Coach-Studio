@@ -1,3 +1,4 @@
+import datetime as dt
 from datetime import date, datetime
 from typing import Optional
 
@@ -155,6 +156,13 @@ class PlayerMove(BaseModel):
         return value
 
 
+class TodayPracticeRequest(BaseModel):
+    # dt.date, not bare `date`: the field's default binds `date = None` in the
+    # class namespace before the annotation is evaluated, so a bare `date` here
+    # would resolve to None and reject every real value.
+    date: Optional[dt.date] = None
+
+
 class PracticeOut(BaseModel):
     id: str
     date: date
@@ -224,6 +232,7 @@ class SavedGroupsOut(BaseModel):
 
 class InsightRequest(BaseModel):
     objective: str = Field(min_length=3, max_length=500)
+    sport: Optional[str] = Field(default=None, max_length=40)
     plan_id: Optional[str] = None
 
     @field_validator("objective")
@@ -233,6 +242,14 @@ class InsightRequest(BaseModel):
         if not stripped:
             raise ValueError("objective must not be blank")
         return stripped
+
+
+class ObjectiveIdeasRequest(BaseModel):
+    sport: Optional[str] = Field(default=None, max_length=40)
+
+
+class ObjectiveIdeasOut(BaseModel):
+    objectives: list[str]
 
 
 class InsightDrill(BaseModel):

@@ -69,9 +69,10 @@ class Plan(Base):
     sport: Mapped[str] = mapped_column(String(60), nullable=False)
     duration_minutes: Mapped[int] = mapped_column(Integer, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, nullable=False)
-    source_draft_id: Mapped[Optional[str]] = mapped_column(
-        UUID(as_uuid=False), ForeignKey("drafts.id", ondelete="SET NULL"), nullable=True
-    )
+    # Historical breadcrumb only — deliberately NOT a foreign key. The source
+    # draft is deleted in the same transaction that creates the plan, so an FK
+    # with ON DELETE SET NULL would immediately wipe this value.
+    source_draft_id: Mapped[Optional[str]] = mapped_column(UUID(as_uuid=False), nullable=True)
 
     __table_args__ = (
         CheckConstraint("duration_minutes >= 5 AND duration_minutes <= 240", name="plan_duration_range"),

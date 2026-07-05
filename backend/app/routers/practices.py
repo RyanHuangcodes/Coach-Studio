@@ -1,11 +1,14 @@
-from datetime import datetime, timezone
+from datetime import date as date_type
+from datetime import datetime, timedelta, timezone
+from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session as DbSession
 
 from app.database import get_db
 from app.models import AttendanceRecord, Player, Practice, User
-from app.schemas import AttendanceCheckIn, AttendanceOut, PracticeOut
+from app.schemas import AttendanceCheckIn, AttendanceOut, PracticeOut, TodayPracticeRequest
 from app.security import get_current_user
 
 router = APIRouter(prefix="/api/practices", tags=["practices"])
@@ -22,8 +25,18 @@ def _get_owned_practice(db: DbSession, practice_id: str, current_user: User) -> 
     return practice
 
 
-def get_or_create_today_practice_row(db: DbSession, user_id: str) -> Practice:
-    today = datetime.now(timezone.utc).date()
+def get_or_create_today_practice_row(
+    db: DbSession, user_id: str, local_date: Optional[date_type] = None
+) -> Practice:
+    # Coaches live in local time; the browser supplies its local date so evening
+    # sessions don't roll onto tomorrow's UTC date. Server-side callers (group
+    # generation, AI context) fall back to UTC. A supplied date more than a day
+    # away from UTC-now is rejected as clock tampering.
+    utc_today = datetime.now(timezone.utc).date()
+    today = local_date or utc_today
+    if abs(today - utc_today) > timedelta(days=1):
+        today = utc_today
+
     practice = (
         db.query(Practice)
         .filter(Practice.user_id == user_id, Practice.date == today)
@@ -34,7 +47,19 @@ def get_or_create_today_practice_row(db: DbSession, user_id: str) -> Practice:
 
     practice = Practice(user_id=user_id, date=today)
     db.add(practice)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        # A concurrent request created the same (user, date) row first.
+        db.rollback()
+        practice = (
+            db.query(Practice)
+            .filter(Practice.user_id == user_id, Practice.date == today)
+            .first()
+        )
+        if practice is None:
+            raise
+        return practice
     db.refresh(practice)
     return practice
 
@@ -54,10 +79,12 @@ def list_practices(
 
 @router.post("/today", response_model=PracticeOut, status_code=status.HTTP_200_OK)
 def get_or_create_today_practice(
+    payload: Optional[TodayPracticeRequest] = None,
     current_user: User = Depends(get_current_user),
     db: DbSession = Depends(get_db),
 ):
-    return get_or_create_today_practice_row(db, current_user.id)
+    local_date = payload.date if payload else None
+    return get_or_create_today_practice_row(db, current_user.id, local_date)
 
 
 @router.get("/{practice_id}/attendance", response_model=list[AttendanceOut])

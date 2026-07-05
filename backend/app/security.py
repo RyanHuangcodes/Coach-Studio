@@ -51,8 +51,15 @@ def get_current_user(request: Request, db: DbSession = Depends(get_db)) -> User:
     if not token:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
 
+    now = datetime.now(timezone.utc)
     session = db.query(SessionModel).filter(SessionModel.id == token).first()
-    if session is None or session.expires_at < datetime.now(timezone.utc):
+    if session is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
+    if session.expires_at < now:
+        # Opportunistic cleanup: purge this and any other expired sessions so
+        # the table doesn't grow without bound.
+        db.query(SessionModel).filter(SessionModel.expires_at < now).delete()
+        db.commit()
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
 
     user = db.query(User).filter(User.id == session.user_id).first()
