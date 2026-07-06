@@ -1,0 +1,23 @@
+{
+	"name": "Coach Studio",
+	"short_name": "Coach Studio",
+	"description": "Lesson planning, attendance, smart groups, and drill timing for coaches.",
+	"start_url": "/",
+	"scope": "/",
+	"display": "standalone",
+	"orientation": "portrait",
+	"background_color": "#080808",
+	"theme_color": "#080808",
+	"icons": [
+		{
+			"src": "/static/icon-192.png",
+			"sizes": "192x192",
+			"type": "image/png"
+		},
+		{
+			"src": "/static/icon-512.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		}
+	]
+}

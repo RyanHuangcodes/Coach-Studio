@@ -2,8 +2,15 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 	<title>Coach Studio</title>
+	<meta name="theme-color" content="#080808">
+	<link rel="manifest" href="/static/manifest.webmanifest">
+	<link rel="icon" type="image/png" href="/static/icon-192.png">
+	<link rel="apple-touch-icon" href="/static/apple-touch-icon.png">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<meta name="apple-mobile-web-app-title" content="Coach Studio">
 	<style>
 		:root {
 			color-scheme: dark;
@@ -222,7 +229,8 @@
 			padding: 24px;
 			background: rgba(0, 0, 0, 0.56);
 			backdrop-filter: blur(14px);
-			z-index: 60;
+			/* Above the timer overlay (90) so attendance/groups open mid-session. */
+			z-index: 120;
 		}
 
 		.modal-layer.is-open {
@@ -1429,7 +1437,8 @@
 			min-width: 0;
 		}
 
-		.planner-plan-row .secondary-button {
+		.planner-plan-row .secondary-button,
+		.planner-plan-row .primary-button {
 			flex: 0 0 auto;
 			padding: 12px 16px;
 		}
@@ -1455,20 +1464,38 @@
 			flex: 0 0 auto;
 		}
 
-		.plan-item-button {
+		.plan-load {
+			display: grid;
+			gap: 8px;
 			width: 100%;
+			background: transparent;
+			border: 0;
+			color: inherit;
 			font: inherit;
 			text-align: left;
 			cursor: pointer;
-			appearance: none;
-			-webkit-appearance: none;
-			color: var(--text);
-			transition: border-color 0.15s ease, transform 0.15s ease;
+			padding: 0;
 		}
 
-		.plan-item-button:hover {
+		.plan-item:hover {
 			border-color: rgba(236, 241, 32, 0.24);
-			transform: translateY(-1px);
+		}
+
+		.plan-start-button {
+			justify-self: start;
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			padding: 10px 14px;
+			font-size: 0.8rem;
+			text-transform: uppercase;
+			letter-spacing: 0.04em;
+		}
+
+		.plan-start-button .play {
+			width: 18px;
+			height: 18px;
+			font-size: 0.6rem;
 		}
 
 		.drills-list {
@@ -1548,7 +1575,8 @@
 			display: none;
 			grid-template-rows: auto 1fr auto;
 			gap: 12px;
-			padding: 24px;
+			/* Respect iPhone notch / home-indicator areas in standalone mode. */
+			padding: max(24px, env(safe-area-inset-top, 0px)) max(24px, env(safe-area-inset-right, 0px)) max(24px, env(safe-area-inset-bottom, 0px)) max(24px, env(safe-area-inset-left, 0px));
 			background:
 				radial-gradient(circle at top left, rgba(154, 67, 31, 0.28), transparent 28%),
 				radial-gradient(circle at 82% 14%, rgba(236, 241, 32, 0.12), transparent 14%),
@@ -1638,6 +1666,35 @@
 			align-items: center;
 		}
 
+		.bulk-checkin-row {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			font-size: 0.9rem;
+			color: var(--muted);
+			font-weight: 700;
+			cursor: pointer;
+		}
+
+		.bulk-checkin-row input {
+			width: 18px;
+			height: 18px;
+			accent-color: var(--accent);
+		}
+
+		.timer-topbar-actions {
+			display: flex;
+			gap: 8px;
+			align-items: center;
+		}
+
+		.timer-top-button {
+			padding: 8px 14px;
+			font-size: 0.72rem;
+			text-transform: uppercase;
+			letter-spacing: 0.05em;
+		}
+
 		.timer-eyebrow {
 			font-size: 0.8rem;
 			letter-spacing: 0.22em;
@@ -1680,7 +1737,10 @@
 		}
 
 		.timer-ring {
-			width: min(100%, min(64vh, 480px));
+			/* Sized by a ResizeObserver on the frame so the ring shrinks when the
+			   drill list below needs room, instead of overlapping it. The fallback
+			   applies only before the first observation. */
+			width: var(--timer-ring-px, min(100%, min(52vh, 480px)));
 			aspect-ratio: 1;
 			border-radius: 50%;
 			background:
@@ -1707,7 +1767,8 @@
 		}
 
 		.timer-clock {
-			font-size: clamp(3.4rem, 14vw, 7rem);
+			/* Scales with the ring so the numerals never spill outside a small ring. */
+			font-size: clamp(2rem, calc(var(--timer-ring-px, 380px) * 0.19), 7rem);
 			font-weight: 900;
 			letter-spacing: -0.06em;
 			line-height: 1;
@@ -1901,6 +1962,35 @@
 			.session-title {
 				margin-top: 22px;
 			}
+
+			.planner-plan-row {
+				flex-wrap: wrap;
+			}
+
+			.planner-plan-row select {
+				flex-basis: 100%;
+			}
+
+			.insight-row {
+				flex-wrap: wrap;
+			}
+
+			.insight-row input {
+				flex-basis: 60%;
+			}
+
+			.timer-top-button {
+				padding: 8px 10px;
+				font-size: 0.64rem;
+			}
+
+			.timer-adjust {
+				width: 48px;
+			}
+
+			.dashboard {
+				padding-bottom: max(24px, env(safe-area-inset-bottom, 0px));
+			}
 		}
 
 		@media (max-width: 719px) and (min-width: 421px) {
@@ -2043,6 +2133,7 @@
 				<div class="players-actions">
 					<button class="secondary-button" type="button" data-modal-open="tiers">Manage tiers</button>
 					<button class="secondary-button" type="button" data-modal-open="groups">Make groups</button>
+					<button class="secondary-button" type="button" data-modal-open="bulk-players">Paste roster</button>
 					<button class="primary-button" type="button" data-modal-open="new-player">Add player</button>
 				</div>
 				<div class="players-list" data-players-list></div>
@@ -2070,6 +2161,7 @@
 					<label for="planner-plan-select">Plan</label>
 					<div class="planner-plan-row">
 						<select id="planner-plan-select"></select>
+						<button class="primary-button" type="button" data-planner-start>Start session</button>
 						<button class="secondary-button" type="button" data-delete-plan>Delete</button>
 					</div>
 				</div>
@@ -2327,10 +2419,65 @@
 		</div>
 	</div>
 
+	<div class="modal-layer" data-modal="attendance" aria-hidden="true">
+		<div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="attendance-title">
+			<div class="modal-head">
+				<div>
+					<div class="modal-eyebrow">Today's Session</div>
+					<h3 id="attendance-title">Attendance</h3>
+				</div>
+				<button class="modal-close" type="button" data-close-modal aria-label="Close dialog">x</button>
+			</div>
+			<div class="modal-body">
+				<p class="groups-status" data-attendance-count></p>
+				<div class="players-list" data-attendance-list></div>
+				<div class="modal-actions">
+					<button class="primary-button" type="button" data-close-modal>Done</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal-layer" data-modal="bulk-players" aria-hidden="true">
+		<div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="bulk-players-title">
+			<div class="modal-head">
+				<div>
+					<div class="modal-eyebrow">Players</div>
+					<h3 id="bulk-players-title">Paste a roster</h3>
+				</div>
+				<button class="modal-close" type="button" data-close-modal aria-label="Close dialog">x</button>
+			</div>
+			<form class="modal-body" id="bulk-players-form">
+				<div class="field">
+					<label for="bulk-players-input">Player names</label>
+					<textarea id="bulk-players-input" placeholder="One name per line — commas work too&#10;Alex Kim&#10;Jordan Lee, Sam Ortiz"></textarea>
+				</div>
+				<div class="field">
+					<label for="bulk-tier-select">Tier for everyone</label>
+					<select id="bulk-tier-select"></select>
+				</div>
+				<label class="bulk-checkin-row">
+					<input id="bulk-checkin-input" type="checkbox">
+					<span>Also check everyone in for today's session</span>
+				</label>
+				<p class="field-error" data-bulk-error></p>
+				<p class="groups-status" data-bulk-status></p>
+				<div class="modal-actions">
+					<button class="secondary-button" type="button" data-close-modal>Cancel</button>
+					<button class="primary-button" type="submit" data-bulk-submit>Add players</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
 	<div class="timer-overlay" data-timer-overlay aria-hidden="true">
 		<div class="timer-topbar">
 			<div class="timer-eyebrow">Precision Timer</div>
-			<button class="modal-close" type="button" data-timer-close aria-label="Close timer">x</button>
+			<div class="timer-topbar-actions">
+				<button class="secondary-button timer-top-button" type="button" data-modal-open="attendance">Attendance</button>
+				<button class="secondary-button timer-top-button" type="button" data-modal-open="groups">Groups</button>
+				<button class="modal-close" type="button" data-timer-close aria-label="Close timer">x</button>
+			</div>
 		</div>
 		<div class="timer-picker">
 			<select data-timer-plan-select aria-label="Plan"></select>
@@ -2385,6 +2532,15 @@
 			const playerNotesInput = document.getElementById('player-notes-input');
 			const playerError = document.querySelector('[data-player-error]');
 			const deletePlayerButton = document.querySelector('[data-delete-player]');
+			const attendanceList = document.querySelector('[data-attendance-list]');
+			const attendanceCount = document.querySelector('[data-attendance-count]');
+			const bulkPlayersForm = document.getElementById('bulk-players-form');
+			const bulkPlayersInput = document.getElementById('bulk-players-input');
+			const bulkTierSelect = document.getElementById('bulk-tier-select');
+			const bulkCheckinInput = document.getElementById('bulk-checkin-input');
+			const bulkSubmitButton = document.querySelector('[data-bulk-submit]');
+			const bulkError = document.querySelector('[data-bulk-error]');
+			const bulkStatus = document.querySelector('[data-bulk-status]');
 			const tierManageList = document.querySelector('[data-tier-manage-list]');
 			const newTierInput = document.querySelector('[data-new-tier-input]');
 			const tierError = document.querySelector('[data-tier-error]');
@@ -2551,13 +2707,19 @@
 				}
 
 				plansList.innerHTML = plans.map((plan) => `
-					<button class="plan-item plan-item-button" type="button" data-plan-open="${escapeHtml(plan.id)}">
-						<div class="plan-name">${escapeHtml(plan.sport)}</div>
-						<div class="plan-meta">
-							<div class="plan-date">${escapeHtml(formatDate(plan.created_at))}</div>
-							<div class="plan-time">${escapeHtml(formatDuration(plan.duration_minutes))}</div>
-						</div>
-					</button>
+					<div class="plan-item">
+						<button class="plan-load" type="button" data-plan-open="${escapeHtml(plan.id)}">
+							<div class="plan-name">${escapeHtml(plan.sport)}</div>
+							<div class="plan-meta">
+								<div class="plan-date">${escapeHtml(formatDate(plan.created_at))}</div>
+								<div class="plan-time">${escapeHtml(formatDuration(plan.duration_minutes))}</div>
+							</div>
+						</button>
+						<button class="secondary-button plan-start-button" type="button" data-plan-start="${escapeHtml(plan.id)}">
+							<span class="play">&gt;</span>
+							<span>Start session</span>
+						</button>
+					</div>
 				`).join('');
 			};
 
@@ -2578,21 +2740,23 @@
 				return tier ? tier.name : null;
 			};
 
-			const renderTierSelectOptions = () => {
-				playerTierSelect.innerHTML = '';
+			const fillTierSelect = (selectEl) => {
+				selectEl.innerHTML = '';
 
 				const noneOption = document.createElement('option');
 				noneOption.value = '';
 				noneOption.textContent = 'No tier';
-				playerTierSelect.appendChild(noneOption);
+				selectEl.appendChild(noneOption);
 
 				tiers.forEach((tier) => {
 					const option = document.createElement('option');
 					option.value = tier.id;
 					option.textContent = tier.name;
-					playerTierSelect.appendChild(option);
+					selectEl.appendChild(option);
 				});
 			};
+
+			const renderTierSelectOptions = () => fillTierSelect(playerTierSelect);
 
 			const renderPlayerItem = (player, { rankPosition = null, rankCount = 0 } = {}) => {
 				const tierName = player.tier_id ? tierNameById(player.tier_id) : null;
@@ -2657,6 +2821,34 @@
 				}
 
 				playersList.innerHTML = sections.join('') || '<div class="player-empty">No players yet</div>';
+			};
+
+			const renderAttendanceList = () => {
+				const checkedIn = players.filter((player) => todayAttendance.has(player.id)).length;
+				attendanceCount.textContent = players.length
+					? `${checkedIn} of ${players.length} checked in`
+					: '';
+
+				if (!players.length) {
+					attendanceList.innerHTML = '<div class="player-empty">No players yet — add your roster on the Players page.</div>';
+					return;
+				}
+
+				attendanceList.innerHTML = players.map((player) => {
+					const tierName = player.tier_id ? tierNameById(player.tier_id) : null;
+					const isIn = todayAttendance.has(player.id);
+					return `
+						<div class="player-item">
+							<div class="player-info">
+								<div class="player-name-row">
+									<span class="player-name">${escapeHtml(player.name)}</span>
+									${tierName ? `<span class="player-tier-badge">${escapeHtml(tierName)}</span>` : ''}
+								</div>
+							</div>
+							<button class="checkin-toggle ${isIn ? 'is-checked-in' : ''}" type="button" data-checkin-toggle data-player-id="${escapeHtml(player.id)}">${isIn ? 'Checked in' : 'Check in'}</button>
+						</div>
+					`;
+				}).join('');
 			};
 
 			const renderTierManageList = () => {
@@ -2763,6 +2955,18 @@
 					lastGeneratedGroups = null;
 					saveGroupsButton.hidden = true;
 					loadPracticesIntoPicker().then(loadSavedGroupsForSelectedSession);
+				}
+				if (name === 'attendance') {
+					renderAttendanceList();
+					loadPlayersPageData().then(renderAttendanceList);
+				}
+				if (name === 'bulk-players') {
+					bulkError.textContent = '';
+					bulkStatus.textContent = '';
+					bulkPlayersInput.value = '';
+					bulkCheckinInput.checked = false;
+					fillTierSelect(bulkTierSelect);
+					loadTiers().then(() => fillTierSelect(bulkTierSelect));
 				}
 				modal.classList.add('is-open');
 				modal.setAttribute('aria-hidden', 'false');
@@ -2921,6 +3125,7 @@
 					todayAttendance.add(playerId);
 				}
 				renderPlayers();
+				renderAttendanceList();
 			}
 
 			async function handleSaveDraft() {
@@ -3125,6 +3330,24 @@
 					return;
 				}
 
+				const planStartButton = event.target.closest('[data-plan-start]');
+				if (planStartButton) {
+					closeAllModals();
+					openTimer(planStartButton.dataset.planStart);
+					return;
+				}
+
+				const plannerStartButton = event.target.closest('[data-planner-start]');
+				if (plannerStartButton) {
+					if (!plannerSelectedPlanId) {
+						drillError.textContent = 'Create a plan first';
+						return;
+					}
+					closeAllModals();
+					openTimer(plannerSelectedPlanId);
+					return;
+				}
+
 				const planCard = event.target.closest('[data-plan-open]');
 				if (planCard) {
 					plannerSelectedPlanId = planCard.dataset.planOpen;
@@ -3261,6 +3484,98 @@
 				activePlayerId = null;
 				await loadPlayers();
 				closeAllModals();
+			});
+
+			bulkPlayersForm.addEventListener('submit', async (event) => {
+				event.preventDefault();
+				bulkError.textContent = '';
+
+				// Accept one-per-line or comma/semicolon/tab separated lists.
+				const rawNames = bulkPlayersInput.value
+					.split(/[\n,;\t]+/)
+					.map((name) => name.trim())
+					.filter(Boolean)
+					.map((name) => name.slice(0, 80));
+
+				const existing = new Set(players.map((player) => player.name.toLowerCase()));
+				const seen = new Set();
+				const toAdd = [];
+				let skipped = 0;
+				for (const name of rawNames) {
+					const key = name.toLowerCase();
+					if (existing.has(key) || seen.has(key)) {
+						skipped += 1;
+						continue;
+					}
+					seen.add(key);
+					toAdd.push(name);
+				}
+
+				if (!toAdd.length) {
+					bulkError.textContent = rawNames.length
+						? 'All of those players are already on the roster.'
+						: 'Paste at least one name first.';
+					return;
+				}
+				if (toAdd.length > 200) {
+					bulkError.textContent = 'That\'s more than 200 new names — paste a smaller batch.';
+					return;
+				}
+
+				bulkSubmitButton.disabled = true;
+				const tierId = bulkTierSelect.value || null;
+				const checkInToday = bulkCheckinInput.checked;
+				let added = 0;
+				let failed = 0;
+
+				try {
+					if (checkInToday && !todayPracticeId) {
+						await loadTodayAttendance();
+					}
+
+					for (const name of toAdd) {
+						bulkStatus.textContent = `Adding ${added + 1} of ${toAdd.length}…`;
+						const response = await fetch('/api/players', {
+							method: 'POST',
+							credentials: 'include',
+							headers: { 'Content-Type': 'application/json' },
+							body: JSON.stringify({ name, tier_id: tierId }),
+						});
+						if (response.status === 401) {
+							showAuthGate();
+							return;
+						}
+						if (!response.ok) {
+							failed += 1;
+							continue;
+						}
+						const player = await response.json();
+						added += 1;
+
+						if (checkInToday && todayPracticeId) {
+							await fetch(`/api/practices/${todayPracticeId}/attendance`, {
+								method: 'POST',
+								credentials: 'include',
+								headers: { 'Content-Type': 'application/json' },
+								body: JSON.stringify({ player_id: player.id }),
+							});
+							todayAttendance.add(player.id);
+						}
+					}
+
+					await loadPlayers();
+					renderAttendanceList();
+					const parts = [`Added ${added} player${added === 1 ? '' : 's'}`];
+					if (skipped) parts.push(`skipped ${skipped} duplicate${skipped === 1 ? '' : 's'}`);
+					if (failed) parts.push(`${failed} failed`);
+					if (checkInToday && added) parts.push('all checked in for today');
+					bulkStatus.textContent = `${parts.join(', ')}.`;
+					bulkPlayersInput.value = '';
+				} catch (error) {
+					bulkError.textContent = 'Could not reach the server — some players may not have saved.';
+				} finally {
+					bulkSubmitButton.disabled = false;
+				}
 			});
 
 			async function handleDeletePlayer() {
@@ -3991,12 +4306,48 @@
 			let timerDrillOptions = [];
 			let timerSelectedDrillId = null;
 			const timerDrillsPanel = document.querySelector('[data-timer-drills]');
+			const timerRingFrame = document.querySelector('.timer-ring-frame');
+
+			// Keep the ring inside whatever space the stage actually has — the drill
+			// list, picker, and controls all steal height from it.
+			if (window.ResizeObserver) {
+				new ResizeObserver((entries) => {
+					const rect = entries[0].contentRect;
+					if (rect.width === 0 || rect.height === 0) return;
+					const size = Math.max(140, Math.min(rect.width, rect.height, 480));
+					timerOverlay.style.setProperty('--timer-ring-px', `${size}px`);
+				}).observe(timerRingFrame);
+			}
 
 			const timerIsRunning = () => timerIntervalId !== null;
 
 			const vibrate = (pattern) => {
 				if (navigator.vibrate) navigator.vibrate(pattern);
 			};
+
+			// Keep the phone screen awake while a drill is being timed. The lock is
+			// auto-released by the OS when the tab is hidden, so re-acquire it when
+			// the coach returns mid-drill.
+			let screenWakeLock = null;
+			const acquireWakeLock = async () => {
+				if (!('wakeLock' in navigator)) return;
+				try {
+					screenWakeLock = await navigator.wakeLock.request('screen');
+				} catch (error) {
+					screenWakeLock = null;
+				}
+			};
+			const releaseWakeLock = () => {
+				if (screenWakeLock) {
+					screenWakeLock.release();
+					screenWakeLock = null;
+				}
+			};
+			document.addEventListener('visibilitychange', () => {
+				if (document.visibilityState === 'visible' && timerIsRunning()) {
+					acquireWakeLock();
+				}
+			});
 
 			const timerStatusLabel = (state) => {
 				if (timerRepeats > 1) {
@@ -4025,6 +4376,7 @@
 					timerIntervalId = null;
 				}
 				timerEndAt = null;
+				releaseWakeLock();
 			};
 
 			const timerFinished = () => {
@@ -4071,6 +4423,7 @@
 				timerIntervalId = setInterval(timerTick, 250);
 				timerToggleButton.textContent = 'Pause';
 				setTimerSub(timerStatusLabel('Running'));
+				acquireWakeLock();
 				vibrate(40);
 			};
 
@@ -4190,7 +4543,7 @@
 				applyTimerDrill(null);
 			}
 
-			async function loadTimerPicker() {
+			async function loadTimerPicker(preselectPlanId) {
 				await loadPlans();
 				timerPlanSelect.innerHTML = '';
 				const noPlan = document.createElement('option');
@@ -4203,7 +4556,9 @@
 					option.textContent = `${plan.sport} — ${formatDate(plan.created_at)}`;
 					timerPlanSelect.appendChild(option);
 				});
-				if (plans.length) {
+				if (preselectPlanId && plans.some((plan) => plan.id === preselectPlanId)) {
+					timerPlanSelect.value = preselectPlanId;
+				} else if (plans.length) {
 					timerPlanSelect.value = plans[0].id;
 				}
 				await loadTimerDrills();
@@ -4215,12 +4570,12 @@
 				applyTimerDrill(drill);
 			});
 
-			const openTimer = () => {
+			const openTimer = (preselectPlanId) => {
 				timerOverlay.classList.add('is-active');
 				timerOverlay.setAttribute('aria-hidden', 'false');
 				document.body.style.overflow = 'hidden';
 				renderTimer();
-				loadTimerPicker();
+				loadTimerPicker(preselectPlanId);
 			};
 
 			const closeTimer = () => {
