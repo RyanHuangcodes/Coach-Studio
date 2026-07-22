@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session as DbSession
 
 from app.database import get_db
 from app.models import Tier, User
+from app.rate_limit import limiter
 from app.schemas import UserCreate, UserLogin, UserOut
 from app.security import (
     clear_session,
@@ -17,9 +18,16 @@ from app.tiers import DEFAULT_TIERS
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
+# Precomputed at import time. When a login names an unknown email we still run
+# one bcrypt verify against this hash so the request takes the same time as a
+# real-user/wrong-password attempt — otherwise response latency would reveal
+# which emails have accounts (user enumeration).
+_DUMMY_PASSWORD_HASH = hash_password("timing-equalizer-not-a-real-password")
+
 
 @router.post("/signup", response_model=UserOut, status_code=status.HTTP_201_CREATED)
-def signup(payload: UserCreate, response: Response, db: DbSession = Depends(get_db)):
+@limiter.limit("10/hour")
+def signup(payload: UserCreate, request: Request, response: Response, db: DbSession = Depends(get_db)):
     existing = db.query(User).filter(User.email == payload.email).first()
     if existing is not None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
@@ -47,9 +55,15 @@ def signup(payload: UserCreate, response: Response, db: DbSession = Depends(get_
 
 
 @router.post("/login", response_model=UserOut)
-def login(payload: UserLogin, response: Response, db: DbSession = Depends(get_db)):
+@limiter.limit("10/minute")
+def login(payload: UserLogin, request: Request, response: Response, db: DbSession = Depends(get_db)):
     user = db.query(User).filter(User.email == payload.email).first()
-    if user is None or not verify_password(payload.password, user.password_hash):
+    if user is None:
+        # Run a throwaway verify so the unknown-email path costs the same bcrypt
+        # time as a real one, then fail identically.
+        verify_password(payload.password, _DUMMY_PASSWORD_HASH)
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
+    if not verify_password(payload.password, user.password_hash):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
 
     create_session(db, response, user)

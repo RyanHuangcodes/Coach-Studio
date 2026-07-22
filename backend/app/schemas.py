@@ -7,15 +7,31 @@ from pydantic import BaseModel, EmailStr, Field, field_validator, model_validato
 from app.sports import validate_duration
 
 
+def _normalize_email(value: str) -> str:
+    # Lowercase + strip so "Alex@X.com " and "alex@x.com" are the same account.
+    # Pydantic's EmailStr already lowercases the domain but not the local part.
+    return value.strip().lower()
+
+
 class UserCreate(BaseModel):
     email: EmailStr
     password: str = Field(min_length=8, max_length=200)
     display_name: str = Field(min_length=1, max_length=80)
 
+    @field_validator("email")
+    @classmethod
+    def _lower_email(cls, value: str) -> str:
+        return _normalize_email(value)
+
 
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
+
+    @field_validator("email")
+    @classmethod
+    def _lower_email(cls, value: str) -> str:
+        return _normalize_email(value)
 
 
 class UserOut(BaseModel):

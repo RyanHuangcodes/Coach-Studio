@@ -3,7 +3,10 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
+from slowapi.errors import RateLimitExceeded
+from slowapi import _rate_limit_exceeded_handler
 
+from app.rate_limit import limiter
 from app.routers import (
     auth,
     drafts,
@@ -18,6 +21,11 @@ from app.routers import (
 )
 
 app = FastAPI(title="Coach Studio")
+
+# Rate limiting: register the limiter and a handler that returns 429 with a
+# Retry-After header when a client exceeds a route's limit.
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 _STATIC_DIR = Path(__file__).resolve().parent / "static"
 app.mount("/static", StaticFiles(directory=_STATIC_DIR), name="static")

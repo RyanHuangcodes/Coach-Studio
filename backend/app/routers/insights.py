@@ -2,12 +2,13 @@ import json
 from typing import Optional
 
 import anthropic
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session as DbSession
 
 from app.config import settings
 from app.database import get_db
 from app.models import AttendanceRecord, Drill, Plan, Player, Tier, User
+from app.rate_limit import limiter
 from app.routers.practices import get_or_create_today_practice_row
 from app.schemas import InsightOut, InsightRequest, ObjectiveIdeasOut, ObjectiveIdeasRequest
 from app.security import get_current_user
@@ -172,8 +173,10 @@ def _call_claude(system_prompt: str, user_content: str, schema: dict) -> dict:
 
 
 @router.post("/generate", response_model=InsightOut)
+@limiter.limit("20/hour")
 def generate_insight(
     payload: InsightRequest,
+    request: Request,
     current_user: User = Depends(get_current_user),
     db: DbSession = Depends(get_db),
 ):
@@ -186,8 +189,10 @@ def generate_insight(
 
 
 @router.post("/objectives", response_model=ObjectiveIdeasOut)
+@limiter.limit("20/hour")
 def suggest_objectives(
     payload: ObjectiveIdeasRequest,
+    request: Request,
     current_user: User = Depends(get_current_user),
     db: DbSession = Depends(get_db),
 ):

@@ -1082,8 +1082,11 @@
 			inset: 0;
 			z-index: 80;
 			display: none;
-			place-items: center;
-			padding: 24px;
+			/* Scroll when the form is taller than the screen; stay centered when it
+			   fits. `safe center` falls back to top-align on overflow so the top of
+			   the card is never clipped out of reach. */
+			overflow-y: auto;
+			padding: max(24px, env(safe-area-inset-top, 0px)) 24px max(24px, env(safe-area-inset-bottom, 0px));
 			background:
 				radial-gradient(circle at top left, rgba(154, 67, 31, 0.28), transparent 28%),
 				radial-gradient(circle at 82% 14%, rgba(236, 241, 32, 0.12), transparent 14%),
@@ -1092,6 +1095,8 @@
 
 		.auth-gate.is-active {
 			display: grid;
+			align-content: safe center;
+			justify-items: center;
 		}
 
 		.auth-card {
@@ -1117,22 +1122,34 @@
 			gap: 14px;
 		}
 
-		.auth-toggle {
+		.auth-divider {
 			display: flex;
 			align-items: center;
+			gap: 12px;
+			color: var(--muted);
+			font-size: 0.78rem;
+			text-transform: uppercase;
+			letter-spacing: 0.16em;
+		}
+
+		.auth-divider::before,
+		.auth-divider::after {
+			content: "";
+			flex: 1;
+			height: 1px;
+			background: rgba(255, 255, 255, 0.1);
+		}
+
+		.auth-toggle {
+			display: grid;
 			gap: 8px;
-			font-size: 0.9rem;
+			justify-items: center;
+			font-size: 0.88rem;
 			color: var(--muted);
 		}
 
-		.auth-toggle button {
-			border: 0;
-			background: transparent;
-			color: var(--accent);
-			font: inherit;
-			font-weight: 800;
-			cursor: pointer;
-			padding: 0;
+		.auth-toggle-button {
+			width: 100%;
 		}
 
 		.field-error {
@@ -2164,9 +2181,10 @@
 				<p class="field-error" data-auth-error="signup"></p>
 				<button class="primary-action" type="submit">Create account</button>
 			</form>
+			<div class="auth-divider"><span>or</span></div>
 			<div class="auth-toggle">
 				<span data-auth-toggle-copy>Need an account?</span>
-				<button type="button" data-auth-toggle>Sign up</button>
+				<button class="secondary-button auth-toggle-button" type="button" data-auth-toggle>Create an account</button>
 			</div>
 		</div>
 	</div>
@@ -3397,8 +3415,8 @@
 				loginForm.hidden = mode !== 'login';
 				signupForm.hidden = mode !== 'signup';
 				authTitle.textContent = mode === 'login' ? 'Log in' : 'Create your account';
-				authToggleCopy.textContent = mode === 'login' ? 'Need an account?' : 'Already have an account?';
-				authToggleButton.textContent = mode === 'login' ? 'Sign up' : 'Log in';
+				authToggleCopy.textContent = mode === 'login' ? 'New to Coach Studio?' : 'Already have an account?';
+				authToggleButton.textContent = mode === 'login' ? 'Create an account' : 'Log in instead';
 				loginError.textContent = '';
 				signupError.textContent = '';
 			}
