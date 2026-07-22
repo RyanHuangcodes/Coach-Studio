@@ -262,3 +262,43 @@ class InsightOut(BaseModel):
     focus: str
     drills: list[InsightDrill]
     coaching_points: list[str]
+
+
+class HistoryCreate(BaseModel):
+    plan_id: Optional[str] = None
+    practice_id: Optional[str] = None
+
+
+class HistoryPlayerOut(BaseModel):
+    player_name: str
+    tier_name: Optional[str]
+
+    model_config = {"from_attributes": True}
+
+
+class HistoryDrillOut(BaseModel):
+    name: str
+    duration_minutes: int
+    repeats: int
+    notes: Optional[str]
+    position: int
+
+    model_config = {"from_attributes": True}
+
+
+class HistoryListItem(BaseModel):
+    id: str
+    sport: str
+    date: date
+    completed_at: datetime
+    player_count: int
+    drill_count: int
+
+
+class HistoryDetail(BaseModel):
+    id: str
+    sport: str
+    date: date
+    completed_at: datetime
+    players: list[HistoryPlayerOut]
+    drills: list[HistoryDrillOut]

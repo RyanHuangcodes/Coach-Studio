@@ -189,3 +189,58 @@ class PracticeGroupPlayer(Base):
     __table_args__ = (
         UniqueConstraint("group_id", "player_id", name="group_player_unique"),
     )
+
+
+class CompletedSession(Base):
+    __tablename__ = "completed_sessions"
+
+    id: Mapped[str] = mapped_column(UUID(as_uuid=False), primary_key=True, default=_uuid)
+    user_id: Mapped[str] = mapped_column(
+        UUID(as_uuid=False), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    # plan_id is a reference only, not a source of truth — the drills that actually
+    # took place are snapshotted below so later edits/deletes to the plan don't
+    # rewrite history.
+    plan_id: Mapped[Optional[str]] = mapped_column(UUID(as_uuid=False), nullable=True)
+    sport: Mapped[str] = mapped_column(String(60), nullable=False)
+    date: Mapped[datetime] = mapped_column(Date, nullable=False)
+    completed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, nullable=False)
+
+    players: Mapped[list["CompletedSessionPlayer"]] = relationship(
+        cascade="all, delete-orphan", passive_deletes=True
+    )
+    drills: Mapped[list["CompletedSessionDrill"]] = relationship(
+        cascade="all, delete-orphan", passive_deletes=True
+    )
+
+
+class CompletedSessionPlayer(Base):
+    __tablename__ = "completed_session_players"
+
+    id: Mapped[str] = mapped_column(UUID(as_uuid=False), primary_key=True, default=_uuid)
+    session_id: Mapped[str] = mapped_column(
+        UUID(as_uuid=False),
+        ForeignKey("completed_sessions.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    # Snapshotted so a later player rename/delete never changes the record.
+    player_name: Mapped[str] = mapped_column(String(80), nullable=False)
+    tier_name: Mapped[Optional[str]] = mapped_column(String(40), nullable=True)
+
+
+class CompletedSessionDrill(Base):
+    __tablename__ = "completed_session_drills"
+
+    id: Mapped[str] = mapped_column(UUID(as_uuid=False), primary_key=True, default=_uuid)
+    session_id: Mapped[str] = mapped_column(
+        UUID(as_uuid=False),
+        ForeignKey("completed_sessions.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    name: Mapped[str] = mapped_column(String(80), nullable=False)
+    duration_minutes: Mapped[int] = mapped_column(Integer, nullable=False)
+    repeats: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    position: Mapped[int] = mapped_column(Integer, nullable=False)

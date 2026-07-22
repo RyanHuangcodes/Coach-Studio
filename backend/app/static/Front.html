@@ -209,14 +209,14 @@
 
 		.dashboard[data-page="plans"] .home-content,
 		.dashboard[data-page="players"] .home-content,
-		.dashboard[data-page="settings"] .home-content,
+		.dashboard[data-page="history"] .home-content,
 		.dashboard[data-page="planner"] .home-content {
 			display: none;
 		}
 
 		.dashboard[data-page="plans"] .page-shell[data-page-panel="plans"],
 		.dashboard[data-page="players"] .page-shell[data-page-panel="players"],
-		.dashboard[data-page="settings"] .page-shell[data-page-panel="settings"],
+		.dashboard[data-page="history"] .page-shell[data-page-panel="history"],
 		.dashboard[data-page="planner"] .page-shell[data-page-panel="planner"] {
 			display: grid;
 		}
@@ -562,14 +562,14 @@
 
 		.dashboard[data-page="plans"] .nav-item[data-page="plans"],
 		.dashboard[data-page="players"] .nav-item[data-page="players"],
-		.dashboard[data-page="settings"] .nav-item[data-page="settings"],
+		.dashboard[data-page="history"] .nav-item[data-page="history"],
 		.dashboard[data-page="home"] .nav-item[data-page="home"] {
 			color: var(--accent);
 		}
 
 		.dashboard[data-page="plans"] .nav-item[data-page="plans"] .icon,
 		.dashboard[data-page="players"] .nav-item[data-page="players"] .icon,
-		.dashboard[data-page="settings"] .nav-item[data-page="settings"] .icon,
+		.dashboard[data-page="history"] .nav-item[data-page="history"] .icon,
 		.dashboard[data-page="home"] .nav-item[data-page="home"] .icon {
 			background: rgba(236, 241, 32, 0.14);
 			box-shadow: inset 0 0 0 1px rgba(236, 241, 32, 0.16), 0 0 16px rgba(236, 241, 32, 0.12);
@@ -1492,6 +1492,19 @@
 			letter-spacing: 0.04em;
 		}
 
+		.plan-card-actions {
+			display: flex;
+			gap: 8px;
+			flex-wrap: wrap;
+		}
+
+		.plan-complete-button {
+			padding: 10px 14px;
+			font-size: 0.8rem;
+			text-transform: uppercase;
+			letter-spacing: 0.04em;
+		}
+
 		.plan-start-button .play {
 			width: 18px;
 			height: 18px;
@@ -1664,6 +1677,96 @@
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
+		}
+
+		.history-list {
+			display: grid;
+			gap: 12px;
+		}
+
+		.history-item {
+			width: 100%;
+			text-align: left;
+			font: inherit;
+			color: var(--text);
+			cursor: pointer;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			gap: 12px;
+			padding: 16px 18px;
+			border-radius: 22px;
+			background: linear-gradient(180deg, rgba(42, 42, 46, 0.98), rgba(20, 20, 22, 0.98));
+			border: 1px solid rgba(255, 255, 255, 0.06);
+			transition: border-color 0.15s ease;
+		}
+
+		.history-item:hover {
+			border-color: rgba(236, 241, 32, 0.24);
+		}
+
+		.history-item-title {
+			font-size: 1.05rem;
+			font-weight: 800;
+			letter-spacing: -0.02em;
+		}
+
+		.history-item-sub {
+			color: var(--muted);
+			font-size: 0.85rem;
+			margin-top: 4px;
+		}
+
+		.history-item-meta {
+			text-align: right;
+			color: var(--muted);
+			font-size: 0.8rem;
+			font-weight: 700;
+			flex: 0 0 auto;
+		}
+
+		.history-back {
+			border: 0;
+			background: transparent;
+			color: var(--accent);
+			font: inherit;
+			font-weight: 800;
+			font-size: 0.85rem;
+			cursor: pointer;
+			padding: 0;
+			justify-self: start;
+		}
+
+		.history-detail-head {
+			display: flex;
+			justify-content: space-between;
+			align-items: baseline;
+			gap: 12px;
+			flex-wrap: wrap;
+		}
+
+		.history-section-label {
+			font-size: 0.76rem;
+			letter-spacing: 0.16em;
+			text-transform: uppercase;
+			color: var(--muted);
+			font-weight: 800;
+			margin: 16px 0 8px;
+		}
+
+		.history-empty {
+			padding: 24px 18px;
+			border-radius: 24px;
+			background: rgba(255, 255, 255, 0.04);
+			border: 1px dashed rgba(255, 255, 255, 0.12);
+			color: var(--muted);
+			line-height: 1.65;
+		}
+
+		.history-chip-row {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px;
 		}
 
 		.bulk-checkin-row {
@@ -2140,11 +2243,16 @@
 			</div>
 		</section>
 
-		<section class="page-shell" data-page-panel="settings" aria-label="Settings page">
-			<div class="blank-panel">
-				<div class="blank-eyebrow">Settings</div>
-				<h2>Settings space</h2>
-				<p>This page is intentionally blank for now so you can add preferences and controls later.</p>
+		<section class="page-shell" data-page-panel="history" aria-label="History page">
+			<div class="blank-panel plans-panel">
+				<div class="plans-header">
+					<div>
+						<div class="blank-eyebrow">History</div>
+						<h2>Completed lessons</h2>
+					</div>
+					<p>Every finished session, with the attendance and drills that took place.</p>
+				</div>
+				<div class="history-list" data-history-list></div>
 			</div>
 		</section>
 
@@ -2240,9 +2348,9 @@
 				<span class="icon">U</span>
 				<span>Players</span>
 			</button>
-			<button class="nav-item" type="button" data-page="settings">
-				<span class="icon">S</span>
-				<span>Settings</span>
+			<button class="nav-item" type="button" data-page="history">
+				<span class="icon">L</span>
+				<span>History</span>
 			</button>
 		</nav>
 	</main>
@@ -2499,6 +2607,7 @@
 			<button class="secondary-button" type="button" data-timer-reset>Reset</button>
 			<button class="primary-button timer-start-button" type="button" data-timer-toggle>Start</button>
 			<button class="secondary-button" type="button" data-timer-finish>Finish drill</button>
+			<button class="secondary-button" type="button" data-timer-complete>Complete lesson</button>
 		</div>
 	</div>
 
@@ -2525,6 +2634,7 @@
 			const draftCountBadge = document.querySelector('[data-draft-count]');
 			const draftList = document.querySelector('[data-draft-list]');
 			const plansList = document.querySelector('[data-plans-list]');
+			const historyList = document.querySelector('[data-history-list]');
 			const planError = document.querySelector('[data-plan-error]');
 			const playersList = document.querySelector('[data-players-list]');
 			const playerNameInput = document.getElementById('player-name-input');
@@ -2715,10 +2825,13 @@
 								<div class="plan-time">${escapeHtml(formatDuration(plan.duration_minutes))}</div>
 							</div>
 						</button>
-						<button class="secondary-button plan-start-button" type="button" data-plan-start="${escapeHtml(plan.id)}">
-							<span class="play">&gt;</span>
-							<span>Start session</span>
-						</button>
+						<div class="plan-card-actions">
+							<button class="secondary-button plan-start-button" type="button" data-plan-start="${escapeHtml(plan.id)}">
+								<span class="play">&gt;</span>
+								<span>Start session</span>
+							</button>
+							<button class="secondary-button plan-complete-button" type="button" data-plan-complete="${escapeHtml(plan.id)}">Complete</button>
+						</div>
 					</div>
 				`).join('');
 			};
@@ -2913,7 +3026,118 @@
 				if (page === 'planner') {
 					loadPlannerData();
 				}
+				if (page === 'history') {
+					loadHistory();
+				}
 			};
+
+			const formatDateTime = (isoString) => new Date(isoString).toLocaleString(undefined, {
+				weekday: 'short',
+				month: 'short',
+				day: 'numeric',
+				hour: 'numeric',
+				minute: '2-digit',
+			});
+
+			const renderHistoryList = (items) => {
+				if (!items.length) {
+					historyList.innerHTML = '<div class="history-empty">No completed lessons yet. Finish a session from the timer or a plan to log it here.</div>';
+					return;
+				}
+				historyList.innerHTML = items.map((item) => `
+					<button class="history-item" type="button" data-history-open="${escapeHtml(item.id)}">
+						<div>
+							<div class="history-item-title">${escapeHtml(item.sport)}</div>
+							<div class="history-item-sub">${escapeHtml(formatDateTime(item.completed_at))}</div>
+						</div>
+						<div class="history-item-meta">${item.player_count} player${item.player_count === 1 ? '' : 's'}<br>${item.drill_count} drill${item.drill_count === 1 ? '' : 's'}</div>
+					</button>
+				`).join('');
+			};
+
+			const renderHistoryDetail = (detail) => {
+				const players = detail.players.length
+					? `<div class="history-chip-row">${detail.players.map((p) => `<span class="group-player-chip">${escapeHtml(p.player_name)}${p.tier_name ? ` · ${escapeHtml(p.tier_name)}` : ''}</span>`).join('')}</div>`
+					: '<div class="history-empty">No players were checked in.</div>';
+				const drills = detail.drills.length
+					? detail.drills.map((d) => `
+						<div class="drill-item">
+							<div class="drill-info">
+								<div class="drill-name-row">
+									<span class="drill-name">${escapeHtml(d.name)}</span>
+									<span class="drill-minutes">${d.repeats > 1 ? `${d.repeats} × ${d.duration_minutes}` : d.duration_minutes} min</span>
+								</div>
+								${d.notes ? `<div class="drill-notes">${escapeHtml(d.notes)}</div>` : ''}
+							</div>
+						</div>
+					`).join('')
+					: '<div class="history-empty">No drills were recorded.</div>';
+
+				historyList.innerHTML = `
+					<button class="history-back" type="button" data-history-back>&larr; All lessons</button>
+					<div class="history-detail-head">
+						<h2 class="plan-name">${escapeHtml(detail.sport)}</h2>
+						<div class="history-item-meta">${escapeHtml(formatDateTime(detail.completed_at))}</div>
+					</div>
+					<div class="history-section-label">Attendance (${detail.players.length})</div>
+					${players}
+					<div class="history-section-label">Drills (${detail.drills.length})</div>
+					<div class="drills-list">${drills}</div>
+					<div class="modal-actions">
+						<button class="secondary-button" type="button" data-history-delete="${escapeHtml(detail.id)}">Delete this entry</button>
+					</div>
+				`;
+			};
+
+			async function loadHistory() {
+				const response = await fetch('/api/history', { credentials: 'include' });
+				if (response.status === 401) {
+					showAuthGate();
+					return;
+				}
+				if (!response.ok) return;
+				renderHistoryList(await response.json());
+			}
+
+			async function openHistoryDetail(id) {
+				const response = await fetch(`/api/history/${id}`, { credentials: 'include' });
+				if (response.status === 401) {
+					showAuthGate();
+					return;
+				}
+				if (!response.ok) return;
+				renderHistoryDetail(await response.json());
+			}
+
+			async function handleDeleteHistory(id) {
+				if (!window.confirm('Delete this history entry? This cannot be undone.')) return;
+				const response = await fetch(`/api/history/${id}`, { method: 'DELETE', credentials: 'include' });
+				if (response.status === 401) {
+					showAuthGate();
+					return;
+				}
+				loadHistory();
+			}
+
+			// Snapshots the given plan (or the timer's selected plan) plus today's
+			// attendance into an immutable history entry.
+			async function completeSession(planId) {
+				const response = await fetch('/api/history', {
+					method: 'POST',
+					credentials: 'include',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ plan_id: planId || null }),
+				});
+				if (response.status === 401) {
+					showAuthGate();
+					return false;
+				}
+				if (!response.ok) {
+					window.alert('Could not complete the session — please try again.');
+					return false;
+				}
+				return true;
+			}
 
 			const openModal = (name, options = {}) => {
 				const modal = document.querySelector(`[data-modal="${name}"]`);
@@ -3159,7 +3383,7 @@
 				hideAuthGate();
 
 				const initialPage = location.hash.slice(1);
-				if (['home', 'plans', 'players', 'settings', 'planner'].includes(initialPage)) {
+				if (['home', 'plans', 'players', 'history', 'planner'].includes(initialPage)) {
 					setPage(initialPage);
 				} else {
 					setPage('home');
@@ -3327,6 +3551,36 @@
 				const deleteDrillButton = event.target.closest('[data-delete-drill]');
 				if (deleteDrillButton) {
 					handleDeleteDrill(deleteDrillButton.dataset.drillId);
+					return;
+				}
+
+				const historyOpenButton = event.target.closest('[data-history-open]');
+				if (historyOpenButton) {
+					openHistoryDetail(historyOpenButton.dataset.historyOpen);
+					return;
+				}
+
+				if (event.target.closest('[data-history-back]')) {
+					loadHistory();
+					return;
+				}
+
+				const historyDeleteButton = event.target.closest('[data-history-delete]');
+				if (historyDeleteButton) {
+					handleDeleteHistory(historyDeleteButton.dataset.historyDelete);
+					return;
+				}
+
+				const planCompleteButton = event.target.closest('[data-plan-complete]');
+				if (planCompleteButton) {
+					const planId = planCompleteButton.dataset.planComplete;
+					if (window.confirm('Mark this lesson complete? Today\'s attendance and this plan\'s drills will be saved to History.')) {
+						completeSession(planId).then((ok) => {
+							if (ok) {
+								setPage('history');
+							}
+						});
+					}
 					return;
 				}
 
@@ -4619,6 +4873,18 @@
 				}
 				if (event.target.closest('[data-timer-finish]')) {
 					timerFinished();
+					return;
+				}
+				if (event.target.closest('[data-timer-complete]')) {
+					const planId = timerPlanSelect.value || null;
+					if (window.confirm('Complete this lesson? Today\'s attendance' + (planId ? ' and the selected plan\'s drills' : '') + ' will be saved to History.')) {
+						completeSession(planId).then((ok) => {
+							if (ok) {
+								closeTimer();
+								setPage('history');
+							}
+						});
+					}
 					return;
 				}
 				if (event.target.closest('[data-timer-close]')) {
