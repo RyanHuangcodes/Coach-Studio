@@ -1099,8 +1099,32 @@
 			justify-items: center;
 		}
 
-		.auth-card {
+		.auth-stack {
 			width: min(420px, 100%);
+			display: grid;
+			gap: 16px;
+		}
+
+		.auth-signup-cta {
+			display: grid;
+			gap: 12px;
+		}
+
+		.auth-signup-expanded {
+			display: grid;
+			gap: 16px;
+		}
+
+		/* The cards/sections use display:grid, which would otherwise override the
+		   browser's default [hidden] rule — restate it explicitly. */
+		.auth-signup-expanded[hidden],
+		.auth-signup-cta[hidden],
+		.auth-card[hidden] {
+			display: none;
+		}
+
+		.auth-card {
+			width: 100%;
 			padding: 28px;
 			border-radius: 32px;
 			border: 1px solid rgba(255, 255, 255, 0.06);
@@ -2150,41 +2174,53 @@
 </head>
 <body>
 	<div class="auth-gate is-active" data-auth-gate data-mode="login">
-		<div class="auth-card">
-			<div class="blank-eyebrow">Coach Studio</div>
-			<h2 data-auth-title>Log in</h2>
-			<form id="login-form" data-auth-form="login">
-				<div class="field">
-					<label for="login-email">Email</label>
-					<input id="login-email" name="email" type="email" required autocomplete="email">
+		<div class="auth-stack">
+			<div class="auth-card" data-login-card>
+				<div class="blank-eyebrow">Coach Studio</div>
+				<h2>Log in</h2>
+				<form id="login-form" data-auth-form="login">
+					<div class="field">
+						<label for="login-email">Email</label>
+						<input id="login-email" name="email" type="email" required autocomplete="email">
+					</div>
+					<div class="field">
+						<label for="login-password">Password</label>
+						<input id="login-password" name="password" type="password" required autocomplete="current-password">
+					</div>
+					<p class="field-error" data-auth-error="login"></p>
+					<button class="primary-action" type="submit">Log in</button>
+				</form>
+			</div>
+			<div class="auth-card auth-signup-card">
+				<div class="auth-signup-cta" data-signup-cta>
+					<div class="blank-eyebrow">New to Coach Studio?</div>
+					<button class="secondary-button auth-toggle-button" type="button" data-auth-toggle>Create an Account</button>
 				</div>
-				<div class="field">
-					<label for="login-password">Password</label>
-					<input id="login-password" name="password" type="password" required autocomplete="current-password">
+				<div class="auth-signup-expanded" data-signup-expanded hidden>
+					<div class="blank-eyebrow">Coach Studio</div>
+					<h2>Create your account</h2>
+					<form id="signup-form" data-auth-form="signup">
+						<div class="field">
+							<label for="signup-name">Name</label>
+							<input id="signup-name" name="displayName" type="text" required autocomplete="name">
+						</div>
+						<div class="field">
+							<label for="signup-email">Email</label>
+							<input id="signup-email" name="email" type="email" required autocomplete="email">
+						</div>
+						<div class="field">
+							<label for="signup-password">Password</label>
+							<input id="signup-password" name="password" type="password" required minlength="8" autocomplete="new-password">
+						</div>
+						<p class="field-error" data-auth-error="signup"></p>
+						<button class="primary-action" type="submit">Create account</button>
+					</form>
+					<div class="auth-divider"><span>or</span></div>
+					<div class="auth-toggle">
+						<span>Already have an account?</span>
+						<button class="secondary-button auth-toggle-button" type="button" data-auth-toggle>Log in instead</button>
+					</div>
 				</div>
-				<p class="field-error" data-auth-error="login"></p>
-				<button class="primary-action" type="submit">Log in</button>
-			</form>
-			<form id="signup-form" data-auth-form="signup" hidden>
-				<div class="field">
-					<label for="signup-name">Name</label>
-					<input id="signup-name" name="displayName" type="text" required autocomplete="name">
-				</div>
-				<div class="field">
-					<label for="signup-email">Email</label>
-					<input id="signup-email" name="email" type="email" required autocomplete="email">
-				</div>
-				<div class="field">
-					<label for="signup-password">Password</label>
-					<input id="signup-password" name="password" type="password" required minlength="8" autocomplete="new-password">
-				</div>
-				<p class="field-error" data-auth-error="signup"></p>
-				<button class="primary-action" type="submit">Create account</button>
-			</form>
-			<div class="auth-divider"><span>or</span></div>
-			<div class="auth-toggle">
-				<span data-auth-toggle-copy>Need an account?</span>
-				<button class="secondary-button auth-toggle-button" type="button" data-auth-toggle>Create an account</button>
 			</div>
 		</div>
 	</div>
@@ -2635,9 +2671,10 @@
 			const authGate = document.querySelector('[data-auth-gate]');
 			const loginForm = document.getElementById('login-form');
 			const signupForm = document.getElementById('signup-form');
-			const authTitle = document.querySelector('[data-auth-title]');
-			const authToggleCopy = document.querySelector('[data-auth-toggle-copy]');
-			const authToggleButton = document.querySelector('[data-auth-toggle]');
+			const loginCard = document.querySelector('[data-login-card]');
+			const signupCta = document.querySelector('[data-signup-cta]');
+			const signupExpanded = document.querySelector('[data-signup-expanded]');
+			const authToggleButtons = Array.from(document.querySelectorAll('[data-auth-toggle]'));
 			const loginError = document.querySelector('[data-auth-error="login"]');
 			const signupError = document.querySelector('[data-auth-error="signup"]');
 			const displayNameEl = document.querySelector('[data-display-name]');
@@ -3410,19 +3447,23 @@
 				await Promise.all([loadPlans(), loadDrafts(), loadPlayers()]);
 			}
 
+			// 'login': login bubble + a collapsed signup bubble showing only the
+			// "Create an Account" button. 'signup': login bubble hides and the
+			// signup bubble expands to reveal the name/email/password form.
 			function setAuthMode(mode) {
 				authGate.dataset.mode = mode;
-				loginForm.hidden = mode !== 'login';
-				signupForm.hidden = mode !== 'signup';
-				authTitle.textContent = mode === 'login' ? 'Log in' : 'Create your account';
-				authToggleCopy.textContent = mode === 'login' ? 'New to Coach Studio?' : 'Already have an account?';
-				authToggleButton.textContent = mode === 'login' ? 'Create an account' : 'Log in instead';
+				const isLogin = mode === 'login';
+				loginCard.hidden = !isLogin;
+				signupCta.hidden = !isLogin;
+				signupExpanded.hidden = isLogin;
 				loginError.textContent = '';
 				signupError.textContent = '';
 			}
 
-			authToggleButton.addEventListener('click', () => {
-				setAuthMode(authGate.dataset.mode === 'login' ? 'signup' : 'login');
+			authToggleButtons.forEach((button) => {
+				button.addEventListener('click', () => {
+					setAuthMode(authGate.dataset.mode === 'login' ? 'signup' : 'login');
+				});
 			});
 
 			loginForm.addEventListener('submit', async (event) => {
