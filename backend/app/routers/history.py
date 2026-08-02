@@ -97,7 +97,8 @@ def complete_session(
     else:
         practice = get_or_create_today_practice_row(db, current_user.id)
 
-    sport = plan.sport if plan is not None else "Session"
+    # History label prefers the coach-given session name; column is String(60).
+    sport = (plan.name or plan.sport)[:60] if plan is not None else "Session"
 
     session = CompletedSession(
         user_id=current_user.id,

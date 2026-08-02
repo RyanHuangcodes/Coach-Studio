@@ -1115,6 +1115,43 @@
 			gap: 16px;
 		}
 
+		.auth-consent {
+			margin: 0;
+			font-size: 0.8rem;
+			line-height: 1.5;
+			color: var(--muted);
+		}
+
+		.auth-legal-footer,
+		.app-legal-footer {
+			display: flex;
+			justify-content: center;
+			flex-wrap: wrap;
+			gap: 16px;
+			margin-top: 4px;
+			padding-top: 12px;
+		}
+
+		.app-legal-footer {
+			margin-top: 18px;
+			border-top: 1px solid rgba(255, 255, 255, 0.06);
+		}
+
+		.auth-legal-footer a,
+		.app-legal-footer a {
+			color: var(--muted);
+			text-decoration: none;
+			font-size: 0.78rem;
+			font-weight: 700;
+			letter-spacing: 0.04em;
+			text-transform: uppercase;
+		}
+
+		.auth-legal-footer a:hover,
+		.app-legal-footer a:hover {
+			color: var(--accent);
+		}
+
 		/* The cards/sections use display:grid, which would otherwise override the
 		   browser's default [hidden] rule — restate it explicitly. */
 		.auth-signup-expanded[hidden],
@@ -1496,6 +1533,26 @@
 
 		.planner-new-fields[hidden] {
 			display: none;
+		}
+
+		.planner-name-field,
+		.planner-save-row {
+			grid-column: 1 / -1;
+		}
+
+		.planner-save-row {
+			display: flex;
+			justify-content: flex-end;
+		}
+
+		.planner-new-fields input[type="date"] {
+			width: 100%;
+			border: 1px solid rgba(255, 255, 255, 0.08);
+			background: rgba(255, 255, 255, 0.04);
+			color: var(--text);
+			border-radius: 18px;
+			padding: 12px 16px;
+			font: inherit;
 		}
 
 		.draft-load {
@@ -2227,6 +2284,7 @@
 							<input id="signup-password" name="password" type="password" required minlength="8" autocomplete="new-password">
 						</div>
 						<p class="field-error" data-auth-error="signup"></p>
+						<p class="auth-consent">By creating an account, you agree to our <a href="/static/legal/terms.html" target="_blank" rel="noopener">Terms &amp; Conditions</a> and <a href="/static/legal/privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</p>
 						<button class="primary-action" type="submit">Create account</button>
 					</form>
 					<div class="auth-divider"><span>or</span></div>
@@ -2236,6 +2294,11 @@
 					</div>
 				</div>
 			</div>
+			<footer class="auth-legal-footer">
+				<a href="/static/legal/privacy.html" target="_blank" rel="noopener">Privacy</a>
+				<a href="/static/legal/terms.html" target="_blank" rel="noopener">Terms</a>
+				<a href="/static/legal/accessibility.html" target="_blank" rel="noopener">Accessibility</a>
+			</footer>
 		</div>
 	</div>
 
@@ -2342,6 +2405,10 @@
 					</div>
 				</div>
 				<div class="planner-new-fields" data-planner-new-fields hidden>
+					<div class="field planner-name-field">
+						<label for="planner-name-input">Session name</label>
+						<input id="planner-name-input" type="text" placeholder="e.g. U14 Tuesday practice (optional)" autocomplete="off" maxlength="80">
+					</div>
 					<div class="field">
 						<label for="planner-sport-select">Sport</label>
 						<select id="planner-sport-select"></select>
@@ -2351,8 +2418,15 @@
 						<input id="planner-custom-sport-input" type="text" placeholder="Type a sport name" autocomplete="off" maxlength="40">
 					</div>
 					<div class="field">
+						<label for="planner-date-input">Session date</label>
+						<input id="planner-date-input" type="date">
+					</div>
+					<div class="field">
 						<label for="planner-minutes-input">Session minutes</label>
 						<input id="planner-minutes-input" type="number" min="5" max="240" step="5" value="60">
+					</div>
+					<div class="planner-save-row">
+						<button class="primary-button" type="button" data-planner-save>Save plan</button>
 					</div>
 				</div>
 				<div class="drills-list" data-drills-list></div>
@@ -2415,6 +2489,11 @@
 					Type today's training objective above and I'll suggest a focus, drills, and coaching cues based on your roster and attendance.
 				</p>
 			</div>
+			<footer class="app-legal-footer">
+				<a href="/static/legal/privacy.html" target="_blank" rel="noopener">Privacy</a>
+				<a href="/static/legal/terms.html" target="_blank" rel="noopener">Terms</a>
+				<a href="/static/legal/accessibility.html" target="_blank" rel="noopener">Accessibility</a>
+			</footer>
 		</section>
 
 		<nav class="nav" aria-label="Primary navigation">
@@ -2447,7 +2526,15 @@
 				<button class="modal-close" type="button" data-close-modal aria-label="Close dialog">x</button>
 			</div>
 			<form class="modal-body" id="new-plan-form">
+				<div class="field">
+					<label for="plan-name-input">Session name</label>
+					<input id="plan-name-input" name="planName" type="text" placeholder="Optional — e.g. U14 Tuesday practice" autocomplete="off" maxlength="80">
+				</div>
 				<div class="form-grid">
+					<div class="field">
+						<label for="plan-date-input">Session date</label>
+						<input id="plan-date-input" name="planDate" type="date">
+					</div>
 					<div class="field">
 						<label for="sport-select">Sport</label>
 						<select id="sport-select" name="sport">
@@ -2770,6 +2857,8 @@
 			const plannerCustomSportField = document.querySelector('[data-planner-custom-sport]');
 			const plannerCustomSportInput = document.getElementById('planner-custom-sport-input');
 			const plannerMinutesInput = document.getElementById('planner-minutes-input');
+			const plannerNameInput = document.getElementById('planner-name-input');
+			const plannerDateInput = document.getElementById('planner-date-input');
 			const plannerStartBtn = document.querySelector('[data-planner-start]');
 			const plannerDeleteBtn = document.querySelector('[data-delete-plan]');
 			const drillsList = document.querySelector('[data-drills-list]');
@@ -2818,6 +2907,22 @@
 
 			// The browser's local calendar date as YYYY-MM-DD (en-CA formats ISO-style).
 			const localDateString = () => new Date().toLocaleDateString('en-CA');
+
+			// A YYYY-MM-DD string rendered as a local date (parsing it directly would
+			// treat it as UTC midnight and can shift the day in western timezones).
+			const formatPlainDate = (ymd) => {
+				const [y, m, d] = ymd.split('-').map(Number);
+				return new Date(y, m - 1, d).toLocaleDateString(undefined, {
+					weekday: 'short', month: 'short', day: 'numeric',
+				});
+			};
+
+			// Display title for a plan: coach-given name, else the sport.
+			const planLabel = (plan) => plan.name || plan.sport;
+			// The scheduled session date if set, else the created date.
+			const planDateText = (plan) => plan.session_date
+				? formatPlainDate(plan.session_date)
+				: formatDate(plan.created_at);
 
 			// UI-only clamp for the live duration ring/slider feedback. The server
 			// independently validates duration on every write; this never determines
@@ -2909,9 +3014,9 @@
 				plansList.innerHTML = plans.map((plan) => `
 					<div class="plan-item">
 						<button class="plan-load" type="button" data-plan-open="${escapeHtml(plan.id)}">
-							<div class="plan-name">${escapeHtml(plan.sport)}</div>
+							<div class="plan-name">${escapeHtml(planLabel(plan))}</div>
 							<div class="plan-meta">
-								<div class="plan-date">${escapeHtml(formatDate(plan.created_at))}</div>
+								<div class="plan-date">${escapeHtml(plan.name ? `${plan.sport} · ${planDateText(plan)}` : planDateText(plan))}</div>
 								<div class="plan-time">${escapeHtml(formatDuration(plan.duration_minutes))}</div>
 							</div>
 						</button>
@@ -3239,6 +3344,10 @@
 						renderSportOptions();
 						customSportInput.value = '';
 						syncDuration(durationInput.value || '60');
+						const planNameInput = document.getElementById('plan-name-input');
+						const planDateInput = document.getElementById('plan-date-input');
+						if (planNameInput) planNameInput.value = '';
+						if (planDateInput) planDateInput.value = '';
 					}
 				}
 				if (name === 'drafts') {
@@ -3342,8 +3451,8 @@
 					day: 'numeric',
 				});
 				if (plans.length) {
-					heroTitleEl.textContent = `${plans[0].sport} Session`;
-					heroSubtitleEl.textContent = `Latest plan — created ${formatDate(plans[0].created_at)}`;
+					heroTitleEl.textContent = planLabel(plans[0]);
+					heroSubtitleEl.textContent = `${plans[0].sport} · ${planDateText(plans[0])}`;
 					statDurationEl.textContent = String(plans[0].duration_minutes);
 				} else {
 					heroTitleEl.textContent = 'Welcome to Coach Studio';
@@ -3696,6 +3805,12 @@
 					return;
 				}
 
+				const plannerSaveButton = event.target.closest('[data-planner-save]');
+				if (plannerSaveButton) {
+					handleSavePlan();
+					return;
+				}
+
 				const planCard = event.target.closest('[data-plan-open]');
 				if (planCard) {
 					plannerSelectedPlanId = planCard.dataset.planOpen;
@@ -3775,12 +3890,21 @@
 				const values = readFormValues();
 				if (!values) return;
 
+				// name/date exist on plans, not drafts — attach them to the plan body.
+				const planNameInput = document.getElementById('plan-name-input');
+				const planDateInput = document.getElementById('plan-date-input');
+				const body = {
+					...values,
+					name: planNameInput.value.trim() || null,
+					session_date: planDateInput.value || null,
+				};
+
 				const endpoint = activeDraftId ? `/api/drafts/${activeDraftId}/promote` : '/api/plans';
 				const response = await fetch(endpoint, {
 					method: 'POST',
 					credentials: 'include',
 					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify(values),
+					body: JSON.stringify(body),
 				});
 
 				if (response.status === 401) {
@@ -4576,6 +4700,8 @@
 					body: JSON.stringify({
 						sport: plannerSportSelect.value,
 						custom_sport: isCustom ? plannerCustomSportInput.value.trim() : null,
+						name: plannerNameInput.value.trim() || null,
+						session_date: plannerDateInput.value || null,
 						duration_minutes: minutes,
 					}),
 				});
@@ -4591,6 +4717,26 @@
 				return plan.id;
 			}
 
+			const resetPlannerNewFields = () => {
+				plannerNameInput.value = '';
+				plannerDateInput.value = '';
+				plannerSportSelect.value = standardSports[0];
+				plannerCustomSportField.hidden = true;
+				plannerCustomSportInput.value = '';
+				plannerMinutesInput.value = '60';
+			};
+
+			// Explicit "Save plan" — creates the plan now (empty of drills), so a coach
+			// can name and schedule a session first and add drills later.
+			async function handleSavePlan() {
+				drillError.textContent = '';
+				const planId = await createPlanFromPlannerFields();
+				if (!planId) return;
+				plannerSelectedPlanId = planId;
+				resetPlannerNewFields();
+				await loadPlannerData();
+			}
+
 			async function loadPlannerData() {
 				await loadPlans();
 
@@ -4602,7 +4748,7 @@
 				plans.forEach((plan) => {
 					const option = document.createElement('option');
 					option.value = plan.id;
-					option.textContent = `${plan.sport} — ${plan.duration_minutes} min (${formatDate(plan.created_at)})`;
+					option.textContent = `${planLabel(plan)} — ${plan.duration_minutes} min (${planDateText(plan)})`;
 					plannerPlanSelect.appendChild(option);
 				});
 
@@ -4668,6 +4814,7 @@
 				if (createdPlan) {
 					// Rebuilds the picker so the new plan shows as selected (this also
 					// refreshes the home hero via loadPlans).
+					resetPlannerNewFields();
 					await loadPlannerData();
 				} else {
 					resetDrillForm();
@@ -4981,7 +5128,7 @@
 				plans.forEach((plan) => {
 					const option = document.createElement('option');
 					option.value = plan.id;
-					option.textContent = `${plan.sport} — ${formatDate(plan.created_at)}`;
+					option.textContent = `${planLabel(plan)} — ${planDateText(plan)}`;
 					timerPlanSelect.appendChild(option);
 				});
 				if (preselectPlanId && plans.some((plan) => plan.id === preselectPlanId)) {

@@ -47,6 +47,8 @@ def create_plan(
     plan = Plan(
         user_id=current_user.id,
         sport=sport,
+        name=payload.name,
+        session_date=payload.session_date,
         duration_minutes=payload.duration_minutes,
         source_draft_id=source_draft.id if source_draft else None,
     )

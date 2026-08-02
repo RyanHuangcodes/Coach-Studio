@@ -67,6 +67,10 @@ class Plan(Base):
         UUID(as_uuid=False), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
     )
     sport: Mapped[str] = mapped_column(String(60), nullable=False)
+    # Optional coach-given session title; display falls back to sport when unset.
+    name: Mapped[Optional[str]] = mapped_column(String(80), nullable=True)
+    # Optional date the session is planned for (organizational, coach-local).
+    session_date: Mapped[Optional[datetime]] = mapped_column(Date, nullable=True)
     duration_minutes: Mapped[int] = mapped_column(Integer, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, nullable=False)
     # Historical breadcrumb only — deliberately NOT a foreign key. The source

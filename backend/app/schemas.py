@@ -55,6 +55,16 @@ class PlanOrDraftInput(BaseModel):
 
 class PlanCreate(PlanOrDraftInput):
     source_draft_id: Optional[str] = None
+    name: Optional[str] = Field(default=None, max_length=80)
+    session_date: Optional[dt.date] = None
+
+    @field_validator("name")
+    @classmethod
+    def _strip_name(cls, value: Optional[str]) -> Optional[str]:
+        if value is None:
+            return None
+        stripped = value.strip()
+        return stripped or None
 
 
 class DraftCreate(PlanOrDraftInput):
@@ -73,6 +83,8 @@ class DraftOut(BaseModel):
 class PlanOut(BaseModel):
     id: str
     sport: str
+    name: Optional[str] = None
+    session_date: Optional[dt.date] = None
     duration_minutes: int
     created_at: datetime
 
