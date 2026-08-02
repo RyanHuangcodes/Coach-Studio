@@ -1484,6 +1484,20 @@
 			padding: 12px 16px;
 		}
 
+		.planner-new-fields {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 14px;
+			padding: 14px;
+			border-radius: 20px;
+			background: rgba(255, 255, 255, 0.03);
+			border: 1px dashed rgba(236, 241, 32, 0.25);
+		}
+
+		.planner-new-fields[hidden] {
+			display: none;
+		}
+
 		.draft-load {
 			flex: 1;
 			min-width: 0;
@@ -2327,6 +2341,20 @@
 						<button class="secondary-button" type="button" data-delete-plan>Delete</button>
 					</div>
 				</div>
+				<div class="planner-new-fields" data-planner-new-fields hidden>
+					<div class="field">
+						<label for="planner-sport-select">Sport</label>
+						<select id="planner-sport-select"></select>
+					</div>
+					<div class="field" data-planner-custom-sport hidden>
+						<label for="planner-custom-sport-input">Custom sport</label>
+						<input id="planner-custom-sport-input" type="text" placeholder="Type a sport name" autocomplete="off" maxlength="40">
+					</div>
+					<div class="field">
+						<label for="planner-minutes-input">Session minutes</label>
+						<input id="planner-minutes-input" type="number" min="5" max="240" step="5" value="60">
+					</div>
+				</div>
 				<div class="drills-list" data-drills-list></div>
 				<div class="drill-total" data-drill-total></div>
 				<form class="drill-add-form" id="drill-form">
@@ -2737,6 +2765,13 @@
 			const timerPlanSelect = document.querySelector('[data-timer-plan-select]');
 			const timerDrillSelect = document.querySelector('[data-timer-drill-select]');
 			const plannerPlanSelect = document.getElementById('planner-plan-select');
+			const plannerNewFields = document.querySelector('[data-planner-new-fields]');
+			const plannerSportSelect = document.getElementById('planner-sport-select');
+			const plannerCustomSportField = document.querySelector('[data-planner-custom-sport]');
+			const plannerCustomSportInput = document.getElementById('planner-custom-sport-input');
+			const plannerMinutesInput = document.getElementById('planner-minutes-input');
+			const plannerStartBtn = document.querySelector('[data-planner-start]');
+			const plannerDeleteBtn = document.querySelector('[data-delete-plan]');
 			const drillsList = document.querySelector('[data-drills-list]');
 			const drillTotal = document.querySelector('[data-drill-total]');
 			const drillForm = document.getElementById('drill-form');
@@ -3653,7 +3688,7 @@
 				const plannerStartButton = event.target.closest('[data-planner-start]');
 				if (plannerStartButton) {
 					if (!plannerSelectedPlanId) {
-						drillError.textContent = 'Create a plan first';
+						drillError.textContent = 'Add a drill below first — the plan is created with it';
 						return;
 					}
 					closeAllModals();
@@ -4435,7 +4470,7 @@
 
 			const renderDrills = () => {
 				if (!plannerSelectedPlanId) {
-					drillsList.innerHTML = '<div class="plan-empty">Create a plan first, then build its session here.</div>';
+					drillsList.innerHTML = '<div class="plan-empty">New plan — pick the sport and length above, then add your first drill below. The plan is created the moment you add it.</div>';
 					drillTotal.textContent = '';
 					return;
 				}
@@ -4492,10 +4527,78 @@
 				renderDrills();
 			}
 
+			// Shows/hides the inline sport+minutes fields and the Start/Delete
+			// buttons depending on whether an existing plan or "New plan" is chosen.
+			const updatePlannerMode = () => {
+				const isNew = !plannerSelectedPlanId;
+				plannerNewFields.hidden = !isNew;
+				plannerStartBtn.hidden = isNew;
+				plannerDeleteBtn.hidden = isNew;
+			};
+
+			const initPlannerSportSelect = () => {
+				plannerSportSelect.innerHTML = '';
+				standardSports.forEach((sport) => {
+					const option = document.createElement('option');
+					option.value = sport;
+					option.textContent = sport;
+					plannerSportSelect.appendChild(option);
+				});
+				const other = document.createElement('option');
+				other.value = '__other__';
+				other.textContent = 'Other sport…';
+				plannerSportSelect.appendChild(other);
+			};
+			initPlannerSportSelect();
+
+			plannerSportSelect.addEventListener('change', () => {
+				plannerCustomSportField.hidden = plannerSportSelect.value !== '__other__';
+				if (!plannerCustomSportField.hidden) plannerCustomSportInput.focus();
+			});
+
+			// Creates the plan from the inline new-plan fields. Returns the new plan
+			// id, or null after surfacing an error.
+			async function createPlanFromPlannerFields() {
+				const isCustom = plannerSportSelect.value === '__other__';
+				if (isCustom && !plannerCustomSportInput.value.trim()) {
+					drillError.textContent = 'Type the sport name first';
+					plannerCustomSportField.hidden = false;
+					plannerCustomSportInput.focus();
+					return null;
+				}
+				const rawMinutes = Number.parseInt(plannerMinutesInput.value, 10) || 60;
+				const minutes = Math.min(240, Math.max(5, Math.round(rawMinutes / 5) * 5));
+
+				const response = await fetch('/api/plans', {
+					method: 'POST',
+					credentials: 'include',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						sport: plannerSportSelect.value,
+						custom_sport: isCustom ? plannerCustomSportInput.value.trim() : null,
+						duration_minutes: minutes,
+					}),
+				});
+				if (response.status === 401) {
+					showAuthGate();
+					return null;
+				}
+				if (!response.ok) {
+					drillError.textContent = await parseErrorMessage(response);
+					return null;
+				}
+				const plan = await response.json();
+				return plan.id;
+			}
+
 			async function loadPlannerData() {
 				await loadPlans();
 
 				plannerPlanSelect.innerHTML = '';
+				const newOption = document.createElement('option');
+				newOption.value = '__new__';
+				newOption.textContent = '➕ New plan…';
+				plannerPlanSelect.appendChild(newOption);
 				plans.forEach((plan) => {
 					const option = document.createElement('option');
 					option.value = plan.id;
@@ -4503,36 +4606,41 @@
 					plannerPlanSelect.appendChild(option);
 				});
 
-				if (!plans.length) {
-					plannerSelectedPlanId = null;
-				} else if (!plans.some((plan) => plan.id === plannerSelectedPlanId)) {
-					plannerSelectedPlanId = plans[0].id;
+				if (plannerSelectedPlanId && !plans.some((plan) => plan.id === plannerSelectedPlanId)) {
+					plannerSelectedPlanId = plans.length ? plans[0].id : null;
 				}
-				if (plannerSelectedPlanId) {
-					plannerPlanSelect.value = plannerSelectedPlanId;
-				}
+				plannerPlanSelect.value = plannerSelectedPlanId || '__new__';
+				updatePlannerMode();
 				resetDrillForm();
 				await loadDrills();
 			}
 
 			plannerPlanSelect.addEventListener('change', () => {
-				plannerSelectedPlanId = plannerPlanSelect.value || null;
+				const value = plannerPlanSelect.value;
+				plannerSelectedPlanId = value === '__new__' ? null : value || null;
+				updatePlannerMode();
 				resetDrillForm();
 				loadDrills();
 			});
 
 			drillForm.addEventListener('submit', async (event) => {
 				event.preventDefault();
-				if (!plannerSelectedPlanId) {
-					drillError.textContent = 'Create a plan first';
-					return;
-				}
 				const name = drillNameInput.value.trim();
 				const minutes = Number.parseInt(drillMinutesInput.value, 10);
 				if (!name) {
 					drillNameInput.focus();
 					return;
 				}
+
+				// In "New plan" mode, the first drill creates the plan itself.
+				let createdPlan = false;
+				if (!plannerSelectedPlanId) {
+					const planId = await createPlanFromPlannerFields();
+					if (!planId) return;
+					plannerSelectedPlanId = planId;
+					createdPlan = true;
+				}
+
 				const body = {
 					name,
 					duration_minutes: minutes,
@@ -4554,10 +4662,17 @@
 				}
 				if (!response.ok) {
 					drillError.textContent = await parseErrorMessage(response);
+					if (createdPlan) await loadPlannerData();
 					return;
 				}
-				resetDrillForm();
-				await loadDrills();
+				if (createdPlan) {
+					// Rebuilds the picker so the new plan shows as selected (this also
+					// refreshes the home hero via loadPlans).
+					await loadPlannerData();
+				} else {
+					resetDrillForm();
+					await loadDrills();
+				}
 			});
 
 			async function handleMoveDrill(drillId, direction) {
