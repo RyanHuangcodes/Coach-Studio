@@ -184,6 +184,27 @@ class PlayerMove(BaseModel):
         return value
 
 
+_ALLOWED_IMAGE_TYPES = {"image/png", "image/jpeg", "image/webp", "image/gif"}
+
+
+class RosterImageRequest(BaseModel):
+    # Raw base64 (no data: URI prefix). ~8M chars ≈ 6 MB decoded — the client
+    # downscales before upload, so this is a generous safety ceiling, not a target.
+    image_base64: str = Field(min_length=1, max_length=8_000_000)
+    media_type: str
+
+    @field_validator("media_type")
+    @classmethod
+    def _validate_media_type(cls, value: str) -> str:
+        if value not in _ALLOWED_IMAGE_TYPES:
+            raise ValueError("media_type must be one of: " + ", ".join(sorted(_ALLOWED_IMAGE_TYPES)))
+        return value
+
+
+class RosterImageResponse(BaseModel):
+    names: list[str]
+
+
 class TodayPracticeRequest(BaseModel):
     # dt.date, not bare `date`: the field's default binds `date = None` in the
     # class namespace before the annotation is evaluated, so a bare `date` here

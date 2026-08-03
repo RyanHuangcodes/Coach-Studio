@@ -1505,6 +1505,141 @@
 			font-weight: 700;
 		}
 
+		.import-review-card {
+			width: min(760px, 100%);
+		}
+
+		.import-hint {
+			margin: 0;
+			font-size: 0.9rem;
+			color: var(--muted);
+			line-height: 1.5;
+		}
+
+		.import-board {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+			gap: 12px;
+		}
+
+		.import-column {
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+			padding: 12px;
+			border-radius: 18px;
+			border: 1px solid rgba(255, 255, 255, 0.08);
+			background: rgba(255, 255, 255, 0.03);
+			min-height: 96px;
+			transition: border-color 0.15s ease, background 0.15s ease;
+		}
+
+		.import-column.is-drop-target {
+			border-color: var(--accent);
+			background: rgba(236, 241, 32, 0.08);
+		}
+
+		.import-column-head {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 8px;
+		}
+
+		.import-column-name {
+			flex: 1;
+			min-width: 0;
+			background: transparent;
+			border: 1px solid transparent;
+			border-radius: 8px;
+			padding: 4px 6px;
+			color: var(--text);
+			font: inherit;
+			font-weight: 800;
+			font-size: 0.9rem;
+		}
+
+		.import-column-name:not([readonly]):hover,
+		.import-column-name:focus {
+			border-color: rgba(255, 255, 255, 0.14);
+			background: rgba(255, 255, 255, 0.05);
+			outline: none;
+		}
+
+		.import-column-count {
+			font-size: 0.75rem;
+			color: var(--muted);
+			font-weight: 700;
+			flex-shrink: 0;
+		}
+
+		.import-chips {
+			display: flex;
+			flex-direction: column;
+			gap: 6px;
+			flex: 1;
+		}
+
+		.import-chip {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			padding: 7px 8px 7px 12px;
+			border-radius: 12px;
+			background: rgba(255, 255, 255, 0.07);
+			cursor: grab;
+			user-select: none;
+		}
+
+		.import-chip.is-selected {
+			background: rgba(236, 241, 32, 0.16);
+			box-shadow: inset 0 0 0 1px var(--accent);
+		}
+
+		.import-chip.is-dragging {
+			opacity: 0.4;
+		}
+
+		.import-chip-name {
+			flex: 1;
+			min-width: 0;
+			font-size: 0.86rem;
+			font-weight: 700;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+		.import-chip-btn {
+			flex-shrink: 0;
+			width: 22px;
+			height: 22px;
+			border: 0;
+			border-radius: 50%;
+			background: rgba(255, 255, 255, 0.08);
+			color: var(--muted);
+			font: inherit;
+			font-size: 0.8rem;
+			line-height: 1;
+			cursor: pointer;
+		}
+
+		.import-chip-btn:hover {
+			background: rgba(255, 255, 255, 0.16);
+			color: var(--text);
+		}
+
+		.import-empty {
+			font-size: 0.78rem;
+			color: var(--muted);
+			padding: 6px;
+			text-align: center;
+		}
+
+		.import-actions {
+			flex-wrap: wrap;
+		}
+
 		.planner-plan-row {
 			display: flex;
 			gap: 10px;
@@ -2368,8 +2503,10 @@
 					<button class="secondary-button" type="button" data-modal-open="tiers">Manage tiers</button>
 					<button class="secondary-button" type="button" data-modal-open="groups">Make groups</button>
 					<button class="secondary-button" type="button" data-modal-open="bulk-players">Paste roster</button>
+					<button class="secondary-button" type="button" data-import-photo>Import from photo</button>
 					<button class="primary-button" type="button" data-modal-open="new-player">Add player</button>
 				</div>
+				<input type="file" accept="image/png,image/jpeg,image/webp,image/gif" data-import-file hidden>
 				<div class="players-list" data-players-list></div>
 			</div>
 		</section>
@@ -2744,6 +2881,29 @@
 					<button class="primary-button" type="submit" data-bulk-submit>Add players</button>
 				</div>
 			</form>
+		</div>
+	</div>
+
+	<div class="modal-layer" data-modal="import-review" aria-hidden="true">
+		<div class="modal-card import-review-card" role="dialog" aria-modal="true" aria-labelledby="import-review-title">
+			<div class="modal-head">
+				<div>
+					<div class="modal-eyebrow">Players</div>
+					<h3 id="import-review-title">Review imported players</h3>
+				</div>
+				<button class="modal-close" type="button" data-close-modal aria-label="Close dialog">x</button>
+			</div>
+			<div class="modal-body">
+				<p class="import-hint">Drag a player onto a skill level — or tap a player, then tap a level. Rename a level by typing in its heading. Nothing is saved until you press <strong>Add all players</strong>.</p>
+				<p class="field-error" data-import-error></p>
+				<p class="groups-status" data-import-status></p>
+				<div class="import-board" data-import-board></div>
+				<div class="modal-actions import-actions">
+					<button class="secondary-button" type="button" data-import-add-level>+ Add skill level</button>
+					<button class="secondary-button" type="button" data-close-modal>Cancel</button>
+					<button class="primary-button" type="button" data-import-commit>Add all players</button>
+				</div>
+			</div>
 		</div>
 	</div>
 
@@ -3865,6 +4025,48 @@
 					return;
 				}
 
+				if (event.target.closest('[data-import-photo]')) {
+					triggerImportPhoto();
+					return;
+				}
+
+				if (event.target.closest('[data-import-add-level]')) {
+					addImportLevel();
+					return;
+				}
+
+				if (event.target.closest('[data-import-commit]')) {
+					commitImport();
+					return;
+				}
+
+				const chipEditButton = event.target.closest('[data-chip-edit]');
+				if (chipEditButton) {
+					editImportChip(chipEditButton.dataset.chipEdit);
+					return;
+				}
+
+				const chipRemoveButton = event.target.closest('[data-chip-remove]');
+				if (chipRemoveButton) {
+					removeImportChip(chipRemoveButton.dataset.chipRemove);
+					return;
+				}
+
+				const importChip = event.target.closest('[data-import-chip]');
+				if (importChip) {
+					selectImportChip(importChip.dataset.importChip);
+					return;
+				}
+
+				// Clicks on the level-name input should edit text, not move a player.
+				if (!event.target.closest('.import-column-name')) {
+					const importColumnEl = event.target.closest('[data-import-column]');
+					if (importColumnEl) {
+						tapImportColumn(importColumnEl.dataset.importColumn);
+						return;
+					}
+				}
+
 				const closeButton = event.target.closest('[data-close-modal]');
 				if (closeButton) {
 					const modal = closeButton.closest('[data-modal]');
@@ -4049,6 +4251,350 @@
 					bulkSubmitButton.disabled = false;
 				}
 			});
+
+			// ---- Import roster from a photo ----------------------------------
+			const importFileInput = document.querySelector('[data-import-file]');
+			const importBoard = document.querySelector('[data-import-board]');
+			const importError = document.querySelector('[data-import-error]');
+			const importStatus = document.querySelector('[data-import-status]');
+			const importCommitButton = document.querySelector('[data-import-commit]');
+
+			let importColumns = [];
+			let importSeq = 0;
+			let importSelectedLocalId = null;
+			let importDragLocalId = null;
+
+			const findImportPlayer = (localId) => {
+				for (const col of importColumns) {
+					const found = col.players.find((p) => p.localId === localId);
+					if (found) return found;
+				}
+				return null;
+			};
+
+			function buildImportColumns() {
+				importSelectedLocalId = null;
+				importColumns = [{ tierId: null, name: 'Unassigned', editable: false, players: [] }];
+				tiers.forEach((tier) => {
+					importColumns.push({ tierId: tier.id, name: tier.name, editable: true, players: [] });
+				});
+			}
+
+			function buildImportChip(player) {
+				const chip = document.createElement('div');
+				chip.className = 'import-chip' + (player.localId === importSelectedLocalId ? ' is-selected' : '');
+				chip.dataset.importChip = player.localId;
+				chip.setAttribute('draggable', 'true');
+
+				const name = document.createElement('span');
+				name.className = 'import-chip-name';
+				name.textContent = player.name;
+				chip.appendChild(name);
+
+				const edit = document.createElement('button');
+				edit.type = 'button';
+				edit.className = 'import-chip-btn';
+				edit.dataset.chipEdit = player.localId;
+				edit.textContent = '✎';
+				edit.setAttribute('aria-label', 'Edit ' + player.name);
+				chip.appendChild(edit);
+
+				const remove = document.createElement('button');
+				remove.type = 'button';
+				remove.className = 'import-chip-btn';
+				remove.dataset.chipRemove = player.localId;
+				remove.textContent = '✕';
+				remove.setAttribute('aria-label', 'Remove ' + player.name);
+				chip.appendChild(remove);
+
+				chip.addEventListener('dragstart', (event) => {
+					importDragLocalId = player.localId;
+					chip.classList.add('is-dragging');
+					if (event.dataTransfer) {
+						event.dataTransfer.effectAllowed = 'move';
+						event.dataTransfer.setData('text/plain', player.localId);
+					}
+				});
+				chip.addEventListener('dragend', () => {
+					importDragLocalId = null;
+					chip.classList.remove('is-dragging');
+				});
+				return chip;
+			}
+
+			function renderImportBoard() {
+				importBoard.innerHTML = '';
+				importColumns.forEach((col, colIndex) => {
+					const colEl = document.createElement('div');
+					colEl.className = 'import-column';
+					colEl.dataset.importColumn = String(colIndex);
+
+					const head = document.createElement('div');
+					head.className = 'import-column-head';
+					const nameEl = document.createElement('input');
+					nameEl.className = 'import-column-name';
+					nameEl.value = col.name;
+					nameEl.maxLength = 40;
+					nameEl.setAttribute('aria-label', 'Skill level name');
+					if (!col.editable) {
+						nameEl.readOnly = true;
+					} else {
+						nameEl.addEventListener('change', () => renameImportLevel(colIndex, nameEl.value));
+						nameEl.addEventListener('keydown', (event) => {
+							if (event.key === 'Enter') { event.preventDefault(); nameEl.blur(); }
+						});
+					}
+					const countEl = document.createElement('span');
+					countEl.className = 'import-column-count';
+					countEl.textContent = String(col.players.length);
+					head.appendChild(nameEl);
+					head.appendChild(countEl);
+					colEl.appendChild(head);
+
+					const chips = document.createElement('div');
+					chips.className = 'import-chips';
+					if (!col.players.length) {
+						const empty = document.createElement('div');
+						empty.className = 'import-empty';
+						empty.textContent = colIndex === 0 ? 'No players here' : 'Drop players here';
+						chips.appendChild(empty);
+					}
+					col.players.forEach((player) => chips.appendChild(buildImportChip(player)));
+					colEl.appendChild(chips);
+
+					colEl.addEventListener('dragover', (event) => {
+						event.preventDefault();
+						colEl.classList.add('is-drop-target');
+					});
+					colEl.addEventListener('dragleave', () => colEl.classList.remove('is-drop-target'));
+					colEl.addEventListener('drop', (event) => {
+						event.preventDefault();
+						colEl.classList.remove('is-drop-target');
+						if (importDragLocalId) moveImportPlayer(importDragLocalId, colIndex);
+					});
+
+					importBoard.appendChild(colEl);
+				});
+			}
+
+			function moveImportPlayer(localId, targetIndex) {
+				let moved = null;
+				for (const col of importColumns) {
+					const i = col.players.findIndex((p) => p.localId === localId);
+					if (i !== -1) { moved = col.players.splice(i, 1)[0]; break; }
+				}
+				if (moved && importColumns[targetIndex]) {
+					importColumns[targetIndex].players.push(moved);
+				}
+				importSelectedLocalId = null;
+				renderImportBoard();
+			}
+
+			function selectImportChip(localId) {
+				importSelectedLocalId = (importSelectedLocalId === localId) ? null : localId;
+				renderImportBoard();
+			}
+
+			function tapImportColumn(indexStr) {
+				if (importSelectedLocalId == null) return;
+				moveImportPlayer(importSelectedLocalId, Number(indexStr));
+			}
+
+			function editImportChip(localId) {
+				const player = findImportPlayer(localId);
+				if (!player) return;
+				const next = window.prompt('Edit name', player.name);
+				if (next === null) return;
+				const trimmed = next.trim().slice(0, 80);
+				if (!trimmed) return;
+				player.name = trimmed;
+				renderImportBoard();
+			}
+
+			function removeImportChip(localId) {
+				for (const col of importColumns) {
+					const i = col.players.findIndex((p) => p.localId === localId);
+					if (i !== -1) { col.players.splice(i, 1); break; }
+				}
+				if (importSelectedLocalId === localId) importSelectedLocalId = null;
+				renderImportBoard();
+			}
+
+			async function renameImportLevel(colIndex, value) {
+				const col = importColumns[colIndex];
+				if (!col || !col.editable || !col.tierId) return;
+				const trimmed = value.trim().slice(0, 40);
+				if (!trimmed || trimmed === col.name) return;
+				col.name = trimmed;
+				await handleRenameTier(col.tierId, trimmed);
+			}
+
+			async function addImportLevel() {
+				importError.textContent = '';
+				const response = await fetch('/api/tiers', {
+					method: 'POST',
+					credentials: 'include',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ name: 'New level' }),
+				});
+				if (response.status === 401) { showAuthGate(); return; }
+				if (!response.ok) { importError.textContent = await parseErrorMessage(response); return; }
+				const tier = await response.json();
+				await loadTiers();
+				importColumns.push({ tierId: tier.id, name: tier.name, editable: true, players: [] });
+				renderImportBoard();
+				const inputs = importBoard.querySelectorAll('.import-column-name');
+				const last = inputs[inputs.length - 1];
+				if (last) { last.focus(); last.select(); }
+			}
+
+			function prepareImage(file) {
+				return new Promise((resolve, reject) => {
+					const reader = new FileReader();
+					reader.onerror = () => reject(new Error('read failed'));
+					reader.onload = () => {
+						const img = new Image();
+						img.onerror = () => reject(new Error('decode failed'));
+						img.onload = () => {
+							const maxDim = 1600;
+							let width = img.width;
+							let height = img.height;
+							if (Math.max(width, height) > maxDim) {
+								const scale = maxDim / Math.max(width, height);
+								width = Math.round(width * scale);
+								height = Math.round(height * scale);
+							}
+							const canvas = document.createElement('canvas');
+							canvas.width = width;
+							canvas.height = height;
+							canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+							const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+							resolve({ base64: dataUrl.split(',')[1], mediaType: 'image/jpeg' });
+						};
+						img.src = reader.result;
+					};
+					reader.readAsDataURL(file);
+				});
+			}
+
+			function triggerImportPhoto() {
+				importFileInput.value = '';
+				importFileInput.click();
+			}
+
+			async function handleImportFile() {
+				const file = importFileInput.files && importFileInput.files[0];
+				if (!file) return;
+				if (!file.type.startsWith('image/')) {
+					window.alert('Please choose an image file (PNG, JPG, WEBP, or GIF).');
+					importFileInput.value = '';
+					return;
+				}
+				if (file.size > 15 * 1024 * 1024) {
+					window.alert('That image is larger than 15 MB — please choose a smaller one.');
+					importFileInput.value = '';
+					return;
+				}
+
+				await loadTiers();
+				buildImportColumns();
+				importError.textContent = '';
+				importStatus.textContent = 'Reading the image with AI…';
+				renderImportBoard();
+				openModal('import-review');
+
+				try {
+					const { base64, mediaType } = await prepareImage(file);
+					const response = await fetch('/api/players/extract-image', {
+						method: 'POST',
+						credentials: 'include',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ image_base64: base64, media_type: mediaType }),
+					});
+					if (response.status === 401) { showAuthGate(); return; }
+					if (!response.ok) {
+						importStatus.textContent = '';
+						importError.textContent = await parseErrorMessage(response);
+						return;
+					}
+					const data = await response.json();
+					const names = data.names || [];
+					if (!names.length) {
+						importStatus.textContent = '';
+						importError.textContent = 'No names were found in that image — try a clearer screenshot.';
+						return;
+					}
+					importColumns[0].players = names.map((name) => ({ localId: 'imp' + (importSeq++), name }));
+					importStatus.textContent = `Found ${names.length} name${names.length === 1 ? '' : 's'}. Organize them into skill levels, then add.`;
+					renderImportBoard();
+				} catch (error) {
+					importStatus.textContent = '';
+					importError.textContent = 'Could not process that image — please try again.';
+				} finally {
+					importFileInput.value = '';
+				}
+			}
+
+			async function commitImport() {
+				importError.textContent = '';
+				const entries = [];
+				importColumns.forEach((col) => {
+					col.players.forEach((p) => entries.push({ name: p.name, tier_id: col.tierId }));
+				});
+				if (!entries.length) {
+					importError.textContent = 'There are no players to add.';
+					return;
+				}
+
+				const existing = new Set(players.map((pl) => pl.name.toLowerCase()));
+				const seen = new Set();
+				const toAdd = [];
+				let skipped = 0;
+				for (const entry of entries) {
+					const key = entry.name.toLowerCase();
+					if (existing.has(key) || seen.has(key)) { skipped += 1; continue; }
+					seen.add(key);
+					toAdd.push(entry);
+				}
+				if (!toAdd.length) {
+					importError.textContent = 'Everyone here is already on the roster.';
+					return;
+				}
+
+				importCommitButton.disabled = true;
+				let added = 0;
+				let failed = 0;
+				try {
+					for (const entry of toAdd) {
+						importStatus.textContent = `Adding ${added + 1} of ${toAdd.length}…`;
+						const response = await fetch('/api/players', {
+							method: 'POST',
+							credentials: 'include',
+							headers: { 'Content-Type': 'application/json' },
+							body: JSON.stringify({ name: entry.name, tier_id: entry.tier_id }),
+						});
+						if (response.status === 401) { showAuthGate(); return; }
+						if (!response.ok) { failed += 1; continue; }
+						added += 1;
+					}
+					await loadPlayers();
+					renderAttendanceList();
+					const parts = [`Added ${added} player${added === 1 ? '' : 's'}`];
+					if (skipped) parts.push(`skipped ${skipped} duplicate${skipped === 1 ? '' : 's'}`);
+					if (failed) parts.push(`${failed} failed`);
+					buildImportColumns();
+					renderImportBoard();
+					importStatus.textContent = parts.join(', ') + '.';
+				} catch (error) {
+					importError.textContent = 'Could not reach the server — some players may not have saved.';
+				} finally {
+					importCommitButton.disabled = false;
+				}
+			}
+
+			if (importFileInput) {
+				importFileInput.addEventListener('change', handleImportFile);
+			}
 
 			async function handleDeletePlayer() {
 				if (!activePlayerId) return;

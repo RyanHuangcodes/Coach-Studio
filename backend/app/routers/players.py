@@ -1,13 +1,21 @@
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy import func
 from sqlalchemy.orm import Session as DbSession
 
 from app.database import get_db
 from app.models import Player, Tier, User
-from app.schemas import PlayerCreate, PlayerMove, PlayerOut
+from app.rate_limit import limiter
+from app.schemas import (
+    PlayerCreate,
+    PlayerMove,
+    PlayerOut,
+    RosterImageRequest,
+    RosterImageResponse,
+)
 from app.security import get_current_user
+from app.vision import extract_roster_names
 
 router = APIRouter(prefix="/api/players", tags=["players"])
 
@@ -68,6 +76,18 @@ def create_player(
     db.commit()
     db.refresh(player)
     return player
+
+
+@router.post("/extract-image", response_model=RosterImageResponse)
+@limiter.limit("15/hour")
+def extract_players_from_image(
+    payload: RosterImageRequest,
+    request: Request,
+    current_user: User = Depends(get_current_user),
+):
+    # The image is processed for name extraction and never stored server-side.
+    names = extract_roster_names(payload.image_base64, payload.media_type)
+    return RosterImageResponse(names=names)
 
 
 @router.patch("/{player_id}", response_model=PlayerOut)
