@@ -1833,8 +1833,6 @@
 			inset: 0;
 			z-index: 90;
 			display: none;
-			grid-template-rows: auto 1fr auto;
-			gap: 12px;
 			/* Respect iPhone notch / home-indicator areas in standalone mode. */
 			padding: max(24px, env(safe-area-inset-top, 0px)) max(24px, env(safe-area-inset-right, 0px)) max(24px, env(safe-area-inset-bottom, 0px)) max(24px, env(safe-area-inset-left, 0px));
 			background:
@@ -1844,19 +1842,21 @@
 		}
 
 		.timer-overlay.is-active {
-			display: grid;
-		}
-
-		.timer-overlay {
-			grid-template-rows: auto auto 1fr auto auto;
+			/* Scrollable column: the ring keeps a fixed, centered size and the
+			   drill description flows below the controls, so it can be read by
+			   scrolling instead of being crushed into a tiny panel. */
+			display: flex;
+			flex-direction: column;
+			gap: 12px;
+			overflow-y: auto;
+			-webkit-overflow-scrolling: touch;
 		}
 
 		.timer-drills {
 			display: grid;
 			gap: 8px;
-			overflow-y: auto;
-			max-height: 24vh;
 			padding-right: 4px;
+			flex-shrink: 0;
 		}
 
 		.timer-drills[hidden] {
@@ -1924,6 +1924,15 @@
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
+			/* Stays pinned so Close / Attendance / Groups are always reachable
+			   even after scrolling down to read a drill description. */
+			position: sticky;
+			top: 0;
+			z-index: 3;
+			padding: 6px 0;
+			background: rgba(9, 8, 8, 0.72);
+			backdrop-filter: blur(10px);
+			-webkit-backdrop-filter: blur(10px);
 		}
 
 		.history-list {
@@ -2058,7 +2067,10 @@
 			grid-template-columns: auto minmax(0, 1fr) auto;
 			align-items: center;
 			gap: 10px;
-			min-height: 0;
+			/* Fixed, comfortable height so the ring is a stable centered size and
+			   the rest of the timer scrolls beneath it. */
+			height: clamp(240px, 52vh, 460px);
+			flex-shrink: 0;
 		}
 
 		.timer-adjust {
@@ -2134,11 +2146,54 @@
 			font-weight: 800;
 		}
 
+		.timer-repeat-row {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 12px;
+			flex-shrink: 0;
+		}
+
+		.timer-repeat-label {
+			font-size: 0.72rem;
+			letter-spacing: 0.16em;
+			text-transform: uppercase;
+			color: var(--muted);
+			font-weight: 800;
+		}
+
+		.timer-repeat-btn {
+			width: 44px;
+			height: 44px;
+			border: 0;
+			border-radius: 50%;
+			background: rgba(255, 255, 255, 0.06);
+			color: var(--text);
+			font: inherit;
+			font-size: 1.4rem;
+			font-weight: 900;
+			line-height: 1;
+			cursor: pointer;
+		}
+
+		.timer-repeat-btn:active {
+			background: rgba(236, 241, 32, 0.18);
+		}
+
+		.timer-repeat-count {
+			min-width: 2ch;
+			text-align: center;
+			font-size: 1.4rem;
+			font-weight: 900;
+			font-variant-numeric: tabular-nums;
+		}
+
 		.timer-controls {
 			display: flex;
 			justify-content: center;
 			gap: 12px;
 			flex-wrap: wrap;
+			flex-shrink: 0;
 		}
 
 		.timer-start-button {
@@ -2931,13 +2986,19 @@
 			</div>
 			<button class="timer-adjust" type="button" data-timer-adjust="60" aria-label="Add one minute">+</button>
 		</div>
-		<div class="timer-drills" data-timer-drills hidden></div>
+		<div class="timer-repeat-row">
+			<span class="timer-repeat-label">Repeats</span>
+			<button class="timer-repeat-btn" type="button" data-timer-repeat="-1" aria-label="One less repeat">&minus;</button>
+			<span class="timer-repeat-count" data-timer-repeat-count>1</span>
+			<button class="timer-repeat-btn" type="button" data-timer-repeat="1" aria-label="One more repeat">+</button>
+		</div>
 		<div class="timer-controls">
 			<button class="secondary-button" type="button" data-timer-reset>Reset</button>
 			<button class="primary-button timer-start-button" type="button" data-timer-toggle>Start</button>
 			<button class="secondary-button" type="button" data-timer-finish>Finish drill</button>
 			<button class="secondary-button" type="button" data-timer-complete>Complete lesson</button>
 		</div>
+		<div class="timer-drills" data-timer-drills hidden></div>
 	</div>
 
 	<script>
@@ -5417,6 +5478,8 @@
 			// or backgrounded tab never drifts the clock.
 			const TIMER_MIN_SECONDS = 60;
 			const TIMER_MAX_SECONDS = 4 * 60 * 60;
+			const TIMER_REPEATS_MIN = 1;
+			const TIMER_REPEATS_MAX = 20;
 			let timerDurationSeconds = 15 * 60;
 			let timerRemainingSeconds = timerDurationSeconds;
 			let timerEndAt = null;
@@ -5428,6 +5491,11 @@
 			let timerSelectedDrillId = null;
 			const timerDrillsPanel = document.querySelector('[data-timer-drills]');
 			const timerRingFrame = document.querySelector('.timer-ring-frame');
+			const timerRepeatCountEl = document.querySelector('[data-timer-repeat-count]');
+
+			const updateRepeatDisplay = () => {
+				if (timerRepeatCountEl) timerRepeatCountEl.textContent = String(timerRepeats);
+			};
 
 			// Keep the ring inside whatever space the stage actually has — the drill
 			// list, picker, and controls all steal height from it.
@@ -5592,6 +5660,24 @@
 				vibrate(20);
 			};
 
+			const currentTimerState = () => {
+				if (timerIsRunning()) return 'Running';
+				if (timerOverlay.classList.contains('is-finished')) return 'Done';
+				if (timerToggleButton.textContent === 'Resume') return 'Paused';
+				return 'Ready';
+			};
+
+			const adjustRepeats = (delta) => {
+				const next = Math.min(TIMER_REPEATS_MAX, Math.max(TIMER_REPEATS_MIN, timerRepeats + delta));
+				if (next === timerRepeats) return;
+				timerRepeats = next;
+				// Keep the current rep in range if we lowered the total mid-drill.
+				if (timerCurrentRep > timerRepeats) timerCurrentRep = timerRepeats;
+				updateRepeatDisplay();
+				setTimerSub(timerStatusLabel(currentTimerState()));
+				vibrate(20);
+			};
+
 			const renderTimerDrillList = () => {
 				if (!timerDrillOptions.length) {
 					timerDrillsPanel.hidden = true;
@@ -5628,6 +5714,7 @@
 				timerToggleButton.textContent = 'Start';
 				setTimerSub(timerStatusLabel('Ready'));
 				renderTimer();
+				updateRepeatDisplay();
 				renderTimerDrillList();
 			};
 
@@ -5695,7 +5782,9 @@
 				timerOverlay.classList.add('is-active');
 				timerOverlay.setAttribute('aria-hidden', 'false');
 				document.body.style.overflow = 'hidden';
+				timerOverlay.scrollTop = 0;
 				renderTimer();
+				updateRepeatDisplay();
 				loadTimerPicker(preselectPlanId);
 			};
 
@@ -5724,6 +5813,12 @@
 				const adjustButton = event.target.closest('[data-timer-adjust]');
 				if (adjustButton) {
 					adjustTimer(Number.parseInt(adjustButton.dataset.timerAdjust, 10));
+					return;
+				}
+
+				const repeatButton = event.target.closest('[data-timer-repeat]');
+				if (repeatButton) {
+					adjustRepeats(Number.parseInt(repeatButton.dataset.timerRepeat, 10));
 					return;
 				}
 				if (event.target.closest('[data-timer-toggle]')) {
