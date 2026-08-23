@@ -8,6 +8,7 @@ from slowapi import _rate_limit_exceeded_handler
 
 from app.rate_limit import limiter
 from app.routers import (
+    analytics,
     auth,
     drafts,
     drills,
@@ -40,6 +41,7 @@ app.include_router(groups.router)
 app.include_router(drills.router)
 app.include_router(insights.router)
 app.include_router(history.router)
+app.include_router(analytics.router)
 
 _FRONTEND_PATH = Path(__file__).resolve().parent / "static" / "Front.html"
 

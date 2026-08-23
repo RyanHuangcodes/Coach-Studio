@@ -205,6 +205,43 @@ class RosterImageResponse(BaseModel):
     names: list[str]
 
 
+class AnalyticsMostUsedDrill(BaseModel):
+    name: str
+    count: int
+
+
+class AnalyticsTotals(BaseModel):
+    sessions_total: int
+    sessions_this_month: int
+    total_minutes: int
+    roster_size: int
+    streak_weeks: int
+    most_used_drill: Optional[AnalyticsMostUsedDrill] = None
+
+
+class AnalyticsTrendPoint(BaseModel):
+    date: date
+    players: int
+    drills: int
+
+
+class AnalyticsDrillMixItem(BaseModel):
+    name: str
+    minutes: int
+
+
+class AnalyticsTierCount(BaseModel):
+    name: str
+    count: int
+
+
+class AnalyticsSummary(BaseModel):
+    totals: AnalyticsTotals
+    attendance_trend: list[AnalyticsTrendPoint]
+    drill_mix: list[AnalyticsDrillMixItem]
+    tier_balance: list[AnalyticsTierCount]
+
+
 class TodayPracticeRequest(BaseModel):
     # dt.date, not bare `date`: the field's default binds `date = None` in the
     # class namespace before the annotation is evaluated, so a bare `date` here
