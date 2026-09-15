@@ -179,6 +179,268 @@
 			flex-wrap: wrap;
 		}
 
+		.gt-hint {
+			margin: 0;
+			font-size: 0.9rem;
+			color: var(--muted);
+			line-height: 1.5;
+		}
+
+		.gt-preview {
+			margin: 0;
+			font-size: 0.85rem;
+			font-weight: 800;
+			color: var(--accent);
+		}
+
+		.gt-list {
+			display: grid;
+			gap: 12px;
+			margin-top: 4px;
+		}
+
+		.gt-empty {
+			color: var(--muted);
+			font-size: 0.88rem;
+			text-align: center;
+			padding: 18px 8px;
+			line-height: 1.5;
+		}
+
+		.gt-card {
+			border-radius: 20px;
+			border: 1px solid rgba(255, 255, 255, 0.08);
+			background: rgba(255, 255, 255, 0.04);
+			padding: 14px 16px;
+			display: grid;
+			gap: 8px;
+		}
+
+		.gt-card.is-running {
+			border-color: rgba(236, 241, 32, 0.4);
+			background: rgba(236, 241, 32, 0.06);
+		}
+
+		.gt-card.is-done {
+			border-color: rgba(79, 209, 197, 0.4);
+		}
+
+		.gt-card-head {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 10px;
+		}
+
+		.gt-card-name {
+			font-weight: 800;
+			font-size: 1.02rem;
+			letter-spacing: -0.01em;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+		.gt-remove {
+			flex-shrink: 0;
+			width: 26px;
+			height: 26px;
+			border: 0;
+			border-radius: 50%;
+			background: rgba(255, 255, 255, 0.08);
+			color: var(--muted);
+			font: inherit;
+			cursor: pointer;
+		}
+
+		.gt-remove:hover {
+			background: rgba(255, 255, 255, 0.16);
+			color: var(--text);
+		}
+
+		.gt-card-sub {
+			font-size: 0.78rem;
+			color: var(--muted);
+			font-weight: 700;
+		}
+
+		.gt-clock {
+			font-size: 2.6rem;
+			font-weight: 900;
+			letter-spacing: -0.04em;
+			line-height: 1;
+			font-variant-numeric: tabular-nums;
+		}
+
+		.gt-turn {
+			font-size: 0.85rem;
+			color: var(--muted);
+			font-weight: 700;
+		}
+
+		.gt-progress {
+			height: 8px;
+			border-radius: 999px;
+			background: rgba(255, 255, 255, 0.08);
+			overflow: hidden;
+		}
+
+		.gt-progress-fill {
+			height: 100%;
+			border-radius: 999px;
+			background: var(--accent);
+			width: 0;
+			transition: width 0.25s linear;
+		}
+
+		.gt-card-actions {
+			display: flex;
+			gap: 10px;
+		}
+
+		.gt-card-actions .primary-button,
+		.gt-card-actions .secondary-button {
+			flex: 1;
+		}
+
+		.gt-section {
+			display: grid;
+			gap: 12px;
+			flex-shrink: 0;
+			margin-top: 8px;
+			padding-top: 16px;
+			border-top: 1px solid rgba(255, 255, 255, 0.1);
+		}
+
+		.gt-section-head {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 12px;
+			flex-wrap: wrap;
+		}
+
+		.gt-section-title {
+			margin: 0;
+			font-size: 1.05rem;
+			letter-spacing: -0.02em;
+		}
+
+		.gt-section-actions {
+			display: flex;
+			gap: 8px;
+		}
+
+		.gt-fields {
+			display: grid;
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+			gap: 8px;
+		}
+
+		.gt-field {
+			display: grid;
+			gap: 4px;
+			font-size: 0.68rem;
+			text-transform: uppercase;
+			letter-spacing: 0.08em;
+			color: var(--muted);
+			font-weight: 800;
+		}
+
+		.gt-field input {
+			width: 100%;
+			border: 1px solid rgba(255, 255, 255, 0.12);
+			background: rgba(0, 0, 0, 0.25);
+			color: var(--text);
+			border-radius: 12px;
+			padding: 10px;
+			font: inherit;
+			font-size: 1rem;
+			text-align: center;
+		}
+
+		.gt-field input:disabled {
+			opacity: 0.55;
+		}
+
+		.gt-name-input {
+			flex: 1;
+			min-width: 0;
+			border: 1px solid transparent;
+			background: rgba(255, 255, 255, 0.06);
+			color: var(--text);
+			border-radius: 12px;
+			padding: 8px 12px;
+			font: inherit;
+			font-weight: 800;
+		}
+
+		.gt-name-input:focus {
+			outline: none;
+			border-color: rgba(255, 255, 255, 0.2);
+		}
+
+		.gt-name-input[readonly] {
+			background: transparent;
+			border-color: transparent;
+			padding-left: 0;
+		}
+
+		.gt-run {
+			display: grid;
+			gap: 6px;
+		}
+
+		.gt-status {
+			font-size: 0.82rem;
+			color: var(--muted);
+			font-weight: 700;
+		}
+
+		.gt-card.is-rotating {
+			border-color: rgba(255, 138, 101, 0.55);
+			background: rgba(255, 138, 101, 0.08);
+		}
+
+		.gt-add-button {
+			width: 100%;
+			border: 1px dashed rgba(236, 241, 32, 0.5);
+			background: rgba(236, 241, 32, 0.06);
+			color: var(--accent);
+			font: inherit;
+			font-weight: 800;
+			font-size: 1rem;
+			padding: 14px;
+			border-radius: 16px;
+			cursor: pointer;
+		}
+
+		.gt-add-button:hover {
+			background: rgba(236, 241, 32, 0.12);
+		}
+
+		.gt-notify-button {
+			width: 100%;
+		}
+
+		.timer-plan-row {
+			display: flex;
+			gap: 10px;
+			flex-shrink: 0;
+		}
+
+		.timer-plan-row select {
+			flex: 1;
+			min-width: 0;
+			appearance: none;
+			border: 1px solid rgba(255, 255, 255, 0.12);
+			background: rgba(255, 255, 255, 0.05);
+			color: var(--text);
+			border-radius: 14px;
+			padding: 12px 14px;
+			font: inherit;
+		}
+
 		.analytics-content {
 			display: grid;
 			gap: 16px;
@@ -3139,6 +3401,10 @@
 							<label for="drill-repeats-input">Repeats</label>
 							<input id="drill-repeats-input" type="number" min="1" max="20" value="1" required>
 						</div>
+						<div class="field">
+							<label for="drill-groups-input">Groups (for rotation timer)</label>
+							<input id="drill-groups-input" type="number" min="1" max="60" value="1">
+						</div>
 					</div>
 					<div class="field">
 						<label for="drill-notes-input">Coach's notes</label>
@@ -3367,41 +3633,31 @@
 
 	<div class="timer-overlay" data-timer-overlay aria-hidden="true">
 		<div class="timer-topbar">
-			<div class="timer-eyebrow">Precision Timer</div>
+			<div class="timer-eyebrow">Session Timers</div>
 			<div class="timer-topbar-actions">
 				<button class="secondary-button timer-top-button" type="button" data-modal-open="attendance">Attendance</button>
 				<button class="secondary-button timer-top-button" type="button" data-modal-open="groups">Groups</button>
 				<button class="modal-close" type="button" data-timer-close aria-label="Close timer">x</button>
 			</div>
 		</div>
-		<div class="timer-picker">
-			<select data-timer-plan-select aria-label="Plan"></select>
-			<select data-timer-drill-select aria-label="Drill"></select>
-		</div>
-		<div class="timer-stage">
-			<button class="timer-adjust" type="button" data-timer-adjust="-60" aria-label="Subtract one minute">&minus;</button>
-			<div class="timer-ring-frame">
-				<div class="timer-ring" data-timer-ring></div>
-				<div class="timer-center">
-					<div class="timer-clock" data-timer-clock>15:00</div>
-					<div class="timer-sub" data-timer-sub>Ready</div>
-				</div>
-			</div>
-			<button class="timer-adjust" type="button" data-timer-adjust="60" aria-label="Add one minute">+</button>
-		</div>
-		<div class="timer-repeat-row">
-			<span class="timer-repeat-label">Repeats</span>
-			<button class="timer-repeat-btn" type="button" data-timer-repeat="-1" aria-label="One less repeat">&minus;</button>
-			<span class="timer-repeat-count" data-timer-repeat-count>1</span>
-			<button class="timer-repeat-btn" type="button" data-timer-repeat="1" aria-label="One more repeat">+</button>
-		</div>
-		<div class="timer-controls">
-			<button class="secondary-button" type="button" data-timer-reset>Reset</button>
-			<button class="primary-button timer-start-button" type="button" data-timer-toggle>Start</button>
-			<button class="secondary-button" type="button" data-timer-finish>Finish drill</button>
+		<div class="timer-plan-row">
+			<select data-timer-plan-load aria-label="Load times from a lesson plan"></select>
 			<button class="secondary-button" type="button" data-timer-complete>Complete lesson</button>
 		</div>
-		<div class="timer-drills" data-timer-drills hidden></div>
+		<div class="gt-section">
+			<div class="gt-section-head">
+				<h3 class="gt-section-title">Group timers</h3>
+				<div class="gt-section-actions">
+					<button class="secondary-button" type="button" data-gt-reset-all>Reset all</button>
+					<button class="primary-button" type="button" data-gt-start-all>Start all</button>
+				</div>
+			</div>
+			<p class="gt-hint">Each timer splits its total across the number of groups. When a group's time is up it buzzes, gives a 5-second rotation, then auto-starts the next — and repeats the whole set. Press <strong>Start all</strong> to run them together.</p>
+			<p class="field-error" data-gt-error></p>
+			<div class="gt-list" data-gt-list></div>
+			<button class="gt-add-button" type="button" data-gt-add>+ Add new timer</button>
+			<button class="secondary-button gt-notify-button" type="button" data-gt-enable-notify>Enable notifications</button>
+		</div>
 	</div>
 
 	<script>
@@ -3478,6 +3734,7 @@
 			const insightError = document.querySelector('[data-insight-error]');
 			const insightResult = document.querySelector('[data-insight-result]');
 			const timerPlanSelect = document.querySelector('[data-timer-plan-select]');
+			const timerPlanLoad = document.querySelector('[data-timer-plan-load]');
 			const timerDrillSelect = document.querySelector('[data-timer-drill-select]');
 			const newPlanTitle = document.getElementById('new-plan-title');
 			const newPlanPrimaryBtn = document.getElementById('new-plan-primary');
@@ -3489,6 +3746,7 @@
 			const drillNameInput = document.getElementById('drill-name-input');
 			const drillMinutesInput = document.getElementById('drill-minutes-input');
 			const drillRepeatsInput = document.getElementById('drill-repeats-input');
+			const drillGroupsInput = document.getElementById('drill-groups-input');
 			const drillNotesInput = document.getElementById('drill-notes-input');
 			const drillError = document.querySelector('[data-drill-error]');
 			const drillSubmitButton = document.querySelector('[data-drill-submit]');
@@ -5828,6 +6086,7 @@
 				drillNameInput.value = '';
 				drillMinutesInput.value = '10';
 				drillRepeatsInput.value = '1';
+				drillGroupsInput.value = '1';
 				drillNotesInput.value = '';
 				drillError.textContent = '';
 				drillSubmitButton.textContent = 'Add drill';
@@ -5973,6 +6232,7 @@
 					name,
 					duration_minutes: minutes,
 					repeats: Number.parseInt(drillRepeatsInput.value, 10) || 1,
+					groups: Number.parseInt(drillGroupsInput.value, 10) || 1,
 					notes: drillNotesInput.value.trim() || null,
 				};
 				const endpoint = activeDrillId
@@ -6038,6 +6298,7 @@
 				drillNameInput.value = drill.name;
 				drillMinutesInput.value = String(drill.duration_minutes);
 				drillRepeatsInput.value = String(drill.repeats || 1);
+				drillGroupsInput.value = String(drill.groups || 1);
 				drillNotesInput.value = drill.notes || '';
 				drillError.textContent = '';
 				drillSubmitButton.textContent = 'Save drill';
@@ -6074,7 +6335,7 @@
 
 			// Keep the ring inside whatever space the stage actually has — the drill
 			// list, picker, and controls all steal height from it.
-			if (window.ResizeObserver) {
+			if (window.ResizeObserver && timerRingFrame) {
 				new ResizeObserver((entries) => {
 					const rect = entries[0].contentRect;
 					if (rect.width === 0 || rect.height === 0) return;
@@ -6087,6 +6348,55 @@
 
 			const vibrate = (pattern) => {
 				if (navigator.vibrate) navigator.vibrate(pattern);
+			};
+
+			// Shared buzzer (Web Audio beep + vibration) and iPhone-style
+			// notifications, used by both the drill timer and the group timers.
+			let audioCtx = null;
+			const ensureAudio = () => {
+				if (audioCtx) return audioCtx;
+				try {
+					const Ctx = window.AudioContext || window.webkitAudioContext;
+					audioCtx = Ctx ? new Ctx() : null;
+				} catch (error) {
+					audioCtx = null;
+				}
+				return audioCtx;
+			};
+			const buzz = (long = false) => {
+				vibrate(long ? [300, 120, 300, 120, 600] : [250, 120, 250]);
+				const ctx = ensureAudio();
+				if (!ctx) return;
+				if (ctx.state === 'suspended') ctx.resume();
+				const offsets = long ? [0, 0.35, 0.7] : [0, 0.32];
+				offsets.forEach((offset) => {
+					const osc = ctx.createOscillator();
+					const gain = ctx.createGain();
+					osc.type = 'square';
+					osc.frequency.value = 880;
+					const start = ctx.currentTime + offset;
+					gain.gain.setValueAtTime(0.0001, start);
+					gain.gain.exponentialRampToValueAtTime(0.35, start + 0.02);
+					gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.28);
+					osc.connect(gain);
+					gain.connect(ctx.destination);
+					osc.start(start);
+					osc.stop(start + 0.3);
+				});
+			};
+			const ensureNotifyPermission = () => {
+				if (!('Notification' in window)) return;
+				if (Notification.permission === 'default') {
+					try { Notification.requestPermission(); } catch (error) { /* older API */ }
+				}
+			};
+			const notify = (title, body) => {
+				if (!('Notification' in window) || Notification.permission !== 'granted') return;
+				try {
+					new Notification(title, { body, tag: title, renotify: true });
+				} catch (error) {
+					/* notifications unavailable in this context */
+				}
 			};
 
 			// Keep the phone screen awake while a drill is being timed. The lock is
@@ -6150,7 +6460,8 @@
 				timerOverlay.classList.add('is-finished');
 				setTimerSub(timerStatusLabel('Done'));
 				timerToggleButton.textContent = 'Start';
-				vibrate([300, 120, 300, 120, 600]);
+				buzz(true);
+				notify(timerDrillLabel || 'Timer', 'Time — this block is done.');
 			};
 
 			// A rep hitting zero either rolls into the next rep (strong buzz, clock
@@ -6162,7 +6473,7 @@
 					timerEndAt = Date.now() + timerDurationSeconds * 1000;
 					setTimerSub(timerStatusLabel('Running'));
 					renderTimer();
-					vibrate([250, 100, 250]);
+					buzz(false);
 					return;
 				}
 				timerFinished();
@@ -6188,6 +6499,8 @@
 				timerToggleButton.textContent = 'Pause';
 				setTimerSub(timerStatusLabel('Running'));
 				acquireWakeLock();
+				ensureAudio();
+				ensureNotifyPermission();
 				vibrate(40);
 			};
 
@@ -6326,94 +6639,80 @@
 				applyTimerDrill(null);
 			}
 
-			async function loadTimerPicker(preselectPlanId) {
+			async function loadTimerPlanOptions(preselectPlanId) {
 				await loadPlans();
-				timerPlanSelect.innerHTML = '';
-				const noPlan = document.createElement('option');
-				noPlan.value = '';
-				noPlan.textContent = 'No plan';
-				timerPlanSelect.appendChild(noPlan);
+				if (!timerPlanLoad) return;
+				timerPlanLoad.innerHTML = '';
+				const none = document.createElement('option');
+				none.value = '';
+				none.textContent = '— Load times from a plan —';
+				timerPlanLoad.appendChild(none);
 				plans.forEach((plan) => {
 					const option = document.createElement('option');
 					option.value = plan.id;
 					option.textContent = `${planLabel(plan)} — ${planDateText(plan)}`;
-					timerPlanSelect.appendChild(option);
+					timerPlanLoad.appendChild(option);
 				});
 				if (preselectPlanId && plans.some((plan) => plan.id === preselectPlanId)) {
-					timerPlanSelect.value = preselectPlanId;
-				} else if (plans.length) {
-					timerPlanSelect.value = plans[0].id;
+					timerPlanLoad.value = preselectPlanId;
 				}
-				await loadTimerDrills();
 			}
 
-			timerPlanSelect.addEventListener('change', loadTimerDrills);
-			timerDrillSelect.addEventListener('change', () => {
-				const drill = timerDrillOptions.find((item) => item.id === timerDrillSelect.value) || null;
-				applyTimerDrill(drill);
-			});
+			// Turn a plan's drills into group timers (name / minutes / preset groups /
+			// repeats), so the coach gets the lesson-plan times with one tap.
+			async function loadPlanIntoGroupTimers(planId) {
+				if (!planId) return;
+				let response;
+				try {
+					response = await fetch(`/api/plans/${planId}/drills`, { credentials: 'include' });
+				} catch (error) {
+					return;
+				}
+				if (response.status === 401) { showAuthGate(); return; }
+				if (!response.ok) return;
+				const planDrills = await response.json();
+				if (!planDrills.length) return;
+				stopGroupInterval();
+				groupTimers = planDrills.map((d) => ({
+					id: 'gt' + (groupSeq++),
+					name: d.name,
+					totalMin: Math.min(240, Math.max(1, d.duration_minutes)),
+					groups: Math.min(60, Math.max(1, d.groups || 1)),
+					repeats: Math.min(50, Math.max(1, d.repeats || 1)),
+					phase: 'idle',
+					currentGroup: 1,
+					currentRepeat: 1,
+					remaining: 0,
+					endAt: null,
+				}));
+				renderGroupTimers();
+			}
 
 			const openTimer = (preselectPlanId) => {
 				timerOverlay.classList.add('is-active');
 				timerOverlay.setAttribute('aria-hidden', 'false');
 				document.body.style.overflow = 'hidden';
 				timerOverlay.scrollTop = 0;
-				renderTimer();
-				updateRepeatDisplay();
-				loadTimerPicker(preselectPlanId);
+				loadTimerPlanOptions(preselectPlanId).then(() => {
+					if (preselectPlanId) loadPlanIntoGroupTimers(preselectPlanId);
+				});
 			};
 
 			const closeTimer = () => {
-				stopTimerInterval();
+				// Group timers keep running in the background (like a phone timer);
+				// closing just hides the overlay.
 				timerOverlay.classList.remove('is-active', 'is-finished');
 				timerOverlay.setAttribute('aria-hidden', 'true');
 				document.body.style.overflow = '';
-				timerCurrentRep = 1;
-				timerRemainingSeconds = timerDurationSeconds;
-				timerToggleButton.textContent = 'Start';
-				setTimerSub(timerStatusLabel('Ready'));
 			};
 
+			if (timerPlanLoad) {
+				timerPlanLoad.addEventListener('change', () => loadPlanIntoGroupTimers(timerPlanLoad.value));
+			}
+
 			timerOverlay.addEventListener('click', (event) => {
-				const drillCard = event.target.closest('[data-timer-drill-card]');
-				if (drillCard) {
-					const drill = timerDrillOptions.find((item) => item.id === drillCard.dataset.timerDrillCard) || null;
-					if (drill) {
-						timerDrillSelect.value = drill.id;
-						applyTimerDrill(drill);
-					}
-					return;
-				}
-
-				const adjustButton = event.target.closest('[data-timer-adjust]');
-				if (adjustButton) {
-					adjustTimer(Number.parseInt(adjustButton.dataset.timerAdjust, 10));
-					return;
-				}
-
-				const repeatButton = event.target.closest('[data-timer-repeat]');
-				if (repeatButton) {
-					adjustRepeats(Number.parseInt(repeatButton.dataset.timerRepeat, 10));
-					return;
-				}
-				if (event.target.closest('[data-timer-toggle]')) {
-					if (timerIsRunning()) {
-						pauseTimer();
-					} else {
-						startTimer();
-					}
-					return;
-				}
-				if (event.target.closest('[data-timer-reset]')) {
-					resetTimer();
-					return;
-				}
-				if (event.target.closest('[data-timer-finish]')) {
-					timerFinished();
-					return;
-				}
 				if (event.target.closest('[data-timer-complete]')) {
-					const planId = timerPlanSelect.value || null;
+					const planId = timerPlanLoad ? (timerPlanLoad.value || null) : null;
 					if (window.confirm('Complete this lesson? Today\'s attendance' + (planId ? ' and the selected plan\'s drills' : '') + ' will be saved to History.')) {
 						completeSession(planId).then((ok) => {
 							if (ok) {
@@ -6428,6 +6727,192 @@
 					closeTimer();
 				}
 			});
+
+			// ---- Group rotation timers -------------------------------------
+			// Inline, editable timers. Each splits its total across `groups` turns
+			// (total / groups per turn); at each turn end it buzzes + notifies,
+			// waits GT_ROTATE_SECONDS to rotate, then auto-starts the next turn.
+			// `repeats` runs the whole set again. "Start all" launches them together.
+			const GT_ROTATE_SECONDS = 5;
+			let groupTimers = [];
+			let groupSeq = 0;
+			let groupIntervalId = null;
+			const groupList = document.querySelector('[data-gt-list]');
+			const gtError = document.querySelector('[data-gt-error]');
+
+			const gtClampInt = (value, min, max, fallback) => {
+				const n = Number.parseInt(value, 10);
+				return Number.isFinite(n) ? Math.min(max, Math.max(min, n)) : fallback;
+			};
+			const gtFmtClock = (seconds) => {
+				const s = Math.max(0, Math.ceil(seconds));
+				return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+			};
+			const gtPerTurn = (t) => Math.max(1, Math.round((t.totalMin * 60) / t.groups));
+
+			const makeGroupTimer = () => ({
+				id: 'gt' + (groupSeq++),
+				name: '',
+				totalMin: 30,
+				groups: 3,
+				repeats: 1,
+				phase: 'idle',
+				currentGroup: 1,
+				currentRepeat: 1,
+				remaining: 0,
+				endAt: null,
+			});
+
+			const gtIsActive = (t) => t.phase === 'running' || t.phase === 'rotating';
+
+			const gtStatusText = (t) => {
+				if (t.phase === 'idle') return `${gtFmtClock(gtPerTurn(t))} each · ${t.groups} groups × ${t.repeats}`;
+				if (t.phase === 'rotating') return 'Rotate! Switching players…';
+				if (t.phase === 'done') return `Done — ${t.groups} groups × ${t.repeats} complete`;
+				return `Group ${t.currentGroup}/${t.groups} · Round ${t.currentRepeat}/${t.repeats}`;
+			};
+			const gtClockValue = (t) => t.phase === 'idle' ? gtFmtClock(gtPerTurn(t)) : gtFmtClock(t.remaining);
+			const gtProgress = (t) => {
+				if (t.phase === 'running') return Math.max(0, Math.min(100, (1 - t.remaining / gtPerTurn(t)) * 100));
+				if (t.phase === 'rotating') return Math.max(0, Math.min(100, (1 - t.remaining / GT_ROTATE_SECONDS) * 100));
+				if (t.phase === 'done') return 100;
+				return 0;
+			};
+
+			const renderGroupTimers = () => {
+				if (!groupList) return;
+				const canRemove = groupTimers.length > 1;
+				groupList.innerHTML = groupTimers.map((t) => {
+					const active = gtIsActive(t);
+					const dis = active ? 'disabled' : '';
+					const removeBtn = canRemove ? `<button class="gt-remove" type="button" data-gt-remove="${t.id}" aria-label="Remove timer">✕</button>` : '';
+					const cls = `${t.phase === 'running' ? 'is-running' : ''} ${t.phase === 'rotating' ? 'is-rotating' : ''} ${t.phase === 'done' ? 'is-done' : ''}`;
+					return `
+						<div class="gt-card ${cls}" data-gt-card="${t.id}">
+							<div class="gt-card-head">
+								<input class="gt-name-input" type="text" data-gt-field="name" data-gt-id="${t.id}" value="${escapeHtml(t.name)}" placeholder="Timer name (e.g. 4 people group)" maxlength="40" ${active ? 'readonly' : ''}>
+								${removeBtn}
+							</div>
+							<div class="gt-fields">
+								<label class="gt-field">Minutes<input type="number" data-gt-field="totalMin" data-gt-id="${t.id}" value="${t.totalMin}" min="1" max="240" ${dis}></label>
+								<label class="gt-field">Groups<input type="number" data-gt-field="groups" data-gt-id="${t.id}" value="${t.groups}" min="1" max="60" ${dis}></label>
+								<label class="gt-field">Repeats<input type="number" data-gt-field="repeats" data-gt-id="${t.id}" value="${t.repeats}" min="1" max="50" ${dis}></label>
+							</div>
+							<div class="gt-run">
+								<div class="gt-clock" data-gt-clock="${t.id}">${gtClockValue(t)}</div>
+								<div class="gt-status" data-gt-status="${t.id}">${gtStatusText(t)}</div>
+								<div class="gt-progress"><div class="gt-progress-fill" data-gt-fill="${t.id}" style="width:${gtProgress(t)}%"></div></div>
+							</div>
+						</div>`;
+				}).join('');
+			};
+
+			const updateGroupDisplays = () => {
+				groupTimers.forEach((t) => {
+					if (!gtIsActive(t)) return;
+					const c = groupList.querySelector(`[data-gt-clock="${t.id}"]`); if (c) c.textContent = gtClockValue(t);
+					const st = groupList.querySelector(`[data-gt-status="${t.id}"]`); if (st) st.textContent = gtStatusText(t);
+					const f = groupList.querySelector(`[data-gt-fill="${t.id}"]`); if (f) f.style.width = `${gtProgress(t)}%`;
+				});
+			};
+
+			const stopGroupInterval = () => { if (groupIntervalId !== null) { clearInterval(groupIntervalId); groupIntervalId = null; } };
+			const ensureGroupInterval = () => { if (groupIntervalId === null) groupIntervalId = setInterval(groupTick, 250); };
+
+			function gtAdvance(t, now) {
+				const isLast = t.currentGroup >= t.groups && t.currentRepeat >= t.repeats;
+				if (isLast) {
+					buzz(true);
+					notify(t.name || 'Timer', `Finished — ${t.groups} groups × ${t.repeats} done.`);
+					t.phase = 'done'; t.remaining = 0; t.endAt = null;
+				} else {
+					buzz(false);
+					notify(t.name || 'Timer', `Rotate! Group ${t.currentGroup} of ${t.groups} done — ${GT_ROTATE_SECONDS}s to switch.`);
+					t.phase = 'rotating'; t.remaining = GT_ROTATE_SECONDS; t.endAt = now + GT_ROTATE_SECONDS * 1000;
+				}
+			}
+			function gtBeginNext(t, now) {
+				if (t.currentGroup < t.groups) { t.currentGroup += 1; }
+				else { t.currentGroup = 1; t.currentRepeat += 1; }
+				const per = gtPerTurn(t);
+				t.phase = 'running'; t.remaining = per; t.endAt = now + per * 1000;
+				vibrate(70);
+			}
+
+			function groupTick() {
+				const now = Date.now();
+				let structural = false;
+				groupTimers.forEach((t) => {
+					if (!gtIsActive(t)) return;
+					t.remaining = (t.endAt - now) / 1000;
+					if (t.remaining <= 0) {
+						if (t.phase === 'running') gtAdvance(t, now);
+						else gtBeginNext(t, now);
+						structural = true;
+					}
+				});
+				if (structural) renderGroupTimers(); else updateGroupDisplays();
+				if (!groupTimers.some(gtIsActive)) stopGroupInterval();
+			}
+
+			const startAllGroupTimers = () => {
+				if (!groupTimers.length) return;
+				ensureAudio(); ensureNotifyPermission(); acquireWakeLock();
+				const now = Date.now();
+				groupTimers.forEach((t) => {
+					const per = gtPerTurn(t);
+					t.phase = 'running'; t.currentGroup = 1; t.currentRepeat = 1; t.remaining = per; t.endAt = now + per * 1000;
+				});
+				ensureGroupInterval();
+				renderGroupTimers();
+			};
+			const resetAllGroupTimers = () => {
+				stopGroupInterval();
+				groupTimers.forEach((t) => { t.phase = 'idle'; t.currentGroup = 1; t.currentRepeat = 1; t.remaining = 0; t.endAt = null; });
+				renderGroupTimers();
+			};
+
+			const gtAddBtn = document.querySelector('[data-gt-add]');
+			const gtStartAllBtn = document.querySelector('[data-gt-start-all]');
+			const gtResetAllBtn = document.querySelector('[data-gt-reset-all]');
+			const gtNotifyBtn = document.querySelector('[data-gt-enable-notify]');
+			if (gtAddBtn) gtAddBtn.addEventListener('click', () => {
+				if (groupTimers.length >= 12) { if (gtError) gtError.textContent = 'Maximum of 12 timers.'; return; }
+				if (gtError) gtError.textContent = '';
+				groupTimers.push(makeGroupTimer());
+				renderGroupTimers();
+			});
+			if (gtStartAllBtn) gtStartAllBtn.addEventListener('click', startAllGroupTimers);
+			if (gtResetAllBtn) gtResetAllBtn.addEventListener('click', resetAllGroupTimers);
+			if (gtNotifyBtn) gtNotifyBtn.addEventListener('click', () => { ensureAudio(); ensureNotifyPermission(); });
+			if (groupList) {
+				groupList.addEventListener('input', (event) => {
+					const field = event.target.closest('[data-gt-field]');
+					if (!field) return;
+					const t = groupTimers.find((x) => x.id === field.dataset.gtId);
+					if (!t) return;
+					const key = field.dataset.gtField;
+					if (key === 'name') { t.name = field.value.slice(0, 40); return; }
+					if (key === 'totalMin') t.totalMin = gtClampInt(field.value, 1, 240, t.totalMin);
+					else if (key === 'groups') t.groups = gtClampInt(field.value, 1, 60, t.groups);
+					else if (key === 'repeats') t.repeats = gtClampInt(field.value, 1, 50, t.repeats);
+					if (t.phase === 'idle') {
+						const c = groupList.querySelector(`[data-gt-clock="${t.id}"]`); if (c) c.textContent = gtClockValue(t);
+						const st = groupList.querySelector(`[data-gt-status="${t.id}"]`); if (st) st.textContent = gtStatusText(t);
+					}
+				});
+				groupList.addEventListener('click', (event) => {
+					const rm = event.target.closest('[data-gt-remove]');
+					if (rm) {
+						groupTimers = groupTimers.filter((x) => x.id !== rm.dataset.gtRemove);
+						renderGroupTimers();
+						if (!groupTimers.some(gtIsActive)) stopGroupInterval();
+					}
+				});
+			}
+			// Seed one timer so the section is usable immediately.
+			groupTimers.push(makeGroupTimer());
+			renderGroupTimers();
 
 			(async () => {
 				syncDuration('60');

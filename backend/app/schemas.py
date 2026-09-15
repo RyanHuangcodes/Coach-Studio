@@ -95,6 +95,7 @@ class DrillCreate(BaseModel):
     name: str = Field(min_length=1, max_length=80)
     duration_minutes: int = Field(ge=1, le=240)
     repeats: int = Field(default=1, ge=1, le=20)
+    groups: int = Field(default=1, ge=1, le=60)
     notes: Optional[str] = Field(default=None, max_length=4000)
 
     @field_validator("name")
@@ -111,6 +112,7 @@ class DrillOut(BaseModel):
     name: str
     duration_minutes: int
     repeats: int
+    groups: int
     notes: Optional[str]
     position: int
 

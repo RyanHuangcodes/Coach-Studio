@@ -58,6 +58,7 @@ def create_drill(
         name=payload.name,
         duration_minutes=payload.duration_minutes,
         repeats=payload.repeats,
+        groups=payload.groups,
         notes=payload.notes,
         position=(max_position + 1) if max_position is not None else 1,
     )
@@ -78,6 +79,7 @@ def update_drill(
     drill.name = payload.name
     drill.duration_minutes = payload.duration_minutes
     drill.repeats = payload.repeats
+    drill.groups = payload.groups
     drill.notes = payload.notes
     db.commit()
     db.refresh(drill)
