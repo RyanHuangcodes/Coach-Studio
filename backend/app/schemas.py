@@ -216,6 +216,10 @@ class AnalyticsTotals(BaseModel):
     total_minutes: int
     roster_size: int
     streak_weeks: int
+    avg_attendance: int
+    avg_session_minutes: int
+    avg_drills_per_session: float
+    attendance_rate: int
     most_used_drill: Optional[AnalyticsMostUsedDrill] = None
 
 
@@ -235,11 +239,37 @@ class AnalyticsTierCount(BaseModel):
     count: int
 
 
+class AnalyticsPlayerStat(BaseModel):
+    name: str
+    sessions: int
+    tier_name: Optional[str] = None
+
+
+class AnalyticsWeekdayStat(BaseModel):
+    weekday: str
+    count: int
+
+
+class AnalyticsMonthStat(BaseModel):
+    label: str
+    sessions: int
+    minutes: int
+
+
+class AnalyticsSportStat(BaseModel):
+    sport: str
+    sessions: int
+
+
 class AnalyticsSummary(BaseModel):
     totals: AnalyticsTotals
     attendance_trend: list[AnalyticsTrendPoint]
     drill_mix: list[AnalyticsDrillMixItem]
     tier_balance: list[AnalyticsTierCount]
+    player_leaderboard: list[AnalyticsPlayerStat]
+    weekday_activity: list[AnalyticsWeekdayStat]
+    monthly_activity: list[AnalyticsMonthStat]
+    sport_breakdown: list[AnalyticsSportStat]
 
 
 class TodayPracticeRequest(BaseModel):

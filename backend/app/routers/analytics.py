@@ -1,3 +1,4 @@
+import calendar
 import datetime as dt
 from collections import defaultdict
 
@@ -18,10 +19,15 @@ from app.security import get_current_user
 
 router = APIRouter(prefix="/api/analytics", tags=["analytics"])
 
-# How many recent sessions to chart in the attendance trend, and how many named
-# drills to show in the mix before the rest collapse into "Other".
+# How many recent sessions to chart in the attendance trend, how many named
+# drills to show before the rest collapse into "Other", how many players to
+# rank in the attendance leaderboard, and how many months of activity to chart.
 _TREND_LIMIT = 8
 _DRILL_MIX_LIMIT = 6
+_LEADERBOARD_LIMIT = 8
+_MONTHS_BACK = 6
+
+_WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
 
 def _week_key(day: dt.date) -> tuple[int, int]:
@@ -49,6 +55,19 @@ def _week_streak(session_dates: list[dt.date], today: dt.date) -> int:
     return streak
 
 
+def _last_months(today: dt.date, count: int) -> list[tuple[int, int]]:
+    """Return the last `count` (year, month) pairs, oldest first, incl. current."""
+    result: list[tuple[int, int]] = []
+    for step in range(count - 1, -1, -1):
+        month = today.month - step
+        year = today.year
+        while month <= 0:
+            month += 12
+            year -= 1
+        result.append((year, month))
+    return result
+
+
 @router.get("/summary", response_model=AnalyticsSummary)
 def analytics_summary(
     current_user: User = Depends(get_current_user),
@@ -61,12 +80,22 @@ def analytics_summary(
         .all()
     )
     session_ids = [s.id for s in sessions]
+    session_completed_at = {s.id: s.completed_at for s in sessions}
 
     drills_count_by_session: dict[str, int] = defaultdict(int)
+    minutes_by_session: dict[str, int] = defaultdict(int)
     players_count_by_session: dict[str, int] = defaultdict(int)
     drill_minutes_by_name: dict[str, int] = defaultdict(int)
     drill_uses_by_name: dict[str, int] = defaultdict(int)
     total_minutes = 0
+    total_drills = 0
+    total_attendance = 0
+
+    # Player leaderboard: sessions attended per player, plus the most recently
+    # recorded tier so the badge reflects where they play now.
+    player_sessions: dict[str, int] = defaultdict(int)
+    player_latest_tier: dict[str, str | None] = {}
+    player_latest_seen: dict[str, dt.datetime] = {}
 
     if session_ids:
         for drill in (
@@ -76,16 +105,37 @@ def analytics_summary(
         ):
             minutes = drill.duration_minutes * drill.repeats
             drills_count_by_session[drill.session_id] += 1
+            minutes_by_session[drill.session_id] += minutes
             drill_minutes_by_name[drill.name] += minutes
             drill_uses_by_name[drill.name] += 1
             total_minutes += minutes
+            total_drills += 1
 
-        for (session_id,) in (
-            db.query(CompletedSessionPlayer.session_id)
+        for cp in (
+            db.query(CompletedSessionPlayer)
             .filter(CompletedSessionPlayer.session_id.in_(session_ids))
             .all()
         ):
-            players_count_by_session[session_id] += 1
+            players_count_by_session[cp.session_id] += 1
+            total_attendance += 1
+            player_sessions[cp.player_name] += 1
+            seen_at = session_completed_at.get(cp.session_id)
+            if seen_at is not None and (
+                cp.player_name not in player_latest_seen
+                or seen_at >= player_latest_seen[cp.player_name]
+            ):
+                player_latest_seen[cp.player_name] = seen_at
+                player_latest_tier[cp.player_name] = cp.tier_name
+
+    num_sessions = len(sessions)
+    roster_size = db.query(Player).filter(Player.user_id == current_user.id).count()
+
+    avg_attendance = round(total_attendance / num_sessions) if num_sessions else 0
+    avg_session_minutes = round(total_minutes / num_sessions) if num_sessions else 0
+    avg_drills_per_session = round(total_drills / num_sessions, 1) if num_sessions else 0.0
+    attendance_rate = (
+        min(100, round((avg_attendance / roster_size) * 100)) if roster_size else 0
+    )
 
     today = dt.date.today()
     sessions_this_month = sum(
@@ -103,8 +153,6 @@ def analytics_summary(
             key=lambda n: (drill_uses_by_name[n], drill_minutes_by_name[n]),
         )
         most_used_drill = {"name": name, "count": drill_uses_by_name[name]}
-
-    roster_size = db.query(Player).filter(Player.user_id == current_user.id).count()
 
     attendance_trend = [
         {
@@ -134,16 +182,64 @@ def analytics_summary(
     if counts_by_tier.get(None):
         tier_balance.append({"name": "No tier", "count": counts_by_tier[None]})
 
+    leaderboard_sorted = sorted(
+        player_sessions.items(), key=lambda kv: (-kv[1], kv[0].lower())
+    )[:_LEADERBOARD_LIMIT]
+    player_leaderboard = [
+        {"name": name, "sessions": count, "tier_name": player_latest_tier.get(name)}
+        for name, count in leaderboard_sorted
+    ]
+
+    weekday_counts = [0] * 7
+    sport_counts: dict[str, int] = defaultdict(int)
+    for s in sessions:
+        weekday_counts[s.date.weekday()] += 1
+        sport_counts[s.sport] += 1
+    weekday_activity = [
+        {"weekday": _WEEKDAYS[i], "count": weekday_counts[i]} for i in range(7)
+    ]
+
+    month_buckets = _last_months(today, _MONTHS_BACK)
+    month_sessions: dict[tuple[int, int], int] = defaultdict(int)
+    month_minutes: dict[tuple[int, int], int] = defaultdict(int)
+    window = set(month_buckets)
+    for s in sessions:
+        key = (s.date.year, s.date.month)
+        if key in window:
+            month_sessions[key] += 1
+            month_minutes[key] += minutes_by_session.get(s.id, 0)
+    monthly_activity = [
+        {
+            "label": calendar.month_abbr[month],
+            "sessions": month_sessions.get((year, month), 0),
+            "minutes": month_minutes.get((year, month), 0),
+        }
+        for (year, month) in month_buckets
+    ]
+
+    sport_breakdown = [
+        {"sport": sport, "sessions": count}
+        for sport, count in sorted(sport_counts.items(), key=lambda kv: (-kv[1], kv[0].lower()))
+    ]
+
     return {
         "totals": {
-            "sessions_total": len(sessions),
+            "sessions_total": num_sessions,
             "sessions_this_month": sessions_this_month,
             "total_minutes": total_minutes,
             "roster_size": roster_size,
             "streak_weeks": _week_streak([s.date for s in sessions], today),
+            "avg_attendance": avg_attendance,
+            "avg_session_minutes": avg_session_minutes,
+            "avg_drills_per_session": avg_drills_per_session,
+            "attendance_rate": attendance_rate,
             "most_used_drill": most_used_drill,
         },
         "attendance_trend": attendance_trend,
         "drill_mix": drill_mix,
         "tier_balance": tier_balance,
+        "player_leaderboard": player_leaderboard,
+        "weekday_activity": weekday_activity,
+        "monthly_activity": monthly_activity,
+        "sport_breakdown": sport_breakdown,
     }

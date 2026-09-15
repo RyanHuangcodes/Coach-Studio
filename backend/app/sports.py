@@ -1,7 +1,7 @@
 import re
 from typing import Optional
 
-STANDARD_SPORTS = ["Soccer", "Basketball", "Baseball", "Football", "Tennis"]
+STANDARD_SPORTS = ["Badminton", "Soccer", "Basketball", "Baseball", "Football", "Tennis"]
 OTHER_SPORT_VALUE = "__other__"
 
 # Letters (including Latin-1 accents, e.g. "Fútbol"), digits, spaces, hyphens,

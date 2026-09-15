@@ -147,6 +147,38 @@
 			align-content: start;
 		}
 
+		.planner-panel {
+			max-height: calc(100vh - 150px);
+			overflow-y: auto;
+			align-content: start;
+		}
+
+		[data-modal="new-plan"] .modal-card {
+			width: min(640px, 100%);
+		}
+
+		.builder-head {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 12px;
+			margin-top: 22px;
+			padding-top: 18px;
+			border-top: 1px solid rgba(255, 255, 255, 0.08);
+		}
+
+		.builder-title {
+			margin: 0;
+			font-size: 1.1rem;
+			letter-spacing: -0.02em;
+		}
+
+		.builder-controls {
+			display: flex;
+			gap: 8px;
+			flex-wrap: wrap;
+		}
+
 		.analytics-content {
 			display: grid;
 			gap: 16px;
@@ -2979,77 +3011,7 @@
 			</div>
 		</section>
 
-		<section class="page-shell" data-page-panel="planner" aria-label="Planner page">
-			<div class="blank-panel plans-panel">
-				<div class="plans-header">
-					<div>
-						<div class="blank-eyebrow">Planner</div>
-						<h2>Session builder</h2>
-					</div>
-					<p>Arrange drills for a plan: order, duration, and coaching cues.</p>
-				</div>
-				<div class="field">
-					<label for="planner-plan-select">Plan</label>
-					<div class="planner-plan-row">
-						<select id="planner-plan-select"></select>
-						<button class="primary-button" type="button" data-planner-start>Start session</button>
-						<button class="secondary-button" type="button" data-delete-plan>Delete</button>
-					</div>
-				</div>
-				<div class="planner-new-fields" data-planner-new-fields hidden>
-					<div class="field planner-name-field">
-						<label for="planner-name-input">Session name</label>
-						<input id="planner-name-input" type="text" placeholder="e.g. U14 Tuesday practice (optional)" autocomplete="off" maxlength="80">
-					</div>
-					<div class="field">
-						<label for="planner-sport-select">Sport</label>
-						<select id="planner-sport-select"></select>
-					</div>
-					<div class="field" data-planner-custom-sport hidden>
-						<label for="planner-custom-sport-input">Custom sport</label>
-						<input id="planner-custom-sport-input" type="text" placeholder="Type a sport name" autocomplete="off" maxlength="40">
-					</div>
-					<div class="field">
-						<label for="planner-date-input">Session date</label>
-						<input id="planner-date-input" type="date">
-					</div>
-					<div class="field">
-						<label for="planner-minutes-input">Session minutes</label>
-						<input id="planner-minutes-input" type="number" min="5" max="240" step="5" value="60">
-					</div>
-					<div class="planner-save-row">
-						<button class="primary-button" type="button" data-planner-save>Save plan</button>
-					</div>
-				</div>
-				<div class="drills-list" data-drills-list></div>
-				<div class="drill-total" data-drill-total></div>
-				<form class="drill-add-form" id="drill-form">
-					<div class="form-grid">
-						<div class="field">
-							<label for="drill-name-input">Drill</label>
-							<input id="drill-name-input" type="text" placeholder="Drill name" autocomplete="off" required>
-						</div>
-						<div class="field">
-							<label for="drill-minutes-input">Minutes per rep</label>
-							<input id="drill-minutes-input" type="number" min="1" max="240" value="10" required>
-						</div>
-						<div class="field">
-							<label for="drill-repeats-input">Repeats</label>
-							<input id="drill-repeats-input" type="number" min="1" max="20" value="1" required>
-						</div>
-					</div>
-					<div class="field">
-						<label for="drill-notes-input">Coach's notes</label>
-						<textarea id="drill-notes-input" placeholder="Technical cues, talking points (optional)"></textarea>
-					</div>
-					<p class="field-error" data-drill-error></p>
-					<div class="modal-actions">
-						<button class="secondary-button" type="button" data-drill-cancel-edit hidden>Cancel edit</button>
-						<button class="primary-button" type="submit" data-drill-submit>Add drill</button>
-					</div>
-				</form>
-			</div>
-		</section>
+		
 
 		<section class="cards" aria-label="Quick actions">
 			<button class="mini-card" type="button" data-modal-open="new-plan">
@@ -3062,31 +3024,7 @@
 			</button>
 		</section>
 
-		<section class="insight" aria-label="AI strategy insight">
-			<h2 class="insight-title">AI Strategy Insight</h2>
-			<form class="insight-form" id="insight-form">
-				<div class="insight-row">
-					<select id="insight-sport-select" aria-label="Sport"></select>
-					<input id="insight-custom-sport-input" type="text" placeholder="Sport name" autocomplete="off" maxlength="40" hidden>
-				</div>
-				<div class="insight-row">
-					<input id="insight-objective-input" type="text" placeholder="Today's objective, e.g. faster transition defense" autocomplete="off" maxlength="500">
-					<button class="secondary-button" type="submit" data-insight-generate>Suggest</button>
-				</div>
-				<button class="insight-ideas-button" type="button" data-insight-ideas>Not sure what to work on? Get 3 ideas</button>
-			</form>
-			<p class="field-error" data-insight-error></p>
-			<div class="insight-result" data-insight-result>
-				<p class="insight-copy">
-					Type today's training objective above and I'll suggest a focus, drills, and coaching cues based on your roster and attendance.
-				</p>
-			</div>
-			<footer class="app-legal-footer">
-				<a href="/static/legal/privacy.html" target="_blank" rel="noopener">Privacy</a>
-				<a href="/static/legal/terms.html" target="_blank" rel="noopener">Terms</a>
-				<a href="/static/legal/accessibility.html" target="_blank" rel="noopener">Accessibility</a>
-			</footer>
-		</section>
+		
 
 		<nav class="nav" aria-label="Primary navigation">
 			<button class="nav-item active" type="button" data-page="home">
@@ -3121,7 +3059,8 @@
 				</div>
 				<button class="modal-close" type="button" data-close-modal aria-label="Close dialog">x</button>
 			</div>
-			<form class="modal-body" id="new-plan-form">
+			<div class="modal-body">
+				<form id="new-plan-form">
 				<div class="field">
 					<label for="plan-name-input">Session name</label>
 					<input id="plan-name-input" name="planName" type="text" placeholder="Optional — e.g. U14 Tuesday practice" autocomplete="off" maxlength="80">
@@ -3134,6 +3073,7 @@
 					<div class="field">
 						<label for="sport-select">Sport</label>
 						<select id="sport-select" name="sport">
+							<option>Badminton</option>
 							<option>Soccer</option>
 							<option>Basketball</option>
 							<option>Baseball</option>
@@ -3172,11 +3112,70 @@
 				<p class="field-error" data-plan-error></p>
 				<div class="modal-actions">
 					<button class="secondary-button" type="button" data-close-modal>Cancel</button>
-					<button class="secondary-button" type="button" data-open-page="planner">Open planner</button>
 					<button class="secondary-button" type="button" data-save-draft>Save to Draft</button>
-					<button class="primary-button" type="submit">Create</button>
+					<button class="primary-button" type="submit" id="new-plan-primary">Create plan</button>
 				</div>
 			</form>
+				<div class="builder-head">
+					<h4 class="builder-title">Drills</h4>
+					<div class="builder-controls">
+						<button class="secondary-button" type="button" data-builder-start hidden>Start session</button>
+						<button class="secondary-button" type="button" data-delete-plan id="plan-delete-btn" hidden>Delete plan</button>
+					</div>
+				</div>
+<div class="drills-list" data-drills-list></div>
+				<div class="drill-total" data-drill-total></div>
+				<form class="drill-add-form" id="drill-form">
+					<div class="form-grid">
+						<div class="field">
+							<label for="drill-name-input">Drill</label>
+							<input id="drill-name-input" type="text" placeholder="Drill name" autocomplete="off" required>
+						</div>
+						<div class="field">
+							<label for="drill-minutes-input">Minutes per rep</label>
+							<input id="drill-minutes-input" type="number" min="1" max="240" value="10" required>
+						</div>
+						<div class="field">
+							<label for="drill-repeats-input">Repeats</label>
+							<input id="drill-repeats-input" type="number" min="1" max="20" value="1" required>
+						</div>
+					</div>
+					<div class="field">
+						<label for="drill-notes-input">Coach's notes</label>
+						<textarea id="drill-notes-input" placeholder="Technical cues, talking points (optional)"></textarea>
+					</div>
+					<p class="field-error" data-drill-error></p>
+					<div class="modal-actions">
+						<button class="secondary-button" type="button" data-drill-cancel-edit hidden>Cancel edit</button>
+						<button class="primary-button" type="submit" data-drill-submit>Add drill</button>
+					</div>
+				</form>
+<section class="insight" aria-label="AI strategy insight">
+			<h2 class="insight-title">AI Strategy Insight</h2>
+			<form class="insight-form" id="insight-form">
+				<div class="insight-row">
+					<select id="insight-sport-select" aria-label="Sport"></select>
+					<input id="insight-custom-sport-input" type="text" placeholder="Sport name" autocomplete="off" maxlength="40" hidden>
+				</div>
+				<div class="insight-row">
+					<input id="insight-objective-input" type="text" placeholder="Today's objective, e.g. faster transition defense" autocomplete="off" maxlength="500">
+					<button class="secondary-button" type="submit" data-insight-generate>Suggest</button>
+				</div>
+				<button class="insight-ideas-button" type="button" data-insight-ideas>Not sure what to work on? Get 3 ideas</button>
+			</form>
+			<p class="field-error" data-insight-error></p>
+			<div class="insight-result" data-insight-result>
+				<p class="insight-copy">
+					Type today's training objective above and I'll suggest a focus, drills, and coaching cues based on your roster and attendance.
+				</p>
+			</div>
+			<footer class="app-legal-footer">
+				<a href="/static/legal/privacy.html" target="_blank" rel="noopener">Privacy</a>
+				<a href="/static/legal/terms.html" target="_blank" rel="noopener">Terms</a>
+				<a href="/static/legal/accessibility.html" target="_blank" rel="noopener">Accessibility</a>
+			</footer>
+		</section>
+			</div>
 		</div>
 	</div>
 
@@ -3480,16 +3479,10 @@
 			const insightResult = document.querySelector('[data-insight-result]');
 			const timerPlanSelect = document.querySelector('[data-timer-plan-select]');
 			const timerDrillSelect = document.querySelector('[data-timer-drill-select]');
-			const plannerPlanSelect = document.getElementById('planner-plan-select');
-			const plannerNewFields = document.querySelector('[data-planner-new-fields]');
-			const plannerSportSelect = document.getElementById('planner-sport-select');
-			const plannerCustomSportField = document.querySelector('[data-planner-custom-sport]');
-			const plannerCustomSportInput = document.getElementById('planner-custom-sport-input');
-			const plannerMinutesInput = document.getElementById('planner-minutes-input');
-			const plannerNameInput = document.getElementById('planner-name-input');
-			const plannerDateInput = document.getElementById('planner-date-input');
-			const plannerStartBtn = document.querySelector('[data-planner-start]');
-			const plannerDeleteBtn = document.querySelector('[data-delete-plan]');
+			const newPlanTitle = document.getElementById('new-plan-title');
+			const newPlanPrimaryBtn = document.getElementById('new-plan-primary');
+			const builderStartBtn = document.querySelector('[data-builder-start]');
+			const planDeleteBtn = document.getElementById('plan-delete-btn');
 			const drillsList = document.querySelector('[data-drills-list]');
 			const drillTotal = document.querySelector('[data-drill-total]');
 			const drillForm = document.getElementById('drill-form');
@@ -3502,10 +3495,10 @@
 			const drillCancelEditButton = document.querySelector('[data-drill-cancel-edit]');
 			const modals = Array.from(document.querySelectorAll('[data-modal]'));
 			const navButtons = Array.from(document.querySelectorAll('.nav-item[data-page]'));
-			const standardSports = ['Soccer', 'Basketball', 'Baseball', 'Football', 'Tennis'];
+			const standardSports = ['Badminton', 'Soccer', 'Basketball', 'Baseball', 'Football', 'Tennis'];
 			let drafts = [];
 			let plans = [];
-			let preferredSport = 'Soccer';
+			let preferredSport = 'Badminton';
 			let activeDraftId = null;
 			let tiers = [];
 			let players = [];
@@ -3847,9 +3840,6 @@
 				if (page === 'players') {
 					loadPlayersPageData();
 				}
-				if (page === 'planner') {
-					loadPlannerData();
-				}
 				if (page === 'history') {
 					loadHistory();
 				}
@@ -4163,15 +4153,41 @@
 				if (!modal) return;
 				if (name === 'new-plan') {
 					setPlanFormError('');
-					if (!options.preserveDraft) {
+					if (drillError) drillError.textContent = '';
+					const planNameInput = document.getElementById('plan-name-input');
+					const planDateInput = document.getElementById('plan-date-input');
+					if (options.editPlan) {
+						const plan = options.editPlan;
 						activeDraftId = null;
+						renderSportOptions();
+						if (standardSports.includes(plan.sport)) {
+							sportSelect.value = plan.sport;
+							customSportInput.value = '';
+						} else {
+							sportSelect.value = '__other__';
+							customSportInput.value = plan.sport;
+						}
+						updateCustomSportField();
+						syncDuration(String(plan.duration_minutes));
+						if (planNameInput) planNameInput.value = plan.name || '';
+						if (planDateInput) planDateInput.value = plan.session_date || '';
+						plannerSelectedPlanId = plan.id;
+						if (newPlanTitle) newPlanTitle.textContent = 'Edit plan';
+						resetDrillForm();
+						loadDrills();
+						updateBuilderControls();
+					} else if (!options.preserveDraft) {
+						activeDraftId = null;
+						plannerSelectedPlanId = null;
 						renderSportOptions();
 						customSportInput.value = '';
 						syncDuration(durationInput.value || '60');
-						const planNameInput = document.getElementById('plan-name-input');
-						const planDateInput = document.getElementById('plan-date-input');
 						if (planNameInput) planNameInput.value = '';
 						if (planDateInput) planDateInput.value = '';
+						if (newPlanTitle) newPlanTitle.textContent = 'Create a lesson plan';
+						resetDrillForm();
+						renderDrills();
+						updateBuilderControls();
 					}
 				}
 				if (name === 'drafts') {
@@ -4515,6 +4531,7 @@
 				drafts = [];
 				renderPlans();
 				renderDrafts();
+				preferredSport = 'Badminton';
 				setAuthMode('login');
 				showLanding();
 			});
@@ -4646,28 +4663,17 @@
 					return;
 				}
 
-				const plannerStartButton = event.target.closest('[data-planner-start]');
-				if (plannerStartButton) {
-					if (!plannerSelectedPlanId) {
-						drillError.textContent = 'Add a drill below first — the plan is created with it';
-						return;
-					}
+				const builderStartButton = event.target.closest('[data-builder-start]');
+				if (builderStartButton) {
+					if (!plannerSelectedPlanId) return;
 					closeAllModals();
 					openTimer(plannerSelectedPlanId);
 					return;
 				}
 
-				const plannerSaveButton = event.target.closest('[data-planner-save]');
-				if (plannerSaveButton) {
-					handleSavePlan();
-					return;
-				}
-
 				const planCard = event.target.closest('[data-plan-open]');
 				if (planCard) {
-					plannerSelectedPlanId = planCard.dataset.planOpen;
-					closeAllModals();
-					setPage('planner');
+					openPlanEditor(planCard.dataset.planOpen);
 					return;
 				}
 
@@ -4781,10 +4787,16 @@
 
 			document.getElementById('new-plan-form').addEventListener('submit', async (event) => {
 				event.preventDefault();
+				// If the plan already exists (created here, or by adding a drill), finish.
+				if (plannerSelectedPlanId) {
+					activeDraftId = null;
+					await Promise.all([loadPlans(), loadDrafts()]);
+					closeAllModals();
+					setPage('plans');
+					return;
+				}
 				const values = readFormValues();
 				if (!values) return;
-
-				// name/date exist on plans, not drafts — attach them to the plan body.
 				const planNameInput = document.getElementById('plan-name-input');
 				const planDateInput = document.getElementById('plan-date-input');
 				const body = {
@@ -4792,7 +4804,6 @@
 					name: planNameInput.value.trim() || null,
 					session_date: planDateInput.value || null,
 				};
-
 				const endpoint = activeDraftId ? `/api/drafts/${activeDraftId}/promote` : '/api/plans';
 				const response = await fetch(endpoint, {
 					method: 'POST',
@@ -4800,20 +4811,15 @@
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify(body),
 				});
-
-				if (response.status === 401) {
-					showAuthGate();
-					return;
-				}
-				if (!response.ok) {
-					setPlanFormError(await parseErrorMessage(response));
-					return;
-				}
-
+				if (response.status === 401) { showAuthGate(); return; }
+				if (!response.ok) { setPlanFormError(await parseErrorMessage(response)); return; }
+				const plan = await response.json();
 				activeDraftId = null;
-				await Promise.all([loadPlans(), loadDrafts()]);
-				closeAllModals();
-				setPage('plans');
+				plannerSelectedPlanId = plan.id;
+				if (newPlanTitle) newPlanTitle.textContent = 'Edit plan';
+				await loadPlans();
+				await loadDrills();
+				updateBuilderControls();
 			});
 
 			document.getElementById('new-player-form').addEventListener('submit', async (event) => {
@@ -5756,11 +5762,11 @@
 					plannerSelectedPlanId = plan.id;
 					lastInsight = null;
 					insightResult.innerHTML = `
-						<p class="insight-copy">Saved! The drills are now in your planner — tweak, reorder, or time them from Start Session.</p>
+						<p class="insight-copy">Saved! The drills are in the builder above — tweak, reorder, or start the session.</p>
 					`;
 					insightObjectiveInput.value = '';
-					await loadPlans();
-					setPage('planner');
+					if (newPlanTitle) newPlanTitle.textContent = 'Edit plan';
+					await loadPlannerData();
 				} catch (error) {
 					insightError.textContent = 'Could not reach the server — try again.';
 				} finally {
@@ -5811,7 +5817,9 @@
 					return;
 				}
 				plannerSelectedPlanId = null;
-				await loadPlannerData();
+				closeAllModals();
+				await loadPlans();
+				setPage('plans');
 			}
 
 			// --- Planner / drill builder ---
@@ -5889,123 +5897,59 @@
 				renderDrills();
 			}
 
-			// Shows/hides the inline sport+minutes fields and the Start/Delete
-			// buttons depending on whether an existing plan or "New plan" is chosen.
-			const updatePlannerMode = () => {
-				const isNew = !plannerSelectedPlanId;
-				plannerNewFields.hidden = !isNew;
-				plannerStartBtn.hidden = isNew;
-				plannerDeleteBtn.hidden = isNew;
+			// Toggle the builder's Start + Delete controls and relabel the primary
+			// button depending on whether the plan exists yet.
+			const updateBuilderControls = () => {
+				const has = !!plannerSelectedPlanId;
+				if (builderStartBtn) builderStartBtn.hidden = !has;
+				if (planDeleteBtn) planDeleteBtn.hidden = !has;
+				if (newPlanPrimaryBtn) newPlanPrimaryBtn.textContent = has ? 'Done' : 'Create plan';
 			};
 
-			const initPlannerSportSelect = () => {
-				plannerSportSelect.innerHTML = '';
-				standardSports.forEach((sport) => {
-					const option = document.createElement('option');
-					option.value = sport;
-					option.textContent = sport;
-					plannerSportSelect.appendChild(option);
-				});
-				const other = document.createElement('option');
-				other.value = '__other__';
-				other.textContent = 'Other sport…';
-				plannerSportSelect.appendChild(other);
-			};
-			initPlannerSportSelect();
-
-			plannerSportSelect.addEventListener('change', () => {
-				plannerCustomSportField.hidden = plannerSportSelect.value !== '__other__';
-				if (!plannerCustomSportField.hidden) plannerCustomSportInput.focus();
-			});
-
-			// Creates the plan from the inline new-plan fields. Returns the new plan
-			// id, or null after surfacing an error.
+			// Creates the plan from the New Plan modal's config fields. Returns the
+			// new plan id, or null after surfacing an error.
 			async function createPlanFromPlannerFields() {
-				const isCustom = plannerSportSelect.value === '__other__';
-				if (isCustom && !plannerCustomSportInput.value.trim()) {
-					drillError.textContent = 'Type the sport name first';
-					plannerCustomSportField.hidden = false;
-					plannerCustomSportInput.focus();
+				const isCustom = sportSelect.value === '__other__';
+				if (isCustom && !customSportInput.value.trim()) {
+					setPlanFormError('Type the sport name first');
+					customSportField.hidden = false;
+					customSportInput.focus();
 					return null;
 				}
-				const rawMinutes = Number.parseInt(plannerMinutesInput.value, 10) || 60;
+				const rawMinutes = Number.parseInt(durationInput.value, 10) || 60;
 				const minutes = Math.min(240, Math.max(5, Math.round(rawMinutes / 5) * 5));
-
+				const planNameInput = document.getElementById('plan-name-input');
+				const planDateInput = document.getElementById('plan-date-input');
 				const response = await fetch('/api/plans', {
 					method: 'POST',
 					credentials: 'include',
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({
-						sport: plannerSportSelect.value,
-						custom_sport: isCustom ? plannerCustomSportInput.value.trim() : null,
-						name: plannerNameInput.value.trim() || null,
-						session_date: plannerDateInput.value || null,
+						sport: sportSelect.value,
+						custom_sport: isCustom ? customSportInput.value.trim() : null,
+						name: planNameInput.value.trim() || null,
+						session_date: planDateInput.value || null,
 						duration_minutes: minutes,
 					}),
 				});
-				if (response.status === 401) {
-					showAuthGate();
-					return null;
-				}
-				if (!response.ok) {
-					drillError.textContent = await parseErrorMessage(response);
-					return null;
-				}
+				if (response.status === 401) { showAuthGate(); return null; }
+				if (!response.ok) { drillError.textContent = await parseErrorMessage(response); return null; }
 				const plan = await response.json();
 				return plan.id;
 			}
 
-			const resetPlannerNewFields = () => {
-				plannerNameInput.value = '';
-				plannerDateInput.value = '';
-				plannerSportSelect.value = standardSports[0];
-				plannerCustomSportField.hidden = true;
-				plannerCustomSportInput.value = '';
-				plannerMinutesInput.value = '60';
-			};
-
-			// Explicit "Save plan" — creates the plan now (empty of drills), so a coach
-			// can name and schedule a session first and add drills later.
-			async function handleSavePlan() {
-				drillError.textContent = '';
-				const planId = await createPlanFromPlannerFields();
-				if (!planId) return;
-				plannerSelectedPlanId = planId;
-				resetPlannerNewFields();
-				await loadPlannerData();
-			}
-
 			async function loadPlannerData() {
 				await loadPlans();
-
-				plannerPlanSelect.innerHTML = '';
-				const newOption = document.createElement('option');
-				newOption.value = '__new__';
-				newOption.textContent = '➕ New plan…';
-				plannerPlanSelect.appendChild(newOption);
-				plans.forEach((plan) => {
-					const option = document.createElement('option');
-					option.value = plan.id;
-					option.textContent = `${planLabel(plan)} — ${plan.duration_minutes} min (${planDateText(plan)})`;
-					plannerPlanSelect.appendChild(option);
-				});
-
-				if (plannerSelectedPlanId && !plans.some((plan) => plan.id === plannerSelectedPlanId)) {
-					plannerSelectedPlanId = plans.length ? plans[0].id : null;
-				}
-				plannerPlanSelect.value = plannerSelectedPlanId || '__new__';
-				updatePlannerMode();
-				resetDrillForm();
 				await loadDrills();
+				updateBuilderControls();
 			}
 
-			plannerPlanSelect.addEventListener('change', () => {
-				const value = plannerPlanSelect.value;
-				plannerSelectedPlanId = value === '__new__' ? null : value || null;
-				updatePlannerMode();
-				resetDrillForm();
-				loadDrills();
-			});
+			function openPlanEditor(planId) {
+				const plan = plans.find((item) => item.id === planId);
+				if (!plan) return;
+				closeAllModals();
+				openModal('new-plan', { editPlan: plan });
+			}
 
 			drillForm.addEventListener('submit', async (event) => {
 				event.preventDefault();
@@ -6050,9 +5994,9 @@
 					return;
 				}
 				if (createdPlan) {
-					// Rebuilds the picker so the new plan shows as selected (this also
-					// refreshes the home hero via loadPlans).
-					resetPlannerNewFields();
+					// First drill created the plan — refresh plans/hero + controls.
+					if (newPlanTitle) newPlanTitle.textContent = 'Edit plan';
+					resetDrillForm();
 					await loadPlannerData();
 				} else {
 					resetDrillForm();
