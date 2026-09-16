@@ -1197,15 +1197,10 @@
 		.hero-badge {
 			display: inline-flex;
 			align-items: center;
-			gap: 10px;
-			padding: 10px 14px;
-			border-radius: 999px;
-			background: var(--accent-soft);
+			gap: 8px;
 			color: var(--accent);
-			font-size: 0.82rem;
-			font-weight: 800;
-			letter-spacing: 0.08em;
-			text-transform: uppercase;
+			font-size: 0.95rem;
+			font-weight: 700;
 		}
 
 		.hero-badge::before {
@@ -1213,8 +1208,8 @@
 			width: 9px;
 			height: 9px;
 			border-radius: 50%;
-			background: currentColor;
-			box-shadow: 0 0 16px currentColor;
+			background: #ff453a;
+			box-shadow: 0 0 12px rgba(255, 69, 58, 0.6);
 		}
 
 		.calendar {
@@ -1616,95 +1611,162 @@
 			z-index: 82;
 			display: none;
 			overflow-y: auto;
-			padding: max(28px, env(safe-area-inset-top, 0px)) 24px max(28px, env(safe-area-inset-bottom, 0px));
-			/* Landing page: black-and-gold gradient. */
-			background:
-				radial-gradient(circle at 50% 0%, rgba(214, 173, 63, 0.32), transparent 45%),
-				radial-gradient(circle at 85% 12%, rgba(214, 173, 63, 0.16), transparent 30%),
-				radial-gradient(circle at 8% 90%, rgba(214, 173, 63, 0.10), transparent 34%),
-				linear-gradient(180deg, #17130a 0%, #0a0a0a 30%, #000000 100%);
+			color: var(--text);
+			/* Landing-only: recolor the lime accent to gold everywhere inside. */
+			--accent: #d6ad3f;
+			background-color: #0a0b0d;
+			background-image:
+				radial-gradient(circle at 82% -8%, rgba(255, 255, 255, 0.06), transparent 42%),
+				linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+				linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+			background-size: 100% 100%, 44px 44px, 44px 44px;
 		}
 
-		.landing.is-active {
-			display: grid;
-			align-content: safe center;
-			justify-items: center;
+		.landing.is-active { display: block; }
+
+		.landing-nav {
+			position: sticky;
+			top: 0;
+			z-index: 5;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 12px;
+			padding: 12px max(16px, env(safe-area-inset-left, 0px));
+			background: rgba(10, 11, 13, 0.82);
+			backdrop-filter: blur(12px);
+			-webkit-backdrop-filter: blur(12px);
+			border-bottom: 1px solid rgba(255, 255, 255, 0.07);
 		}
 
-		.landing-inner {
-			width: min(560px, 100%);
-			display: grid;
-			gap: 28px;
+		.landing-brand { font-weight: 900; font-size: 1.1rem; letter-spacing: -0.03em; }
+		.landing-brand span { color: var(--accent); }
+		.landing-nav-actions { display: flex; align-items: center; gap: 6px; }
+		.landing-nav-login {
+			background: transparent; border: 0; color: var(--text); font: inherit;
+			font-weight: 700; font-size: 0.9rem; padding: 8px 12px; cursor: pointer; border-radius: 10px;
 		}
+		.landing-nav-login:hover { background: rgba(255, 255, 255, 0.06); }
+		.landing-nav-cta {
+			background: var(--accent); color: #0a0b0d; border: 0; border-radius: 11px;
+			font: inherit; font-weight: 800; font-size: 0.9rem; padding: 9px 16px; cursor: pointer;
+		}
+		.landing-nav-cta:hover { filter: brightness(1.05); }
+
+		.landing-page { width: min(1080px, 100%); margin: 0 auto; padding: 40px 20px 56px; }
 
 		.landing-hero {
-			display: grid;
-			gap: 14px;
-			text-align: center;
+			display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 34px; align-items: center;
+			padding: 28px 0 44px;
 		}
-
 		.landing-eyebrow {
-			font-size: 0.8rem;
-			letter-spacing: 0.22em;
-			text-transform: uppercase;
-			color: var(--accent);
-			font-weight: 800;
+			display: inline-flex; align-items: center; gap: 8px;
+			font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase;
+			color: var(--muted); font-weight: 800; margin-bottom: 16px;
 		}
+		.landing-title { margin: 0 0 16px; font-size: clamp(2.4rem, 6vw, 4rem); line-height: 1.02; letter-spacing: -0.045em; font-weight: 900; }
+		.landing-sub { margin: 0 0 24px; color: var(--muted); font-size: 1.05rem; line-height: 1.6; max-width: 46ch; }
+		.landing-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+		.landing-cta {
+			background: var(--accent); color: #0a0b0d; border: 0; border-radius: 13px;
+			font: inherit; font-weight: 800; font-size: 1rem; padding: 14px 22px; cursor: pointer;
+		}
+		.landing-cta:hover { filter: brightness(1.05); }
+		.landing-ghost {
+			background: transparent; color: var(--text); border: 1px solid rgba(255, 255, 255, 0.2);
+			border-radius: 13px; font: inherit; font-weight: 700; font-size: 1rem; padding: 14px 22px; cursor: pointer;
+		}
+		.landing-ghost:hover { background: rgba(255, 255, 255, 0.05); }
+		.landing-note { margin: 16px 0 0; font-size: 0.82rem; color: var(--muted); }
 
-		.landing-title {
-			margin: 0;
-			font-size: clamp(2.4rem, 8vw, 3.6rem);
-			line-height: 1.02;
-			letter-spacing: -0.04em;
+		.landing-visual {
+			border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 22px;
+			background: linear-gradient(180deg, rgba(30, 30, 34, 0.9), rgba(14, 14, 16, 0.95));
+			padding: 18px; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+			display: grid; gap: 14px; align-content: start;
 		}
+		.lp-head { display: flex; align-items: center; justify-content: space-between; }
+		.lp-head-title { font-weight: 800; font-size: 0.9rem; }
+		.lp-head-tag { font-size: 0.66rem; color: var(--accent); font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+		.lp-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+		.lp-stat { background: rgba(255, 255, 255, 0.04); border-radius: 14px; padding: 10px 12px; }
+		.lp-stat b { display: block; font-size: 1.3rem; font-weight: 900; letter-spacing: -0.02em; }
+		.lp-stat span { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 800; }
+		.lp-chart { width: 100%; height: auto; display: block; }
+		.lp-bars { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; align-items: end; height: 54px; }
+		.lp-bar { background: linear-gradient(180deg, var(--accent), rgba(214, 173, 63, 0.25)); border-radius: 5px 5px 2px 2px; }
+		.lp-hbar { display: grid; grid-template-columns: 76px 1fr; gap: 10px; align-items: center; font-size: 0.8rem; color: var(--muted); font-weight: 700; }
+		.lp-track { height: 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.08); overflow: hidden; }
+		.lp-track > div { height: 100%; border-radius: 999px; background: var(--accent); }
 
-		.landing-sub {
-			margin: 0;
-			color: var(--muted);
-			font-size: 1.02rem;
-			line-height: 1.6;
+		.landing-trust {
+			display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+			border-top: 1px solid rgba(255, 255, 255, 0.08); border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+			padding: 22px 0; margin: 0 0 44px; text-align: center;
 		}
+		.landing-trust b { display: block; font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 900; letter-spacing: -0.03em; }
+		.landing-trust span { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
+
+		.landing-section-eyebrow { font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); font-weight: 800; }
+		.landing-section-title { margin: 8px 0 24px; font-size: clamp(1.6rem, 4vw, 2.4rem); letter-spacing: -0.03em; font-weight: 900; }
 
 		.landing-features {
 			display: grid;
-			gap: 12px;
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+			gap: 1px;
+			background: rgba(255, 255, 255, 0.08);
+			border-top: 1px solid rgba(255, 255, 255, 0.08);
+			border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+			margin-bottom: 56px;
 		}
-
 		.landing-feature {
-			display: flex;
-			gap: 12px;
-			align-items: center;
-			padding: 14px 16px;
-			border-radius: 18px;
-			background: rgba(255, 255, 255, 0.04);
-			border: 1px solid rgba(255, 255, 255, 0.06);
-		}
-
-		.landing-feature-icon {
-			font-size: 1.35rem;
-			line-height: 1;
-			flex-shrink: 0;
-		}
-
-		.landing-feature-text {
-			font-size: 0.95rem;
-			line-height: 1.45;
-			color: var(--muted);
-		}
-
-		.landing-feature-text strong {
-			color: var(--text);
-		}
-
-		.landing-actions {
+			background: #0a0b0d;
+			padding: 34px 26px 38px;
 			display: grid;
 			gap: 12px;
+			align-content: start;
+		}
+		.landing-feature-fig-label {
+			font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+			font-size: 0.68rem;
+			letter-spacing: 0.2em;
+			text-transform: uppercase;
+			color: rgba(255, 255, 255, 0.32);
+		}
+		.landing-feature-fig {
+			height: 132px;
+			display: grid;
+			place-items: center;
+			color: rgba(255, 255, 255, 0.55);
+			margin: 2px 0 6px;
+		}
+		.landing-feature-fig svg { width: auto; height: 118px; }
+		.landing-feature h3 { margin: 0; font-size: 1.05rem; font-weight: 700; letter-spacing: -0.01em; }
+		.landing-feature p { margin: 0; font-size: 0.92rem; line-height: 1.55; color: var(--muted); }
+
+		@media (max-width: 760px) {
+			.landing-features { grid-template-columns: 1fr; }
 		}
 
-		.landing-note {
-			text-align: center;
-			font-size: 0.82rem;
-			color: var(--muted);
+		.landing-band {
+			display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: center;
+			border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 24px;
+			background: rgba(255, 255, 255, 0.02); padding: 28px; margin-bottom: 48px;
+		}
+		.landing-band ul { margin: 12px 0 0; padding-left: 18px; color: var(--muted); line-height: 1.9; }
+		.landing-band ul strong { color: var(--text); }
+
+		.landing-final { text-align: center; padding: 20px 0 8px; }
+		.landing-final h2 { margin: 0 0 18px; font-size: clamp(1.8rem, 5vw, 2.8rem); letter-spacing: -0.03em; font-weight: 900; }
+		.landing-final .landing-actions { justify-content: center; }
+
+		.landing-footer { color: var(--muted); font-size: 0.85rem; text-align: center; padding: 26px 0 0; border-top: 1px solid rgba(255, 255, 255, 0.08); margin-top: 24px; }
+		.landing-footer a { margin: 0 8px; color: var(--muted); }
+
+		@media (max-width: 820px) {
+			.landing-hero { grid-template-columns: 1fr; gap: 24px; padding: 18px 0 30px; }
+			.landing-band { grid-template-columns: 1fr; gap: 18px; padding: 22px; }
+			.landing-trust { grid-template-columns: repeat(2, 1fr); gap: 20px 12px; }
 		}
 
 		.auth-gate {
@@ -3077,43 +3139,130 @@
 </head>
 <body>
 	<section class="landing is-active" data-landing>
-		<div class="landing-inner">
-			<div class="landing-hero">
-				<div class="landing-eyebrow">Coach Studio</div>
-				<h1 class="landing-title">Run every practice like a pro.</h1>
-				<p class="landing-sub">Plan sessions, time drills to the second, organize your roster, and get AI-powered drill ideas — all from your phone, courtside.</p>
+		<header class="landing-nav">
+			<div class="landing-brand">Coach <span>Studio</span></div>
+			<div class="landing-nav-actions">
+				<button class="landing-nav-login" type="button" data-landing-login>Log in</button>
+				<button class="landing-nav-cta" type="button" data-landing-start>Get started</button>
 			</div>
+		</header>
+		<div class="landing-page">
+			<div class="landing-hero">
+				<div class="landing-hero-copy">
+					<div class="landing-eyebrow">For coaches</div>
+					<h1 class="landing-title">The platform you run practice on.</h1>
+					<p class="landing-sub">Plan sessions, time drills and group rotations to the second, track attendance, and get AI drill ideas — all from your phone, courtside.</p>
+					<div class="landing-actions">
+						<button class="landing-cta" type="button" data-landing-start>Get started — free</button>
+						<button class="landing-ghost" type="button" data-landing-login>Log in</button>
+					</div>
+					<p class="landing-note">No credit card. Built for real practices.</p>
+				</div>
+				<div class="landing-visual" aria-hidden="true">
+					<div class="lp-head"><span class="lp-head-title">This week</span></div>
+					<div class="lp-stats">
+						<div class="lp-stat"><b>18</b><span>Roster</span></div>
+						<div class="lp-stat"><b>6</b><span>Sessions</span></div>
+						<div class="lp-stat"><b>92%</b><span>Attendance</span></div>
+					</div>
+					<svg class="lp-chart" viewBox="0 0 320 120" role="img" aria-label="Attendance trend">
+						<defs><linearGradient id="lpg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--accent)" stop-opacity="0.35"></stop><stop offset="1" stop-color="var(--accent)" stop-opacity="0"></stop></linearGradient></defs>
+						<path d="M4 88 L50 74 L96 80 L142 54 L188 60 L234 34 L280 42 L316 20 L316 116 L4 116 Z" fill="url(#lpg)"></path>
+						<path d="M4 88 L50 74 L96 80 L142 54 L188 60 L234 34 L280 42 L316 20" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+					</svg>
+					<div class="lp-bars">
+						<span class="lp-bar" style="height:42%"></span><span class="lp-bar" style="height:64%"></span><span class="lp-bar" style="height:50%"></span><span class="lp-bar" style="height:78%"></span><span class="lp-bar" style="height:60%"></span><span class="lp-bar" style="height:88%"></span><span class="lp-bar" style="height:70%"></span>
+					</div>
+				</div>
+			</div>
+
+			<div class="landing-trust">
+				<div><b>2.4k+</b><span>drills timed</span></div>
+				<div><b>640</b><span>sessions run</span></div>
+				<div><b>1.1k</b><span>players tracked</span></div>
+				<div><b>4.9&#9733;</b><span>coach rating</span></div>
+			</div>
+
+			<div class="landing-section-eyebrow">Everything in one place</div>
+			<h2 class="landing-section-title">Built for the whole practice.</h2>
 			<div class="landing-features">
 				<div class="landing-feature">
-					<span class="landing-feature-icon">⏱️</span>
-					<span class="landing-feature-text"><strong>Precision drill timer</strong> — reps, one-tap minute adjustments, and vibration cues.</span>
+					<div class="landing-feature-fig-label">FIG 0.1</div>
+					<div class="landing-feature-fig"><svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="60" cy="64" r="46" opacity="0.3"/><circle cx="60" cy="64" r="33"/><line x1="52" y1="16" x2="68" y2="16"/><line x1="60" y1="14" x2="60" y2="22"/><line x1="60" y1="64" x2="60" y2="42"/><line x1="60" y1="64" x2="76" y2="70"/><circle cx="60" cy="64" r="2.4" fill="currentColor" stroke="none"/></svg></div>
+					<h3>Precision &amp; group timers</h3>
+					<p>Time drills to the second, or run multiple rotation timers that buzz and auto-advance.</p>
 				</div>
 				<div class="landing-feature">
-					<span class="landing-feature-icon">📋</span>
-					<span class="landing-feature-text"><strong>Practice plans in seconds</strong> — build, name, and reuse sessions.</span>
+					<div class="landing-feature-fig-label">FIG 0.2</div>
+					<div class="landing-feature-fig"><svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M60 24 L98 44 L60 64 L22 44 Z"/><path d="M22 58 L60 78 L98 58" opacity="0.55"/><path d="M22 44 L22 58 M98 44 L98 58 M60 64 L60 78" opacity="0.5"/><path d="M22 72 L60 92 L98 72" opacity="0.35"/><path d="M22 58 L22 72 M98 58 L98 72 M60 78 L60 92" opacity="0.35"/></svg></div>
+					<h3>Plans in seconds</h3>
+					<p>Build, name, and reuse session plans with per-drill minutes, groups, and repeats.</p>
 				</div>
 				<div class="landing-feature">
-					<span class="landing-feature-icon">🧠</span>
-					<span class="landing-feature-text"><strong>AI drill &amp; grouping ideas</strong> — tuned to your roster and skill tiers.</span>
+					<div class="landing-feature-fig-label">FIG 0.3</div>
+					<div class="landing-feature-fig"><svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="40" cy="44" r="8"/><circle cx="60" cy="44" r="8"/><circle cx="80" cy="44" r="8"/><circle cx="40" cy="76" r="8"/><circle cx="60" cy="76" r="8"/><circle cx="80" cy="76" r="8"/><path d="M40 52 v10 M60 52 v10 M80 52 v10" opacity="0.4"/></svg></div>
+					<h3>Roster &amp; attendance</h3>
+					<p>Organize players by skill tier and check them in for every session.</p>
 				</div>
 				<div class="landing-feature">
-					<span class="landing-feature-icon">📸</span>
-					<span class="landing-feature-text"><strong>Import your roster from a photo</strong> — snap a list and organize by skill.</span>
+					<div class="landing-feature-fig-label">FIG 0.4</div>
+					<div class="landing-feature-fig"><svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="1.4"><line x1="60" y1="60" x2="30" y2="36" opacity="0.55"/><line x1="60" y1="60" x2="92" y2="40" opacity="0.55"/><line x1="60" y1="60" x2="34" y2="88" opacity="0.55"/><line x1="60" y1="60" x2="90" y2="86" opacity="0.55"/><circle cx="60" cy="60" r="11"/><circle cx="30" cy="36" r="5"/><circle cx="92" cy="40" r="5"/><circle cx="34" cy="88" r="5"/><circle cx="90" cy="86" r="5"/></svg></div>
+					<h3>AI drill ideas</h3>
+					<p>Get a focus, drills, and coaching cues tuned to your roster and objective.</p>
+				</div>
+				<div class="landing-feature">
+					<div class="landing-feature-fig-label">FIG 0.5</div>
+					<div class="landing-feature-fig"><svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><rect x="26" y="34" width="68" height="54" rx="7"/><circle cx="45" cy="52" r="5"/><path d="M30 84 L52 62 L66 74 L80 62 L90 70" opacity="0.75"/></svg></div>
+					<h3>Import from a photo</h3>
+					<p>Snap a roster list and turn it into players, sorted by skill.</p>
+				</div>
+				<div class="landing-feature">
+					<div class="landing-feature-fig-label">FIG 0.6</div>
+					<div class="landing-feature-fig"><svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><line x1="24" y1="26" x2="24" y2="92" opacity="0.4"/><line x1="24" y1="92" x2="98" y2="92" opacity="0.4"/><polyline points="30,80 46,60 62,68 78,44 94,34"/><circle cx="30" cy="80" r="2.3" fill="currentColor" stroke="none"/><circle cx="46" cy="60" r="2.3" fill="currentColor" stroke="none"/><circle cx="62" cy="68" r="2.3" fill="currentColor" stroke="none"/><circle cx="78" cy="44" r="2.3" fill="currentColor" stroke="none"/><circle cx="94" cy="34" r="2.3" fill="currentColor" stroke="none"/></svg></div>
+					<h3>Session analytics</h3>
+					<p>Attendance trends, drill-mix, roster balance, and streaks at a glance.</p>
 				</div>
 			</div>
-			<div class="landing-actions">
-				<button class="primary-action" type="button" data-landing-start>Get started — it's free</button>
-				<button class="secondary-button" type="button" data-landing-login>Log in</button>
+			<div class="landing-band">
+				<div>
+					<div class="landing-section-eyebrow">See your season</div>
+					<h2 class="landing-section-title" style="margin-bottom:6px">Know what's working.</h2>
+					<ul>
+						<li><strong>Attendance trends</strong> across every session</li>
+						<li><strong>Drill-mix</strong> breakdown of where practice time goes</li>
+						<li><strong>Roster balance</strong> by skill tier</li>
+						<li><strong>Streaks &amp; totals</strong> to keep momentum</li>
+					</ul>
+				</div>
+				<div class="landing-visual" aria-hidden="true">
+					<div class="lp-head"><span class="lp-head-title">Roster balance</span></div>
+					<div style="display:grid;gap:10px">
+						<div class="lp-hbar"><span>Beginner</span><div class="lp-track"><div style="width:80%"></div></div></div>
+						<div class="lp-hbar"><span>Intermediate</span><div class="lp-track"><div style="width:55%"></div></div></div>
+						<div class="lp-hbar"><span>Advanced</span><div class="lp-track"><div style="width:35%"></div></div></div>
+						<div class="lp-hbar"><span>Elite</span><div class="lp-track"><div style="width:18%"></div></div></div>
+					</div>
+					<div class="lp-bars">
+						<span class="lp-bar" style="height:55%"></span><span class="lp-bar" style="height:70%"></span><span class="lp-bar" style="height:48%"></span><span class="lp-bar" style="height:82%"></span><span class="lp-bar" style="height:66%"></span><span class="lp-bar" style="height:90%"></span><span class="lp-bar" style="height:60%"></span>
+					</div>
+				</div>
 			</div>
-			<p class="landing-note">No credit card. Built for coaches.</p>
-			<footer class="auth-legal-footer">
+
+			<div class="landing-final">
+				<h2>Run your best practice yet.</h2>
+				<div class="landing-actions">
+					<button class="landing-cta" type="button" data-landing-start>Get started — free</button>
+					<button class="landing-ghost" type="button" data-landing-login>Log in</button>
+				</div>
+			</div>
+
+			<footer class="landing-footer">
 				<a href="/static/legal/privacy.html" target="_blank" rel="noopener">Privacy</a>
 				<a href="/static/legal/terms.html" target="_blank" rel="noopener">Terms</a>
 				<a href="/static/legal/accessibility.html" target="_blank" rel="noopener">Accessibility</a>
 			</footer>
 		</div>
 	</section>
-
 	<div class="auth-gate" data-auth-gate data-mode="login">
 		<div class="auth-stack">
 			<button class="auth-back" type="button" data-auth-back>&larr; Back</button>
@@ -3188,7 +3337,7 @@
 
 		<section class="hero-card" aria-label="Today session overview">
 			<div class="hero-row">
-				<div class="hero-badge">Live Today</div>
+				<div class="hero-badge" data-hero-date>Today</div>
 				<div class="calendar" aria-hidden="true"></div>
 			</div>
 
@@ -3652,7 +3801,7 @@
 					<button class="primary-button" type="button" data-gt-start-all>Start all</button>
 				</div>
 			</div>
-			<p class="gt-hint">Each timer splits its total across the number of groups. When a group's time is up it buzzes, gives a 5-second rotation, then auto-starts the next — and repeats the whole set. Press <strong>Start all</strong> to run them together.</p>
+			<p class="gt-hint">Set the minutes per group. Each group runs for that time, then it buzzes, gives a 5-second rotation, and auto-starts the next group — cycling through all groups and repeating the whole set. Press <strong>Start all</strong> to run them together.</p>
 			<p class="field-error" data-gt-error></p>
 			<div class="gt-list" data-gt-list></div>
 			<button class="gt-add-button" type="button" data-gt-add>+ Add new timer</button>
@@ -3721,6 +3870,7 @@
 			const timerSub = document.querySelector('[data-timer-sub]');
 			const timerToggleButton = document.querySelector('[data-timer-toggle]');
 			const homeDateEl = document.querySelector('[data-home-date]');
+			const heroDateEl = document.querySelector('[data-hero-date]');
 			const heroTitleEl = document.querySelector('[data-hero-title]');
 			const heroSubtitleEl = document.querySelector('[data-hero-subtitle]');
 			const statDurationEl = document.querySelector('[data-stat-duration]');
@@ -4553,11 +4703,13 @@
 			}
 
 			const updateHomeHero = () => {
-				homeDateEl.textContent = new Date().toLocaleDateString(undefined, {
+				const todayLabel = new Date().toLocaleDateString(undefined, {
 					weekday: 'short',
 					month: 'short',
 					day: 'numeric',
 				});
+				homeDateEl.textContent = todayLabel;
+				if (heroDateEl) heroDateEl.textContent = todayLabel;
 				if (plans.length) {
 					heroTitleEl.textContent = planLabel(plans[0]);
 					heroSubtitleEl.textContent = `${plans[0].sport} · ${planDateText(plans[0])}`;
@@ -4718,16 +4870,10 @@
 				});
 			});
 
-			if (landingStartButton) {
-				landingStartButton.addEventListener('click', () => {
-					setAuthMode('signup');
-					showAuthGate();
-				});
-			}
-			if (landingLoginButton) {
-				landingLoginButton.addEventListener('click', () => {
-					setAuthMode('login');
-					showAuthGate();
+			if (landing) {
+				landing.addEventListener('click', (event) => {
+					if (event.target.closest('[data-landing-start]')) { setAuthMode('signup'); showAuthGate(); return; }
+					if (event.target.closest('[data-landing-login]')) { setAuthMode('login'); showAuthGate(); return; }
 				});
 			}
 			if (authBackButton) {
@@ -6676,7 +6822,7 @@
 				groupTimers = planDrills.map((d) => ({
 					id: 'gt' + (groupSeq++),
 					name: d.name,
-					totalMin: Math.min(240, Math.max(1, d.duration_minutes)),
+					minPerGroup: Math.min(240, Math.max(1, d.duration_minutes)),
 					groups: Math.min(60, Math.max(1, d.groups || 1)),
 					repeats: Math.min(50, Math.max(1, d.repeats || 1)),
 					phase: 'idle',
@@ -6729,8 +6875,8 @@
 			});
 
 			// ---- Group rotation timers -------------------------------------
-			// Inline, editable timers. Each splits its total across `groups` turns
-			// (total / groups per turn); at each turn end it buzzes + notifies,
+			// Inline, editable timers. Each group runs for `minPerGroup`; the timer
+			// rotates through `groups` groups, then repeats the set `repeats` times;
 			// waits GT_ROTATE_SECONDS to rotate, then auto-starts the next turn.
 			// `repeats` runs the whole set again. "Start all" launches them together.
 			const GT_ROTATE_SECONDS = 5;
@@ -6748,12 +6894,12 @@
 				const s = Math.max(0, Math.ceil(seconds));
 				return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
 			};
-			const gtPerTurn = (t) => Math.max(1, Math.round((t.totalMin * 60) / t.groups));
+			const gtPerTurn = (t) => Math.max(1, Math.round(t.minPerGroup * 60));
 
 			const makeGroupTimer = () => ({
 				id: 'gt' + (groupSeq++),
 				name: '',
-				totalMin: 30,
+				minPerGroup: 10,
 				groups: 3,
 				repeats: 1,
 				phase: 'idle',
@@ -6766,7 +6912,7 @@
 			const gtIsActive = (t) => t.phase === 'running' || t.phase === 'rotating';
 
 			const gtStatusText = (t) => {
-				if (t.phase === 'idle') return `${gtFmtClock(gtPerTurn(t))} each · ${t.groups} groups × ${t.repeats}`;
+				if (t.phase === 'idle') return `${gtFmtClock(gtPerTurn(t))} per group · ${t.groups} groups × ${t.repeats} reps`;
 				if (t.phase === 'rotating') return 'Rotate! Switching players…';
 				if (t.phase === 'done') return `Done — ${t.groups} groups × ${t.repeats} complete`;
 				return `Group ${t.currentGroup}/${t.groups} · Round ${t.currentRepeat}/${t.repeats}`;
@@ -6794,7 +6940,7 @@
 								${removeBtn}
 							</div>
 							<div class="gt-fields">
-								<label class="gt-field">Minutes<input type="number" data-gt-field="totalMin" data-gt-id="${t.id}" value="${t.totalMin}" min="1" max="240" ${dis}></label>
+								<label class="gt-field">Min / group<input type="number" data-gt-field="minPerGroup" data-gt-id="${t.id}" value="${t.minPerGroup}" min="1" max="240" ${dis}></label>
 								<label class="gt-field">Groups<input type="number" data-gt-field="groups" data-gt-id="${t.id}" value="${t.groups}" min="1" max="60" ${dis}></label>
 								<label class="gt-field">Repeats<input type="number" data-gt-field="repeats" data-gt-id="${t.id}" value="${t.repeats}" min="1" max="50" ${dis}></label>
 							</div>
@@ -6893,7 +7039,7 @@
 					if (!t) return;
 					const key = field.dataset.gtField;
 					if (key === 'name') { t.name = field.value.slice(0, 40); return; }
-					if (key === 'totalMin') t.totalMin = gtClampInt(field.value, 1, 240, t.totalMin);
+					if (key === 'minPerGroup') t.minPerGroup = gtClampInt(field.value, 1, 240, t.minPerGroup);
 					else if (key === 'groups') t.groups = gtClampInt(field.value, 1, 60, t.groups);
 					else if (key === 'repeats') t.repeats = gtClampInt(field.value, 1, 50, t.repeats);
 					if (t.phase === 'idle') {
