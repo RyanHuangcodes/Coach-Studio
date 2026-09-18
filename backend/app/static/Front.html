@@ -6,6 +6,9 @@
 	<title>Coach Studio</title>
 	<meta name="theme-color" content="#080808">
 	<link rel="manifest" href="/static/manifest.webmanifest">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
 	<link rel="icon" type="image/png" href="/static/icon-192.png">
 	<link rel="apple-touch-icon" href="/static/apple-touch-icon.png">
 	<meta name="apple-mobile-web-app-capable" content="yes">
@@ -21,8 +24,8 @@
 			--line: rgba(255, 255, 255, 0.08);
 			--text: #f5f2ec;
 			--muted: rgba(245, 242, 236, 0.62);
-			--accent: #ecf120;
-			--accent-soft: rgba(236, 241, 32, 0.14);
+			--accent: #d6ad3f;
+			--accent-soft: rgba(214, 173, 63, 0.14);
 			--shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
 		}
 
@@ -36,7 +39,7 @@
 			font-family: "SF Pro Display", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
 			background:
 				radial-gradient(circle at top left, rgba(154, 67, 31, 0.28), transparent 28%),
-				radial-gradient(circle at 82% 14%, rgba(236, 241, 32, 0.12), transparent 14%),
+				radial-gradient(circle at 82% 14%, rgba(214, 173, 63, 0.12), transparent 14%),
 				linear-gradient(180deg, #1d0907 0%, #090909 22%, #050505 100%);
 			color: var(--text);
 			padding: 0;
@@ -217,8 +220,8 @@
 		}
 
 		.gt-card.is-running {
-			border-color: rgba(236, 241, 32, 0.4);
-			background: rgba(236, 241, 32, 0.06);
+			border-color: rgba(214, 173, 63, 0.4);
+			background: rgba(214, 173, 63, 0.06);
 		}
 
 		.gt-card.is-done {
@@ -404,8 +407,8 @@
 
 		.gt-add-button {
 			width: 100%;
-			border: 1px dashed rgba(236, 241, 32, 0.5);
-			background: rgba(236, 241, 32, 0.06);
+			border: 1px dashed rgba(214, 173, 63, 0.5);
+			background: rgba(214, 173, 63, 0.06);
 			color: var(--accent);
 			font: inherit;
 			font-weight: 800;
@@ -416,7 +419,7 @@
 		}
 
 		.gt-add-button:hover {
-			background: rgba(236, 241, 32, 0.12);
+			background: rgba(214, 173, 63, 0.12);
 		}
 
 		.gt-notify-button {
@@ -896,7 +899,7 @@
 			border-radius: 50%;
 			background:
 				radial-gradient(circle at center, rgba(8, 8, 10, 1) 0 52%, transparent 53%),
-				conic-gradient(from 240deg, rgba(236, 241, 32, 0.88) 0 var(--duration-progress), rgba(255, 255, 255, 0.1) var(--duration-progress) 100%);
+				conic-gradient(from 240deg, rgba(214, 173, 63, 0.88) 0 var(--duration-progress), rgba(255, 255, 255, 0.1) var(--duration-progress) 100%);
 			padding: 20px;
 			box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04), 0 18px 40px rgba(0, 0, 0, 0.35);
 		}
@@ -1071,12 +1074,12 @@
 
 		.draft-item:hover {
 			background: rgba(255, 255, 255, 0.06);
-			border-color: rgba(236, 241, 32, 0.24);
+			border-color: rgba(214, 173, 63, 0.24);
 			transform: translateY(-1px);
 		}
 
 		.draft-item:focus-visible {
-			outline: 2px solid rgba(236, 241, 32, 0.5);
+			outline: 2px solid rgba(214, 173, 63, 0.5);
 			outline-offset: 2px;
 		}
 
@@ -1104,8 +1107,8 @@
 		.dashboard[data-page="history"] .nav-item[data-page="history"] .icon,
 		.dashboard[data-page="analytics"] .nav-item[data-page="analytics"] .icon,
 		.dashboard[data-page="home"] .nav-item[data-page="home"] .icon {
-			background: rgba(236, 241, 32, 0.14);
-			box-shadow: inset 0 0 0 1px rgba(236, 241, 32, 0.16), 0 0 16px rgba(236, 241, 32, 0.12);
+			background: rgba(214, 173, 63, 0.14);
+			box-shadow: inset 0 0 0 1px rgba(214, 173, 63, 0.16), 0 0 16px rgba(214, 173, 63, 0.12);
 		}
 
 		.topbar {
@@ -1170,7 +1173,7 @@
 			height: 64px;
 			border-radius: 50%;
 			background:
-				radial-gradient(circle at 70% 30%, rgba(236, 241, 32, 0.95) 0 8px, transparent 9px),
+				radial-gradient(circle at 70% 30%, rgba(214, 173, 63, 0.95) 0 8px, transparent 9px),
 				radial-gradient(circle at 50% 50%, #09111f 0, #02050a 70%);
 			border: 1px solid rgba(255, 255, 255, 0.12);
 			box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.05), 0 0 0 8px rgba(255, 255, 255, 0.02);
@@ -1360,7 +1363,7 @@
 			height: 8px;
 			border-radius: 50%;
 			background: var(--accent);
-			box-shadow: 0 0 10px rgba(236, 241, 32, 0.9);
+			box-shadow: 0 0 10px rgba(214, 173, 63, 0.9);
 		}
 
 		.mini-label {
@@ -1398,7 +1401,7 @@
 			border-radius: 3px;
 			background: linear-gradient(180deg, var(--accent), #b9c200);
 			transform: rotate(22deg);
-			box-shadow: 0 0 14px rgba(236, 241, 32, 0.55);
+			box-shadow: 0 0 14px rgba(214, 173, 63, 0.55);
 		}
 
 		.insight-copy {
@@ -1475,7 +1478,7 @@
 		}
 
 		.insight-objective-option:hover {
-			border-color: rgba(236, 241, 32, 0.24);
+			border-color: rgba(214, 173, 63, 0.24);
 		}
 
 		.insight-save-button {
@@ -1561,7 +1564,7 @@
 			align-self: end;
 			position: static;
 			display: grid;
-			grid-template-columns: repeat(4, 1fr);
+			grid-template-columns: repeat(5, 1fr);
 			gap: 6px;
 			padding: 14px 10px 12px;
 			border-radius: 28px;
@@ -1601,8 +1604,8 @@
 		}
 
 		.nav-item.active .icon {
-			background: rgba(236, 241, 32, 0.14);
-			box-shadow: inset 0 0 0 1px rgba(236, 241, 32, 0.16), 0 0 16px rgba(236, 241, 32, 0.12);
+			background: rgba(214, 173, 63, 0.14);
+			box-shadow: inset 0 0 0 1px rgba(214, 173, 63, 0.16), 0 0 16px rgba(214, 173, 63, 0.12);
 		}
 
 		.landing {
@@ -1624,60 +1627,184 @@
 
 		.landing.is-active { display: block; }
 
+		.landing-announce {
+			position: relative; display: flex; align-items: center; justify-content: center; gap: 14px;
+			padding: 10px 16px; font-size: 0.82rem; color: rgba(255, 255, 255, 0.72);
+			background: #0d0e11; border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+		}
+		.landing-announce::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65), transparent); opacity: 0.5; }
+		.landing-announce b { color: #fff; font-weight: 700; }
+		.landing-announce button { background: none; border: 0; color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
+		.landing-announce button:hover { text-decoration: underline; }
+
 		.landing-nav {
-			position: sticky;
-			top: 0;
-			z-index: 5;
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			gap: 12px;
-			padding: 12px max(16px, env(safe-area-inset-left, 0px));
-			background: rgba(10, 11, 13, 0.82);
-			backdrop-filter: blur(12px);
-			-webkit-backdrop-filter: blur(12px);
-			border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+			position: sticky; top: 0; z-index: 20;
+			display: flex; align-items: center; gap: 20px;
+			padding: 15px max(20px, env(safe-area-inset-left, 0px));
+			background: rgba(8, 8, 10, 0.72); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+			border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 		}
-
-		.landing-brand { font-weight: 900; font-size: 1.1rem; letter-spacing: -0.03em; }
-		.landing-brand span { color: var(--accent); }
-		.landing-nav-actions { display: flex; align-items: center; gap: 6px; }
-		.landing-nav-login {
-			background: transparent; border: 0; color: var(--text); font: inherit;
-			font-weight: 700; font-size: 0.9rem; padding: 8px 12px; cursor: pointer; border-radius: 10px;
-		}
-		.landing-nav-login:hover { background: rgba(255, 255, 255, 0.06); }
-		.landing-nav-cta {
-			background: var(--accent); color: #0a0b0d; border: 0; border-radius: 11px;
-			font: inherit; font-weight: 800; font-size: 0.9rem; padding: 9px 16px; cursor: pointer;
-		}
-		.landing-nav-cta:hover { filter: brightness(1.05); }
-
-		.landing-page { width: min(1080px, 100%); margin: 0 auto; padding: 40px 20px 56px; }
+		.landing-brand { font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-size: 1.5rem; letter-spacing: -0.01em; color: #fff; margin-right: auto; }
+		.landing-nav-links { display: flex; gap: 26px; }
+		.landing-nav-links a { color: rgba(255, 255, 255, 0.72); font-size: 0.92rem; font-weight: 500; cursor: pointer; text-decoration: none; }
+		.landing-nav-links a:hover { color: #fff; }
+		.landing-nav-actions { display: flex; align-items: center; gap: 14px; margin-left: auto; }
+		.landing-nav-login { background: transparent; border: 0; color: rgba(255, 255, 255, 0.85); font: inherit; font-weight: 600; font-size: 0.92rem; cursor: pointer; padding: 8px 4px; }
+		.landing-nav-login:hover { color: #fff; }
+		.landing-nav-cta { background: transparent; color: #fff; border: 1px solid rgba(255, 255, 255, 0.35); border-radius: 999px; font: inherit; font-weight: 600; font-size: 0.92rem; padding: 9px 20px; cursor: pointer; }
+		.landing-nav-cta:hover { background: #fff; color: #0a0b0d; border-color: #fff; }
 
 		.landing-hero {
-			display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 34px; align-items: center;
-			padding: 28px 0 44px;
+			--hero-photo: url('/static/media/hero-athlete.jpg?v=5');
+			position: relative; min-height: clamp(560px, 82vh, 820px);
+			display: flex; align-items: center;
+			padding: 40px max(20px, env(safe-area-inset-left, 0px)) 60px;
+			background-color: #050506;
+			overflow: hidden;
 		}
-		.landing-eyebrow {
-			display: inline-flex; align-items: center; gap: 8px;
-			font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase;
-			color: var(--muted); font-weight: 800; margin-bottom: 16px;
+		/* The photo, feathered at every edge so it floats and blends into the
+		   black like the device on slash.com. */
+		.landing-hero-photo {
+			position: absolute; top: 0; bottom: 0; right: 0; left: auto; z-index: 0;
+			width: min(46%, 800px);
+			background-image: var(--hero-photo, none);
+			background-size: cover;
+			background-position: 50% 50%;
+			opacity: 0.72;
+			background-repeat: no-repeat;
+			-webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.35) 22%, #000 54%, #000 90%, rgba(0, 0, 0, 0.82) 100%);
+			mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.35) 22%, #000 54%, #000 90%, rgba(0, 0, 0, 0.82) 100%);
 		}
-		.landing-title { margin: 0 0 16px; font-size: clamp(2.4rem, 6vw, 4rem); line-height: 1.02; letter-spacing: -0.045em; font-weight: 900; }
-		.landing-sub { margin: 0 0 24px; color: var(--muted); font-size: 1.05rem; line-height: 1.6; max-width: 46ch; }
+		.landing-hero-brand {
+			position: absolute; z-index: 3; top: 13%; right: max(22px, 4%);
+			display: flex; flex-direction: column; align-items: flex-end; gap: 8px;
+			text-align: right; pointer-events: none; max-width: 62%;
+		}
+		.lhb-spot { font-size: 0.68rem; letter-spacing: 0.24em; text-transform: uppercase; color: rgba(255, 255, 255, 0.82); font-weight: 700; }
+		.lhb-name { font-size: clamp(1.9rem, 4.2vw, 3.6rem); font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; line-height: 0.9; color: #fff; text-shadow: 0 2px 34px rgba(0, 0, 0, 0.7); }
+		.lhb-title { font-size: clamp(0.82rem, 1.7vw, 1.2rem); font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent); text-shadow: 0 2px 22px rgba(0, 0, 0, 0.7); }
+		.lhb-sign { width: clamp(150px, 22vw, 330px); height: auto; margin-top: 10px; opacity: 0.95; }
+		.landing-hero::before {
+			content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+			background:
+				linear-gradient(90deg, #050506 0%, rgba(5, 5, 6, 0.9) 26%, rgba(5, 5, 6, 0.4) 54%, rgba(5, 5, 6, 0.12) 78%, rgba(5, 5, 6, 0.34) 100%),
+				linear-gradient(180deg, #0a0b0d 0%, transparent 20%, transparent 76%, #08080a 100%);
+		}
+		.landing-hero::after { content: ""; position: absolute; inset: 0; z-index: 1; box-shadow: inset 0 -90px 120px -40px #0a0b0d; pointer-events: none; }
+		.landing-hero-inner { position: relative; z-index: 2; width: min(1120px, 100%); margin: 0 auto; }
+		.landing-hero-copy { max-width: 760px; }
+
+		.landing-cred {
+			display: inline-flex; align-items: center; gap: 8px; margin-bottom: 26px;
+			padding: 8px 14px; border-radius: 999px;
+			background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.14);
+			font-size: 0.8rem; font-weight: 600; color: #fff;
+			backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+		}
+		.landing-cred .star { color: var(--accent); }
+
+		.landing-title {
+			font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+			margin: 0 0 22px; font-size: clamp(3.2rem, 8vw, 6.2rem); line-height: 0.98;
+			letter-spacing: -0.02em; font-weight: 500; color: #fff;
+		}
+		.landing-sub { margin: 0 0 34px; color: rgba(255, 255, 255, 0.75); font-size: 1.34rem; line-height: 1.55; max-width: 46ch; }
+
+		.landing-email {
+			display: flex; align-items: stretch; width: min(560px, 100%);
+			background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.16);
+			border-radius: 14px; padding: 6px;
+		}
+		.landing-email input { flex: 1; min-width: 0; background: transparent; border: 0; color: #fff; font: inherit; font-size: 1.12rem; padding: 16px 18px; }
+		.landing-email input::placeholder { color: rgba(255, 255, 255, 0.5); }
+		.landing-email input:focus { outline: none; }
+		.landing-email button { flex-shrink: 0; background: #fff; color: #0a0b0d; border: 0; border-radius: 10px; font: inherit; font-weight: 700; font-size: 1.08rem; padding: 16px 28px; cursor: pointer; }
+		.landing-email button:hover { background: rgba(255, 255, 255, 0.9); }
+		.landing-note { margin: 18px 0 0; font-size: 0.98rem; color: rgba(255, 255, 255, 0.55); }
+
 		.landing-actions { display: flex; flex-wrap: wrap; gap: 12px; }
-		.landing-cta {
-			background: var(--accent); color: #0a0b0d; border: 0; border-radius: 13px;
-			font: inherit; font-weight: 800; font-size: 1rem; padding: 14px 22px; cursor: pointer;
+		.landing-cta { background: #fff; color: #0a0b0d; border: 0; border-radius: 999px; font: inherit; font-weight: 700; font-size: 1rem; padding: 14px 26px; cursor: pointer; }
+		.landing-cta:hover { background: rgba(255, 255, 255, 0.9); }
+		.landing-ghost { background: transparent; color: #fff; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 999px; font: inherit; font-weight: 600; font-size: 1rem; padding: 14px 26px; cursor: pointer; }
+		.landing-ghost:hover { background: rgba(255, 255, 255, 0.08); }
+
+		.landing-tagline { text-align: center; color: rgba(255, 255, 255, 0.6); font-size: 1.02rem; line-height: 1.6; padding: 30px 0 40px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); margin-bottom: 48px; }
+		.landing-tagline strong { color: #fff; font-weight: 600; }
+
+
+    /* ---- Home dashboard polish: match the landing & sign-in (dark + gold + Fraunces) ---- */
+    .dashboard { background: #0b0b0c; }
+    .brand {
+      font-family: 'Fraunces', Georgia, serif;
+      font-weight: 600;
+      text-transform: none;
+      letter-spacing: -0.02em;
+      line-height: 1.02;
+    }
+    .brand span { color: var(--accent); font-style: italic; transform: none; }
+    .session-title {
+      font-family: 'Fraunces', Georgia, serif;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+    .avatar {
+      display: grid;
+      place-items: center;
+      color: var(--accent);
+      background: #1a1a1c;
+      border: 1px solid rgba(214, 173, 63, 0.3);
+      box-shadow: none;
+    }
+    .avatar svg { width: 30px; height: 30px; }
+    .mini-card { background: #232326; border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: none; transition: border-color .15s ease, transform .15s ease; }
+    .mini-card:hover { border-color: rgba(214, 173, 63, 0.45); transform: translateY(-1px); }
+    .mini-icon { background: rgba(214, 173, 63, 0.12); color: var(--accent); border: 1px solid rgba(214, 173, 63, 0.2); }
+    .mini-icon svg { width: 24px; height: 24px; }
+    .nav-item .icon svg { width: 22px; height: 22px; }
+
+    /* Right column: quick-actions panel (fills the previously empty space) */
+    .home-aside {
+      grid-column: 2;
+      grid-row: 2;
+      align-self: stretch;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 24px 22px;
+      border-radius: 32px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: #161617;
+      box-shadow: none;
+    }
+    .aside-eyebrow { font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); font-weight: 800; }
+    .aside-title { margin: 4px 0 14px; font-family: 'Fraunces', Georgia, serif; font-size: clamp(1.4rem, 2.4vw, 1.75rem); font-weight: 600; letter-spacing: -0.01em; line-height: 1.05; }
+    .aside-actions { display: flex; flex-direction: column; gap: 10px; }
+    .aside-action { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; border: 1px solid rgba(255, 255, 255, 0.07); background: rgba(255, 255, 255, 0.02); color: var(--text); border-radius: 16px; padding: 13px 15px; font: inherit; font-size: 0.98rem; font-weight: 650; cursor: pointer; transition: border-color .15s ease, background .15s ease, transform .15s ease; }
+    .aside-action:hover { border-color: rgba(214, 173, 63, 0.5); background: rgba(214, 173, 63, 0.06); transform: translateY(-1px); }
+    .aside-action .a-ico { width: 38px; height: 38px; flex: 0 0 auto; border-radius: 12px; display: grid; place-items: center; color: var(--accent); background: rgba(214, 173, 63, 0.1); border: 1px solid rgba(214, 173, 63, 0.18); }
+    .aside-action .a-ico svg { width: 20px; height: 20px; }
+    .aside-action .a-label { flex: 1; }
+    .aside-action .chev { width: 18px; height: 18px; flex: 0 0 auto; color: rgba(245, 242, 236, 0.4); }
+    .aside-foot { margin-top: auto; padding-top: 14px; font-family: 'Fraunces', Georgia, serif; font-size: 0.9rem; color: rgba(245, 242, 236, 0.34); }
+    /* basic / flat: remove remaining gradients + the drafts corner dot */
+    .dashboard::before { display: none; }
+    .hero-card { background: #1a1a1c; box-shadow: none; }
+    .primary-action { background: #f5f2ec; }
+    .mini-icon .dot { display: none; }
+    .hero-badge::before { display: none; }
+    @media (max-width: 719px) { .home-aside { margin-bottom: 18px; } }
+
+				@media (max-width: 820px) {
+			.landing-nav-links { display: none; }
+			.landing-hero { min-height: auto; padding-top: 44px; padding-bottom: 52px; }
+			.landing-hero-photo { left: 0; right: 0; width: 100%; background-position: 60% 8%; opacity: 0.4; -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0,0,0,0.5) 55%, transparent 100%); mask-image: linear-gradient(180deg, #000 0%, rgba(0,0,0,0.5) 55%, transparent 100%); }
+			.landing-hero-brand { display: none; }
+			.landing-hero::before { background: linear-gradient(180deg, rgba(5,5,6,0.68) 0%, rgba(5,5,6,0.5) 42%, rgba(5,5,6,0.86) 100%); }
+			.landing-title { font-size: clamp(2.6rem, 12vw, 3.6rem); }
 		}
-		.landing-cta:hover { filter: brightness(1.05); }
-		.landing-ghost {
-			background: transparent; color: var(--text); border: 1px solid rgba(255, 255, 255, 0.2);
-			border-radius: 13px; font: inherit; font-weight: 700; font-size: 1rem; padding: 14px 22px; cursor: pointer;
-		}
-		.landing-ghost:hover { background: rgba(255, 255, 255, 0.05); }
-		.landing-note { margin: 16px 0 0; font-size: 0.82rem; color: var(--muted); }
+
 
 		.landing-visual {
 			border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 22px;
@@ -1708,7 +1835,7 @@
 		.landing-trust span { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
 
 		.landing-section-eyebrow { font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); font-weight: 800; }
-		.landing-section-title { margin: 8px 0 24px; font-size: clamp(1.6rem, 4vw, 2.4rem); letter-spacing: -0.03em; font-weight: 900; }
+		.landing-section-title { margin: 8px 0 24px; font-family: 'Fraunces', Georgia, serif; font-size: clamp(1.7rem, 4vw, 2.6rem); letter-spacing: -0.02em; font-weight: 600; }
 
 		.landing-features {
 			display: grid;
@@ -1774,147 +1901,67 @@
 			inset: 0;
 			z-index: 80;
 			display: none;
-			/* Scroll when the form is taller than the screen; stay centered when it
-			   fits. `safe center` falls back to top-align on overflow so the top of
-			   the card is never clipped out of reach. */
+			background-color: #08080a;
+			color: var(--text);
+			--gold: #d6ad3f;
+		}
+
+		.auth-gate.is-active { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); }
+
+		.auth-panel {
+			position: relative;
 			overflow-y: auto;
-			padding: max(24px, env(safe-area-inset-top, 0px)) 24px max(24px, env(safe-area-inset-bottom, 0px));
+			display: grid;
+			place-items: center;
+			padding: 40px max(28px, env(safe-area-inset-left, 0px));
 			background:
-				radial-gradient(circle at top left, rgba(154, 67, 31, 0.28), transparent 28%),
-				radial-gradient(circle at 82% 14%, rgba(236, 241, 32, 0.12), transparent 14%),
-				linear-gradient(180deg, #1d0907 0%, #090909 22%, #050505 100%);
+				radial-gradient(circle at 16% 0%, rgba(214, 173, 63, 0.16), transparent 44%),
+				radial-gradient(circle at 0% 100%, rgba(214, 173, 63, 0.08), transparent 42%),
+				#08080a;
 		}
 
-		.auth-gate.is-active {
-			display: grid;
-			align-content: safe center;
-			justify-items: center;
-		}
+		.auth-stack { width: min(400px, 100%); display: grid; gap: 18px; }
 
-		.auth-stack {
-			width: min(420px, 100%);
-			display: grid;
-			gap: 16px;
-		}
+		.auth-back { justify-self: start; border: 0; background: transparent; color: var(--gold); font: inherit; font-weight: 700; font-size: 0.9rem; cursor: pointer; padding: 4px 0; }
 
-		.auth-back {
-			justify-self: start;
-			border: 0;
-			background: transparent;
-			color: var(--accent);
-			font: inherit;
-			font-weight: 800;
-			font-size: 0.9rem;
-			cursor: pointer;
-			padding: 4px 0;
-		}
+		.auth-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+		.auth-brand-mark { width: 46px; height: 46px; border-radius: 13px; display: grid; place-items: center; font-family: 'Fraunces', Georgia, serif; font-weight: 700; font-size: 1.6rem; color: var(--gold); background: radial-gradient(circle at 30% 22%, rgba(214, 173, 63, 0.42), rgba(18, 16, 11, 0.96)); border: 1px solid rgba(214, 173, 63, 0.35); box-shadow: 0 0 30px rgba(214, 173, 63, 0.3); }
+		.auth-brand-name { font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-size: 1.2rem; letter-spacing: -0.01em; }
 
-		.auth-signup-cta {
-			display: grid;
-			gap: 12px;
-		}
+		.auth-card { width: 100%; display: grid; gap: 16px; background: transparent; border: 0; padding: 0; box-shadow: none; }
+		.auth-card h2 { margin: 0 0 4px; font-family: 'Fraunces', Georgia, serif; font-size: clamp(1.7rem, 3vw, 2.35rem); letter-spacing: -0.02em; font-weight: 600; line-height: 1.05; }
+		.auth-card form { display: grid; gap: 14px; }
 
-		.auth-signup-expanded {
-			display: grid;
-			gap: 16px;
-		}
+		.auth-gate .field { position: relative; display: grid; }
+		.auth-gate .field label { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+		.auth-gate .field input { width: 100%; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 12px; padding: 15px 16px; color: var(--text); font: inherit; font-size: 1rem; }
+		.auth-gate .field input::placeholder { color: rgba(255, 255, 255, 0.42); }
+		.auth-gate .field input:focus { outline: none; border-color: rgba(214, 173, 63, 0.6); box-shadow: 0 0 0 3px rgba(214, 173, 63, 0.16); }
 
-		.auth-consent {
-			margin: 0;
-			font-size: 0.8rem;
-			line-height: 1.5;
-			color: var(--muted);
-		}
+		.auth-gate .primary-action { background: linear-gradient(180deg, #dcb350, #b08a2c); color: #1b1508; box-shadow: 0 10px 34px rgba(214, 173, 63, 0.28); text-transform: none; letter-spacing: -0.01em; font-size: 1rem; padding: 15px 20px; }
+		.auth-gate .primary-action:hover { filter: brightness(1.06); }
 
-		.auth-legal-footer,
-		.app-legal-footer {
-			display: flex;
-			justify-content: center;
-			flex-wrap: wrap;
-			gap: 16px;
-			margin-top: 4px;
-			padding-top: 12px;
-		}
+		.auth-signup-cta, .auth-toggle { display: flex; justify-content: center; gap: 8px; font-size: 0.9rem; color: var(--muted); }
+		.auth-link { background: transparent; border: 0; color: var(--gold); font: inherit; font-weight: 700; cursor: pointer; padding: 0; }
+		.auth-link:hover { text-decoration: underline; }
+		.auth-consent { margin: 0; font-size: 0.8rem; line-height: 1.5; color: var(--muted); }
+		.auth-consent a { color: var(--gold); }
 
-		.app-legal-footer {
-			margin-top: 18px;
-			border-top: 1px solid rgba(255, 255, 255, 0.06);
-		}
+		.auth-legal-footer, .app-legal-footer { display: flex; justify-content: center; flex-wrap: wrap; gap: 16px; margin-top: 4px; padding-top: 12px; }
+		.app-legal-footer { margin-top: 18px; border-top: 1px solid rgba(255, 255, 255, 0.06); }
+		.auth-legal-footer a, .app-legal-footer a { color: var(--muted); text-decoration: none; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+		.auth-legal-footer a:hover, .app-legal-footer a:hover { color: var(--gold); }
 
-		.auth-legal-footer a,
-		.app-legal-footer a {
-			color: var(--muted);
-			text-decoration: none;
-			font-size: 0.78rem;
-			font-weight: 700;
-			letter-spacing: 0.04em;
-			text-transform: uppercase;
-		}
+		.auth-signup-expanded[hidden], .auth-signup-cta[hidden], .auth-card[hidden] { display: none; }
 
-		.auth-legal-footer a:hover,
-		.app-legal-footer a:hover {
-			color: var(--accent);
-		}
+		.auth-visual { position: relative; overflow: hidden; background: #050506; }
+		.auth-visual::before { content: ""; position: absolute; inset: -10%; background: url('/static/media/auth-photo.jpg?v=1') center 32% / cover no-repeat; animation: authDrift 22s ease-in-out infinite alternate; will-change: transform; }
+		.auth-visual::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 62% 42%, rgba(214, 173, 63, 0.22), transparent 55%), linear-gradient(90deg, #08080a 0%, rgba(8, 8, 10, 0.55) 12%, transparent 32%); }
+		@keyframes authDrift { from { transform: translate3d(0, 0, 0) scale(1.06); } to { transform: translate3d(-5%, -3.5%, 0) scale(1.14); } }
 
-		/* The cards/sections use display:grid, which would otherwise override the
-		   browser's default [hidden] rule — restate it explicitly. */
-		.auth-signup-expanded[hidden],
-		.auth-signup-cta[hidden],
-		.auth-card[hidden] {
-			display: none;
-		}
-
-		.auth-card {
-			width: 100%;
-			padding: 28px;
-			border-radius: 32px;
-			border: 1px solid rgba(255, 255, 255, 0.06);
-			background: linear-gradient(180deg, rgba(28, 28, 30, 0.92), rgba(12, 12, 13, 0.96));
-			box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 20px 50px rgba(0, 0, 0, 0.3);
-			display: grid;
-			gap: 16px;
-		}
-
-		.auth-card h2 {
-			margin: 0;
-			font-size: clamp(1.8rem, 4vw, 2.4rem);
-			letter-spacing: -0.06em;
-			line-height: 0.95;
-		}
-
-		.auth-card form {
-			display: grid;
-			gap: 14px;
-		}
-
-		.auth-divider {
-			display: flex;
-			align-items: center;
-			gap: 12px;
-			color: var(--muted);
-			font-size: 0.78rem;
-			text-transform: uppercase;
-			letter-spacing: 0.16em;
-		}
-
-		.auth-divider::before,
-		.auth-divider::after {
-			content: "";
-			flex: 1;
-			height: 1px;
-			background: rgba(255, 255, 255, 0.1);
-		}
-
-		.auth-toggle {
-			display: grid;
-			gap: 8px;
-			justify-items: center;
-			font-size: 0.88rem;
-			color: var(--muted);
-		}
-
-		.auth-toggle-button {
-			width: 100%;
+		@media (max-width: 860px) {
+			.auth-gate.is-active { grid-template-columns: 1fr; }
+			.auth-visual { display: none; }
 		}
 
 		.field-error {
@@ -2240,7 +2287,7 @@
 
 		.import-column.is-drop-target {
 			border-color: var(--accent);
-			background: rgba(236, 241, 32, 0.08);
+			background: rgba(214, 173, 63, 0.08);
 		}
 
 		.import-column-head {
@@ -2296,7 +2343,7 @@
 		}
 
 		.import-chip.is-selected {
-			background: rgba(236, 241, 32, 0.16);
+			background: rgba(214, 173, 63, 0.16);
 			box-shadow: inset 0 0 0 1px var(--accent);
 		}
 
@@ -2367,7 +2414,7 @@
 			padding: 14px;
 			border-radius: 20px;
 			background: rgba(255, 255, 255, 0.03);
-			border: 1px dashed rgba(236, 241, 32, 0.25);
+			border: 1px dashed rgba(214, 173, 63, 0.25);
 		}
 
 		.planner-new-fields[hidden] {
@@ -2429,7 +2476,7 @@
 		}
 
 		.plan-item:hover {
-			border-color: rgba(236, 241, 32, 0.24);
+			border-color: rgba(214, 173, 63, 0.24);
 		}
 
 		.plan-start-button {
@@ -2541,7 +2588,7 @@
 			padding: max(24px, env(safe-area-inset-top, 0px)) max(24px, env(safe-area-inset-right, 0px)) max(24px, env(safe-area-inset-bottom, 0px)) max(24px, env(safe-area-inset-left, 0px));
 			background:
 				radial-gradient(circle at top left, rgba(154, 67, 31, 0.28), transparent 28%),
-				radial-gradient(circle at 82% 14%, rgba(236, 241, 32, 0.12), transparent 14%),
+				radial-gradient(circle at 82% 14%, rgba(214, 173, 63, 0.12), transparent 14%),
 				linear-gradient(180deg, #1d0907 0%, #090909 22%, #050505 100%);
 		}
 
@@ -2580,8 +2627,8 @@
 		}
 
 		.timer-drill-card.is-active {
-			border-color: rgba(236, 241, 32, 0.45);
-			background: rgba(236, 241, 32, 0.07);
+			border-color: rgba(214, 173, 63, 0.45);
+			background: rgba(214, 173, 63, 0.07);
 		}
 
 		.timer-drill-card-name {
@@ -2662,7 +2709,7 @@
 		}
 
 		.history-item:hover {
-			border-color: rgba(236, 241, 32, 0.24);
+			border-color: rgba(214, 173, 63, 0.24);
 		}
 
 		.history-item-title {
@@ -2791,7 +2838,7 @@
 		}
 
 		.timer-adjust:active {
-			background: rgba(236, 241, 32, 0.18);
+			background: rgba(214, 173, 63, 0.18);
 		}
 
 		.timer-ring-frame {
@@ -2811,7 +2858,7 @@
 			border-radius: 50%;
 			background:
 				radial-gradient(circle at center, rgba(8, 8, 10, 1) 0 60%, transparent 61%),
-				conic-gradient(rgba(236, 241, 32, 0.9) 0 var(--timer-progress, 0%), rgba(255, 255, 255, 0.08) var(--timer-progress, 0%) 100%);
+				conic-gradient(rgba(214, 173, 63, 0.9) 0 var(--timer-progress, 0%), rgba(255, 255, 255, 0.08) var(--timer-progress, 0%) 100%);
 			box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04), 0 24px 60px rgba(0, 0, 0, 0.45);
 		}
 
@@ -2881,7 +2928,7 @@
 		}
 
 		.timer-repeat-btn:active {
-			background: rgba(236, 241, 32, 0.18);
+			background: rgba(214, 173, 63, 0.18);
 		}
 
 		.timer-repeat-count {
@@ -3139,51 +3186,44 @@
 </head>
 <body>
 	<section class="landing is-active" data-landing>
+		<div class="landing-announce">
+			<span><b>New</b> — group rotation timers &amp; AI drill ideas are here.</span>
+			<button type="button" data-landing-start>Get started &rarr;</button>
+		</div>
 		<header class="landing-nav">
-			<div class="landing-brand">Coach <span>Studio</span></div>
+			<div class="landing-brand">Coach Studio</div>
+			<nav class="landing-nav-links">
+				<a data-scroll="features">Features</a>
+				<a data-scroll="stats">Analytics</a>
+			</nav>
 			<div class="landing-nav-actions">
-				<button class="landing-nav-login" type="button" data-landing-login>Log in</button>
-				<button class="landing-nav-cta" type="button" data-landing-start>Get started</button>
+				<button class="landing-nav-login" type="button" data-landing-login>Sign in</button>
+				<button class="landing-nav-cta" type="button" data-landing-start>Get Started</button>
 			</div>
 		</header>
-		<div class="landing-page">
-			<div class="landing-hero">
+		<section class="landing-hero">
+			<div class="landing-hero-photo" aria-hidden="true"></div>
+			<div class="landing-hero-brand" aria-hidden="true">
+				<span class="lhb-spot">Athlete Spotlight</span>
+				<span class="lhb-name">Ryan Huang</span>
+				<span class="lhb-title">Pan American Champion</span>
+				<img class="lhb-sign" src="/static/media/signature.png?v=2" alt="Ryan Huang signature">
+			</div>
+			<div class="landing-hero-inner">
 				<div class="landing-hero-copy">
-					<div class="landing-eyebrow">For coaches</div>
-					<h1 class="landing-title">The platform you run practice on.</h1>
-					<p class="landing-sub">Plan sessions, time drills and group rotations to the second, track attendance, and get AI drill ideas — all from your phone, courtside.</p>
-					<div class="landing-actions">
-						<button class="landing-cta" type="button" data-landing-start>Get started — free</button>
-						<button class="landing-ghost" type="button" data-landing-login>Log in</button>
-					</div>
-					<p class="landing-note">No credit card. Built for real practices.</p>
-				</div>
-				<div class="landing-visual" aria-hidden="true">
-					<div class="lp-head"><span class="lp-head-title">This week</span></div>
-					<div class="lp-stats">
-						<div class="lp-stat"><b>18</b><span>Roster</span></div>
-						<div class="lp-stat"><b>6</b><span>Sessions</span></div>
-						<div class="lp-stat"><b>92%</b><span>Attendance</span></div>
-					</div>
-					<svg class="lp-chart" viewBox="0 0 320 120" role="img" aria-label="Attendance trend">
-						<defs><linearGradient id="lpg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--accent)" stop-opacity="0.35"></stop><stop offset="1" stop-color="var(--accent)" stop-opacity="0"></stop></linearGradient></defs>
-						<path d="M4 88 L50 74 L96 80 L142 54 L188 60 L234 34 L280 42 L316 20 L316 116 L4 116 Z" fill="url(#lpg)"></path>
-						<path d="M4 88 L50 74 L96 80 L142 54 L188 60 L234 34 L280 42 L316 20" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
-					</svg>
-					<div class="lp-bars">
-						<span class="lp-bar" style="height:42%"></span><span class="lp-bar" style="height:64%"></span><span class="lp-bar" style="height:50%"></span><span class="lp-bar" style="height:78%"></span><span class="lp-bar" style="height:60%"></span><span class="lp-bar" style="height:88%"></span><span class="lp-bar" style="height:70%"></span>
-					</div>
+					<h1 class="landing-title">Coach like a champion.</h1>
+					<p class="landing-sub">Plan sessions, time drills and rotations to the second, track your roster, and get AI drill ideas — courtside, from your phone.</p>
+					<form class="landing-email" id="landing-email-form">
+						<input type="email" id="landing-email-input" placeholder="What&#39;s your email?" autocomplete="email" aria-label="Email">
+						<button type="submit">Get Started</button>
+					</form>
+					<p class="landing-note">No credit card. Free to start.</p>
 				</div>
 			</div>
-
-			<div class="landing-trust">
-				<div><b>2.4k+</b><span>drills timed</span></div>
-				<div><b>640</b><span>sessions run</span></div>
-				<div><b>1.1k</b><span>players tracked</span></div>
-				<div><b>4.9&#9733;</b><span>coach rating</span></div>
-			</div>
-
-			<div class="landing-section-eyebrow">Everything in one place</div>
+		</section>
+		<div class="landing-page">
+			<div class="landing-tagline"><strong>Everything you need to run a great practice</strong> — timers, plans, roster, attendance, and AI, in one app.</div>
+			<div class="landing-section-eyebrow" id="features">Everything in one place</div>
 			<h2 class="landing-section-title">Built for the whole practice.</h2>
 			<div class="landing-features">
 				<div class="landing-feature">
@@ -3223,7 +3263,7 @@
 					<p>Attendance trends, drill-mix, roster balance, and streaks at a glance.</p>
 				</div>
 			</div>
-			<div class="landing-band">
+			<div class="landing-band" id="stats">
 				<div>
 					<div class="landing-section-eyebrow">See your season</div>
 					<h2 class="landing-section-title" style="margin-bottom:6px">Know what's working.</h2>
@@ -3264,62 +3304,58 @@
 		</div>
 	</section>
 	<div class="auth-gate" data-auth-gate data-mode="login">
-		<div class="auth-stack">
-			<button class="auth-back" type="button" data-auth-back>&larr; Back</button>
-			<div class="auth-card" data-login-card>
-				<div class="blank-eyebrow">Coach Studio</div>
-				<h2>Log in</h2>
-				<form id="login-form" data-auth-form="login">
-					<div class="field">
-						<label for="login-email">Email</label>
-						<input id="login-email" name="email" type="email" required autocomplete="email">
-					</div>
-					<div class="field">
-						<label for="login-password">Password</label>
-						<input id="login-password" name="password" type="password" required autocomplete="current-password">
-					</div>
-					<p class="field-error" data-auth-error="login"></p>
-					<button class="primary-action" type="submit">Log in</button>
-				</form>
-			</div>
-			<div class="auth-card auth-signup-card">
-				<div class="auth-signup-cta" data-signup-cta>
-					<div class="blank-eyebrow">New to Coach Studio?</div>
-					<button class="secondary-button auth-toggle-button" type="button" data-auth-toggle>Create an Account</button>
+		<div class="auth-panel">
+			<div class="auth-stack">
+				<button class="auth-back" type="button" data-auth-back>&larr; Back</button>
+				<div class="auth-brand"><span class="auth-brand-mark">C</span><span class="auth-brand-name">Coach Studio</span></div>
+				<div class="auth-card" data-login-card>
+					<h2>Log in to your account</h2>
+					<form id="login-form" data-auth-form="login">
+						<div class="field">
+							<label for="login-email">Email</label>
+							<input id="login-email" name="email" type="email" required autocomplete="email" placeholder="Email address">
+						</div>
+						<div class="field">
+							<label for="login-password">Password</label>
+							<input id="login-password" name="password" type="password" required autocomplete="current-password" placeholder="Password">
+						</div>
+						<p class="field-error" data-auth-error="login"></p>
+						<button class="primary-action" type="submit">Sign In</button>
+					</form>
 				</div>
-				<div class="auth-signup-expanded" data-signup-expanded hidden>
-					<div class="blank-eyebrow">Coach Studio</div>
+				<div class="auth-signup-cta" data-signup-cta>
+					<span>Don't have an account?</span>
+					<button class="auth-link" type="button" data-auth-toggle>Sign up</button>
+				</div>
+				<div class="auth-card auth-signup-expanded" data-signup-expanded hidden>
 					<h2>Create your account</h2>
 					<form id="signup-form" data-auth-form="signup">
 						<div class="field">
 							<label for="signup-name">Name</label>
-							<input id="signup-name" name="displayName" type="text" required autocomplete="name">
+							<input id="signup-name" name="displayName" type="text" required autocomplete="name" placeholder="Your name">
 						</div>
 						<div class="field">
 							<label for="signup-email">Email</label>
-							<input id="signup-email" name="email" type="email" required autocomplete="email">
+							<input id="signup-email" name="email" type="email" required autocomplete="email" placeholder="Email address">
 						</div>
 						<div class="field">
 							<label for="signup-password">Password</label>
-							<input id="signup-password" name="password" type="password" required minlength="8" autocomplete="new-password">
+							<input id="signup-password" name="password" type="password" required minlength="8" autocomplete="new-password" placeholder="Password (8+ characters)">
 						</div>
 						<p class="field-error" data-auth-error="signup"></p>
-						<p class="auth-consent">By creating an account, you agree to our <a href="/static/legal/terms.html" target="_blank" rel="noopener">Terms &amp; Conditions</a> and <a href="/static/legal/privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</p>
+						<p class="auth-consent">By creating an account, you agree to our <a href="/static/legal/terms.html" target="_blank" rel="noopener">Terms</a> and <a href="/static/legal/privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</p>
 						<button class="primary-action" type="submit">Create account</button>
 					</form>
-					<div class="auth-divider"><span>or</span></div>
-					<div class="auth-toggle">
-						<span>Already have an account?</span>
-						<button class="secondary-button auth-toggle-button" type="button" data-auth-toggle>Log in instead</button>
-					</div>
+					<div class="auth-toggle"><span>Already have an account?</span><button class="auth-link" type="button" data-auth-toggle>Log in</button></div>
 				</div>
+				<footer class="auth-legal-footer">
+					<a href="/static/legal/privacy.html" target="_blank" rel="noopener">Privacy</a>
+					<a href="/static/legal/terms.html" target="_blank" rel="noopener">Terms</a>
+					<a href="/static/legal/accessibility.html" target="_blank" rel="noopener">Accessibility</a>
+				</footer>
 			</div>
-			<footer class="auth-legal-footer">
-				<a href="/static/legal/privacy.html" target="_blank" rel="noopener">Privacy</a>
-				<a href="/static/legal/terms.html" target="_blank" rel="noopener">Terms</a>
-				<a href="/static/legal/accessibility.html" target="_blank" rel="noopener">Accessibility</a>
-			</footer>
 		</div>
+		<div class="auth-visual" aria-hidden="true"></div>
 	</div>
 
 	<main class="dashboard" data-page="home" style="display:none">
@@ -3330,7 +3366,7 @@
 				<h1 class="brand">Coach <span data-display-name>Ryan</span></h1>
 			</div>
 			<div class="topbar-actions">
-				<div class="avatar" aria-hidden="true"></div>
+				<div class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.6"/><path d="M5.5 19.5c0-3.6 2.9-5.6 6.5-5.6s6.5 2 6.5 5.6"/></svg></div>
 				<button class="logout-button" type="button" data-logout hidden>Log out</button>
 			</div>
 		</header>
@@ -3360,6 +3396,17 @@
 				<span>Start Session</span>
 			</button>
 		</section>
+		<aside class="home-aside" aria-label="Quick actions">
+			<div class="aside-eyebrow">Quick actions</div>
+			<h3 class="aside-title">Get set up in seconds</h3>
+			<div class="aside-actions">
+				<button class="aside-action" type="button" data-modal-open="new-player"><span class="a-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="8" r="3.4"/><path d="M4 19c0-3.3 2.7-5 6-5 .8 0 1.6.1 2.3.4"/><path d="M17.5 13.5v5M15 16h5"/></svg></span><span class="a-label">Add a player</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+				<button class="aside-action" type="button" data-import-photo><span class="a-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5h3l1.2-2h7.6L17 8.5h3A1.5 1.5 0 0 1 21.5 10v8A1.5 1.5 0 0 1 20 19.5H4A1.5 1.5 0 0 1 2.5 18v-8A1.5 1.5 0 0 1 4 8.5z"/><circle cx="12" cy="13.5" r="3.3"/></svg></span><span class="a-label">Import roster from photo</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+				<button class="aside-action" type="button" data-modal-open="bulk-players"><span class="a-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="5.5" width="12" height="15" rx="2"/><path d="M9 5.5V4.5A1.5 1.5 0 0 1 10.5 3h3A1.5 1.5 0 0 1 15 4.5v1"/><path d="M9 11h6M9 14.5h4"/></svg></span><span class="a-label">Paste a roster</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+				<button class="aside-action" type="button" data-modal-open="tiers"><span class="a-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h8M17 8h2M5 16h2M11 16h8"/><circle cx="15" cy="8" r="2"/><circle cx="9" cy="16" r="2"/></svg></span><span class="a-label">Manage skill tiers</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+			</div>
+			<div class="aside-foot">Coach Studio</div>
+		</aside>
 		</div>
 
 		<section class="page-shell" data-page-panel="plans" aria-label="Plans page">
@@ -3426,11 +3473,11 @@
 
 		<section class="cards" aria-label="Quick actions">
 			<button class="mini-card" type="button" data-modal-open="new-plan">
-				<div class="mini-icon" aria-hidden="true">N</div>
+				<div class="mini-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3.5H7.5A1.5 1.5 0 0 0 6 5v14a1.5 1.5 0 0 0 1.5 1.5h9A1.5 1.5 0 0 0 18 19V8.5z"/><path d="M13 3.5V8.5h5"/><path d="M12 12v4M10 14h4"/></svg></div>
 				<div class="mini-label">New Plan</div>
 			</button>
 			<button class="mini-card" type="button" data-modal-open="drafts">
-				<div class="mini-icon" aria-hidden="true">D<span class="dot"></span></div>
+				<div class="mini-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4 4 8l8 4 8-4-8-4z"/><path d="M4.5 12 12 15.7 19.5 12"/><path d="M4.5 15.8 12 19.5l7.5-3.7"/></svg><span class="dot"></span></div>
 					<div class="mini-label">Drafts <span data-draft-count>(0)</span></div>
 			</button>
 		</section>
@@ -3439,23 +3486,23 @@
 
 		<nav class="nav" aria-label="Primary navigation">
 			<button class="nav-item active" type="button" data-page="home">
-				<span class="icon">H</span>
+				<span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5 12 5l8 6.5"/><path d="M6 10v9.5h12V10"/><path d="M10 19.5V14h4v5.5"/></svg></span>
 				<span>Home</span>
 			</button>
 			<button class="nav-item" type="button" data-page="plans">
-				<span class="icon">P</span>
+				<span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="5.5" width="12" height="15" rx="2"/><path d="M9 5.5V4.5A1.5 1.5 0 0 1 10.5 3h3A1.5 1.5 0 0 1 15 4.5v1"/><path d="M9 11h6M9 14.5h6"/></svg></span>
 				<span>Plans</span>
 			</button>
 			<button class="nav-item" type="button" data-page="players">
-				<span class="icon">U</span>
+				<span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.5" r="3.2"/><path d="M3.5 19.5c0-3.2 2.5-5 5.5-5s5.5 1.8 5.5 5"/><path d="M16 5.6a3.2 3.2 0 0 1 0 6.1"/><path d="M17 14.8c2 .5 3.5 2 3.5 4.7"/></svg></span>
 				<span>Players</span>
 			</button>
 			<button class="nav-item" type="button" data-page="history">
-				<span class="icon">L</span>
+				<span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12a7.5 7.5 0 1 0 2.3-5.4"/><path d="M4.5 4.5V9H9"/><path d="M12 8.5V12l2.8 1.7"/></svg></span>
 				<span>History</span>
 			</button>
 			<button class="nav-item" type="button" data-page="analytics">
-				<span class="icon">S</span>
+				<span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16"/><path d="M7 20v-5"/><path d="M12 20V8"/><path d="M17 20v-8"/></svg></span>
 				<span>Stats</span>
 			</button>
 		</nav>
@@ -4316,7 +4363,7 @@
 
 			// ---- Session analytics dashboard ---------------------------------
 			const analyticsContent = document.querySelector('[data-analytics-content]');
-			const ANALYTICS_COLORS = ['#ecf120', '#d6ad3f', '#4fd1c5', '#ff8a65', '#b39ddb', '#64b5f6', '#8d99ae'];
+			const ANALYTICS_COLORS = ['#e8c15a', '#d6ad3f', '#4fd1c5', '#ff8a65', '#b39ddb', '#64b5f6', '#8d99ae'];
 
 			function animateCount(el, target, duration = 900) {
 				const start = performance.now();
@@ -4872,9 +4919,27 @@
 
 			if (landing) {
 				landing.addEventListener('click', (event) => {
+					const scrollLink = event.target.closest('[data-scroll]');
+					if (scrollLink) {
+						const target = document.getElementById(scrollLink.dataset.scroll);
+						if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+						return;
+					}
 					if (event.target.closest('[data-landing-start]')) { setAuthMode('signup'); showAuthGate(); return; }
 					if (event.target.closest('[data-landing-login]')) { setAuthMode('login'); showAuthGate(); return; }
 				});
+				const landingEmailForm = document.getElementById('landing-email-form');
+				if (landingEmailForm) {
+					landingEmailForm.addEventListener('submit', (event) => {
+						event.preventDefault();
+						const emailInput = document.getElementById('landing-email-input');
+						const email = emailInput ? emailInput.value.trim() : '';
+						setAuthMode('signup');
+						showAuthGate();
+						const signupEmail = document.getElementById('signup-email');
+						if (signupEmail && email) signupEmail.value = email;
+					});
+				}
 			}
 			if (authBackButton) {
 				authBackButton.addEventListener('click', () => {
