@@ -154,6 +154,8 @@ class PlayerCreate(BaseModel):
     name: str = Field(min_length=1, max_length=80)
     tier_id: Optional[str] = None
     notes: Optional[str] = Field(default=None, max_length=4000)
+    # When set (on create), the new player is also added to this roster.
+    roster_id: Optional[str] = None
 
     @field_validator("name")
     @classmethod
@@ -184,6 +186,62 @@ class PlayerMove(BaseModel):
         if value not in ("up", "down"):
             raise ValueError("direction must be 'up' or 'down'")
         return value
+
+
+def _validate_roster_kind(value: str) -> str:
+    if value not in ("team", "private"):
+        raise ValueError("kind must be 'team' or 'private'")
+    return value
+
+
+class RosterCreate(BaseModel):
+    name: str = Field(min_length=1, max_length=80)
+    kind: str = "team"
+
+    @field_validator("name")
+    @classmethod
+    def _strip_name(cls, value: str) -> str:
+        stripped = value.strip()
+        if not stripped:
+            raise ValueError("name must not be blank")
+        return stripped
+
+    @field_validator("kind")
+    @classmethod
+    def _kind(cls, value: str) -> str:
+        return _validate_roster_kind(value)
+
+
+class RosterUpdate(BaseModel):
+    name: Optional[str] = Field(default=None, max_length=80)
+    kind: Optional[str] = None
+
+    @field_validator("name")
+    @classmethod
+    def _strip_name(cls, value: Optional[str]) -> Optional[str]:
+        if value is None:
+            return None
+        stripped = value.strip()
+        if not stripped:
+            raise ValueError("name must not be blank")
+        return stripped
+
+    @field_validator("kind")
+    @classmethod
+    def _kind(cls, value: Optional[str]) -> Optional[str]:
+        return None if value is None else _validate_roster_kind(value)
+
+
+class RosterOut(BaseModel):
+    id: str
+    name: str
+    kind: str
+    sort_order: int
+    player_count: int
+
+
+class RosterMembersAdd(BaseModel):
+    player_ids: list[str] = Field(min_length=1, max_length=500)
 
 
 _ALLOWED_IMAGE_TYPES = {"image/png", "image/jpeg", "image/webp", "image/gif"}
@@ -279,12 +337,14 @@ class TodayPracticeRequest(BaseModel):
     # class namespace before the annotation is evaluated, so a bare `date` here
     # would resolve to None and reject every real value.
     date: Optional[dt.date] = None
+    roster_id: Optional[str] = None
 
 
 class PracticeOut(BaseModel):
     id: str
     date: date
     plan_id: Optional[str]
+    roster_id: Optional[str] = None
     created_at: datetime
 
     model_config = {"from_attributes": True}

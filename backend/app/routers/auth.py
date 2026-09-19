@@ -3,7 +3,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session as DbSession
 
 from app.database import get_db
-from app.models import Tier, User
+from app.models import Roster, Tier, User
 from app.rate_limit import limiter
 from app.schemas import UserCreate, UserLogin, UserOut
 from app.security import (
@@ -48,6 +48,9 @@ def signup(payload: UserCreate, request: Request, response: Response, db: DbSess
 
     for index, tier_name in enumerate(DEFAULT_TIERS):
         db.add(Tier(user_id=user.id, name=tier_name, sort_order=index))
+    # Every coach starts with one team roster so the app always has a roster to
+    # land on; they can rename it or add private-lesson rosters later.
+    db.add(Roster(user_id=user.id, name="All Players", kind="team", sort_order=0))
     db.commit()
 
     create_session(db, response, user)

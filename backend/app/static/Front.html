@@ -3189,6 +3189,58 @@
 				position: static;
 			}
 		}
+
+    /* ---- Rosters: header pill, login chooser, manage modal ---- */
+    .roster-pill { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); color: var(--text); border-radius: 999px; padding: 7px 12px; font: inherit; font-weight: 700; font-size: 0.82rem; cursor: pointer; max-width: 230px; }
+    .roster-pill:hover { border-color: rgba(214,173,63,0.5); }
+    .roster-pill-kind { font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); font-weight: 800; }
+    .roster-pill-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .roster-pill-caret { width: 14px; height: 14px; opacity: 0.6; flex: 0 0 auto; }
+
+    .roster-chooser { position: fixed; inset: 0; z-index: 130; display: none; place-items: center; padding: 24px; background: rgba(6,6,8,0.86); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); overflow-y: auto; }
+    .roster-chooser:not([hidden]) { display: grid; }
+    .rc-card { position: relative; width: min(560px, 100%); background: #141416; border: 1px solid rgba(255,255,255,0.08); border-radius: 28px; padding: 30px; box-shadow: 0 30px 80px rgba(0,0,0,0.5); }
+    .rc-close { position: absolute; top: 14px; right: 18px; background: transparent; border: 0; color: var(--muted); font-size: 1.5rem; line-height: 1; cursor: pointer; }
+    .rc-eyebrow { font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); font-weight: 800; }
+    .rc-title { margin: 6px 0 20px; font-family: 'Fraunces', Georgia, serif; font-size: clamp(1.7rem, 3.4vw, 2.2rem); font-weight: 600; letter-spacing: -0.02em; }
+    .rc-kinds { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
+    .rc-kind { display: grid; justify-items: start; gap: 3px; text-align: left; padding: 16px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.02); color: var(--text); cursor: pointer; font: inherit; }
+    .rc-kind:hover { border-color: rgba(214,173,63,0.4); }
+    .rc-kind.is-active { border-color: var(--accent); background: rgba(214,173,63,0.08); }
+    .rc-kind-ico { width: 32px; height: 32px; color: var(--accent); margin-bottom: 4px; }
+    .rc-kind-ico svg { width: 100%; height: 100%; }
+    .rc-kind-label { font-weight: 800; font-size: 1rem; }
+    .rc-kind-sub { font-size: 0.78rem; color: var(--muted); }
+    .rc-list { display: grid; gap: 8px; margin-bottom: 14px; max-height: 38vh; overflow-y: auto; }
+    .rc-roster { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; padding: 14px 16px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02); color: var(--text); font: inherit; cursor: pointer; }
+    .rc-roster:hover { border-color: rgba(214,173,63,0.5); background: rgba(214,173,63,0.06); }
+    .rc-roster.is-active { border-color: var(--accent); background: rgba(214,173,63,0.08); }
+    .rc-roster-name { flex: 1; font-weight: 700; font-size: 1rem; }
+    .rc-roster-count { font-size: 0.8rem; color: var(--muted); font-weight: 700; }
+    .rc-empty { color: var(--muted); font-size: 0.9rem; padding: 10px 2px; }
+    .rc-new-wrap { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 14px; }
+    .rc-new-toggle { background: transparent; border: 0; color: var(--accent); font: inherit; font-weight: 800; cursor: pointer; padding: 4px 0; }
+    .rc-new-form { display: flex; gap: 8px; margin-top: 10px; }
+    .rc-new-form input { flex: 1; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 12px 14px; color: var(--text); font: inherit; }
+    .rc-new-form input:focus { outline: none; border-color: rgba(214,173,63,0.6); }
+    .rc-create { background: var(--accent); color: #1b1508; border: 0; border-radius: 12px; padding: 12px 16px; font: inherit; font-weight: 800; cursor: pointer; white-space: nowrap; }
+    .rc-error { color: #ff8a8a; font-size: 0.85rem; margin: 10px 0 0; min-height: 1em; }
+
+    .rm-rename { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+    .rm-rename input, .rm-rename select { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 11px 13px; color: var(--text); font: inherit; }
+    .rm-rename input { flex: 1; min-width: 140px; }
+    .rm-error { color: #ff8a8a; font-size: 0.85rem; min-height: 1em; margin: 0 0 4px; }
+    .rm-section-title { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); font-weight: 800; margin: 14px 0 8px; }
+    .rm-list { display: grid; gap: 6px; max-height: 26vh; overflow-y: auto; }
+    .rm-row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02); }
+    .rm-row-name { flex: 1; font-weight: 600; }
+    .rm-row-tier { font-size: 0.72rem; color: var(--muted); }
+    .rm-row button { background: transparent; border: 1px solid rgba(255,255,255,0.16); color: var(--text); border-radius: 999px; padding: 5px 12px; font: inherit; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+    .rm-row button.rm-add { border-color: rgba(214,173,63,0.5); color: var(--accent); }
+    .rm-empty { color: var(--muted); font-size: 0.86rem; padding: 6px 2px; }
+    .rm-delete { margin-top: 18px; background: transparent; border: 1px solid rgba(255,90,90,0.4); color: #ff8a8a; border-radius: 12px; padding: 10px 14px; font: inherit; font-weight: 700; cursor: pointer; }
+    @media (max-width: 520px) { .rc-kinds { grid-template-columns: 1fr; } .rc-card { padding: 22px; } }
+
 	</style>
 </head>
 <body>
@@ -3374,6 +3426,49 @@
 		<div class="auth-visual" aria-hidden="true"></div>
 	</div>
 
+	<div class="roster-chooser" data-roster-chooser hidden>
+		<div class="rc-card">
+			<button class="rc-close" type="button" data-rc-close aria-label="Close">&times;</button>
+			<div class="rc-eyebrow">Coach Studio</div>
+			<h2 class="rc-title">Who are you coaching?</h2>
+			<div class="rc-kinds">
+				<button class="rc-kind" type="button" data-rc-kind="team"><span class="rc-kind-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.5" r="3.2"/><path d="M3.5 19.5c0-3.2 2.5-5 5.5-5s5.5 1.8 5.5 5"/><path d="M16 5.6a3.2 3.2 0 0 1 0 6.1"/><path d="M17 14.8c2 .5 3.5 2 3.5 4.7"/></svg></span><span class="rc-kind-label">Team training</span><span class="rc-kind-sub">Squads &amp; classes</span></button>
+				<button class="rc-kind" type="button" data-rc-kind="private"><span class="rc-kind-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.6"/><path d="M5.5 19.5c0-3.6 2.9-5.6 6.5-5.6s6.5 2 6.5 5.6"/></svg></span><span class="rc-kind-label">Private lesson</span><span class="rc-kind-sub">1-on-1 or 1-on-2</span></button>
+			</div>
+			<div class="rc-list" data-rc-list></div>
+			<div class="rc-new-wrap">
+				<button class="rc-new-toggle" type="button" data-rc-new>+ New roster</button>
+				<div class="rc-new-form" data-rc-new-form hidden>
+					<input type="text" data-rc-new-name placeholder="Roster name (e.g. Monday Juniors)" maxlength="80">
+					<button class="rc-create" type="button" data-rc-create>Create &amp; open</button>
+				</div>
+			</div>
+			<p class="rc-error" data-rc-error></p>
+		</div>
+	</div>
+
+	<div class="modal-layer" data-modal="roster-members" aria-hidden="true">
+		<div class="modal-card">
+			<div class="modal-head">
+				<div><div class="modal-eyebrow">Roster</div><h3 id="roster-members-title" data-rm-title>Manage roster</h3></div>
+				<button class="modal-close" type="button" data-close-modal aria-label="Close dialog">x</button>
+			</div>
+			<div class="modal-body">
+				<div class="rm-rename">
+					<input type="text" data-rm-name maxlength="80" placeholder="Roster name">
+					<select data-rm-kind><option value="team">Team</option><option value="private">Private</option></select>
+					<button class="secondary-button" type="button" data-rm-save>Save</button>
+				</div>
+				<p class="rm-error" data-rm-error></p>
+				<div class="rm-section-title">In this roster <span data-rm-members-count></span></div>
+				<div class="rm-list" data-rm-members></div>
+				<div class="rm-section-title">Add existing players</div>
+				<div class="rm-list" data-rm-available></div>
+				<button class="rm-delete" type="button" data-rm-delete>Delete this roster</button>
+			</div>
+		</div>
+	</div>
+
 	<main class="dashboard" data-page="home" style="display:none">
 		<div class="home-content">
 		<header class="topbar">
@@ -3382,6 +3477,7 @@
 				<h1 class="brand">Coach <span data-display-name>Ryan</span></h1>
 			</div>
 			<div class="topbar-actions">
+				<button class="roster-pill" type="button" data-roster-switch title="Switch roster"><span class="roster-pill-kind" data-roster-pill-kind>Team</span><span class="roster-pill-name" data-roster-pill-name>All Players</span><svg class="roster-pill-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
 				<div class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.6"/><path d="M5.5 19.5c0-3.6 2.9-5.6 6.5-5.6s6.5 2 6.5 5.6"/></svg></div>
 				<button class="logout-button" type="button" data-logout hidden>Log out</button>
 			</div>
@@ -3445,9 +3541,10 @@
 						<div class="blank-eyebrow">Players</div>
 						<h2>Roster &amp; attendance</h2>
 					</div>
-					<p>Check players in for today's practice and manage your roster.</p>
+					<p>Showing <strong data-players-roster-label>your roster</strong> — check players in and manage who's in it.</p>
 				</div>
 				<div class="players-actions">
+					<button class="secondary-button" type="button" data-modal-open="roster-members">Manage roster</button>
 					<button class="secondary-button" type="button" data-modal-open="tiers">Manage tiers</button>
 					<button class="secondary-button" type="button" data-modal-open="groups">Make groups</button>
 					<button class="secondary-button" type="button" data-modal-open="bulk-players">Paste roster</button>
@@ -3973,6 +4070,10 @@
 			let activeDraftId = null;
 			let tiers = [];
 			let players = [];
+			let rosters = [];
+			let activeRosterId = null;
+			let currentUser = null;
+			let rcSelectedKind = 'team';
 			let todayPracticeId = null;
 			let todayAttendance = new Set();
 			let activePlayerId = null;
@@ -4556,7 +4657,7 @@
 				analyticsContent.innerHTML = '<div class="analytics-empty">Loading…</div>';
 				let response;
 				try {
-					response = await fetch('/api/analytics/summary', { credentials: 'include' });
+					response = await fetch(`/api/analytics/summary${rosterQuery()}`, { credentials: 'include' });
 				} catch (error) {
 					analyticsContent.innerHTML = '<div class="analytics-empty">Could not reach the server.</div>';
 					return;
@@ -4702,6 +4803,9 @@
 					fillTierSelect(bulkTierSelect);
 					loadTiers().then(() => fillTierSelect(bulkTierSelect));
 				}
+				if (name === 'roster-members') {
+					renderRosterMembers();
+				}
 				modal.classList.add('is-open');
 				modal.setAttribute('aria-hidden', 'false');
 				document.body.style.overflow = 'hidden';
@@ -4808,7 +4912,7 @@
 			}
 
 			async function loadPlayers() {
-				const response = await fetch('/api/players', { credentials: 'include' });
+				const response = await fetch(`/api/players${rosterQuery()}`, { credentials: 'include' });
 				if (response.status === 401) {
 					showAuthGate();
 					return;
@@ -4823,7 +4927,7 @@
 					method: 'POST',
 					credentials: 'include',
 					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ date: localDateString() }),
+					body: JSON.stringify({ date: localDateString(), roster_id: activeRosterId }),
 				});
 				if (practiceResponse.status === 401) {
 					showAuthGate();
@@ -4900,9 +5004,17 @@
 				closeAllModals();
 			}
 
-			async function applyAuthenticatedUser(user) {
+			async function applyAuthenticatedUser(user, opts = {}) {
+				currentUser = user;
 				if (displayNameEl) displayNameEl.textContent = user.display_name;
 				hideAuthGate();
+
+				await loadRosters();
+				const remembered = readStoredRoster(user.id);
+				const rememberedValid = rosters.some((r) => r.id === remembered);
+				activeRosterId = rememberedValid ? remembered : (rosters[0] ? rosters[0].id : null);
+				if (activeRosterId) writeStoredRoster(user.id, activeRosterId);
+				renderRosterPill();
 
 				const initialPage = location.hash.slice(1);
 				if (['home', 'plans', 'players', 'history', 'planner'].includes(initialPage)) {
@@ -4912,6 +5024,12 @@
 				}
 
 				await Promise.all([loadPlans(), loadDrafts(), loadPlayers()]);
+
+				// Ask "who are you coaching?" on an explicit login, or whenever there
+				// is no remembered roster to fall back on.
+				if (opts.fromLogin || !rememberedValid) {
+					openRosterChooser({ dismissible: true });
+				}
 			}
 
 			// 'login': login bubble + a collapsed signup bubble showing only the
@@ -4983,7 +5101,7 @@
 
 				const user = await response.json();
 				loginForm.reset();
-				await applyAuthenticatedUser(user);
+				await applyAuthenticatedUser(user, { fromLogin: true });
 			});
 
 			signupForm.addEventListener('submit', async (event) => {
@@ -5007,7 +5125,7 @@
 
 				const user = await response.json();
 				signupForm.reset();
-				await applyAuthenticatedUser(user);
+				await applyAuthenticatedUser(user, { fromLogin: true });
 			});
 
 			logoutButton.addEventListener('click', async () => {
@@ -5318,6 +5436,7 @@
 					name,
 					tier_id: playerTierSelect.value || null,
 					notes: playerNotesInput.value.trim() || null,
+					roster_id: activeRosterId,
 				};
 
 				const endpoint = activePlayerId ? `/api/players/${activePlayerId}` : '/api/players';
@@ -5396,7 +5515,7 @@
 							method: 'POST',
 							credentials: 'include',
 							headers: { 'Content-Type': 'application/json' },
-							body: JSON.stringify({ name, tier_id: tierId }),
+							body: JSON.stringify({ name, tier_id: tierId, roster_id: activeRosterId }),
 						});
 						if (response.status === 401) {
 							showAuthGate();
@@ -5754,7 +5873,7 @@
 							method: 'POST',
 							credentials: 'include',
 							headers: { 'Content-Type': 'application/json' },
-							body: JSON.stringify({ name: entry.name, tier_id: entry.tier_id }),
+							body: JSON.stringify({ name: entry.name, tier_id: entry.tier_id, roster_id: activeRosterId }),
 						});
 						if (response.status === 401) { showAuthGate(); return; }
 						if (!response.ok) { failed += 1; continue; }
@@ -5903,7 +6022,7 @@
 					method: 'POST',
 					credentials: 'include',
 					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ date: localDateString() }),
+					body: JSON.stringify({ date: localDateString(), roster_id: activeRosterId }),
 				});
 				if (todayResponse.status === 401) {
 					showAuthGate();
@@ -7140,6 +7259,241 @@
 			// Seed one timer so the section is usable immediately.
 			groupTimers.push(makeGroupTimer());
 			renderGroupTimers();
+
+
+			// ============================================================
+			// Rosters: split players into teams / private lessons, pick one
+			// at login, and scope the app to whichever is active.
+			// ============================================================
+			function rosterQuery() {
+				return activeRosterId ? ('?roster_id=' + encodeURIComponent(activeRosterId)) : '';
+			}
+			function rosterStorageKey(uid) { return 'coachStudio.activeRoster.' + (uid || 'anon'); }
+			function readStoredRoster(uid) {
+				try { return localStorage.getItem(rosterStorageKey(uid)); } catch (e) { return null; }
+			}
+			function writeStoredRoster(uid, id) {
+				try { localStorage.setItem(rosterStorageKey(uid), id); } catch (e) {}
+			}
+			function getActiveRoster() { return rosters.find((r) => r.id === activeRosterId) || null; }
+
+			async function loadRosters() {
+				try {
+					const res = await fetch('/api/rosters', { credentials: 'include' });
+					if (!res.ok) { rosters = []; return; }
+					rosters = await res.json();
+				} catch (e) { rosters = []; }
+			}
+
+			function renderRosterPill() {
+				const nameEl = document.querySelector('[data-roster-pill-name]');
+				const kindEl = document.querySelector('[data-roster-pill-kind]');
+				const labelEl = document.querySelector('[data-players-roster-label]');
+				const active = getActiveRoster();
+				if (nameEl) nameEl.textContent = active ? active.name : 'No roster';
+				if (kindEl) kindEl.textContent = active ? (active.kind === 'private' ? 'Private' : 'Team') : '';
+				if (labelEl) labelEl.textContent = active ? active.name : 'your roster';
+			}
+
+			async function setActiveRoster(id) {
+				closeRosterChooser();
+				if (!id || id === activeRosterId) return;
+				activeRosterId = id;
+				if (currentUser) writeStoredRoster(currentUser.id, id);
+				// Attendance + groups are per-roster; drop the cached practice so the
+				// next load pulls this roster's session.
+				todayPracticeId = null;
+				todayAttendance = new Set();
+				renderRosterPill();
+				await loadPlayers();
+				if (dashboard.dataset.page === 'players') { await loadTodayAttendance(); renderPlayers(); }
+				if (dashboard.dataset.page === 'analytics') { await loadAnalytics(); }
+			}
+
+			// ---- Login / switch chooser ----
+			function openRosterChooser(opts) {
+				opts = opts || {};
+				const el = document.querySelector('[data-roster-chooser]');
+				if (!el) return;
+				const closeBtn = el.querySelector('[data-rc-close]');
+				if (closeBtn) closeBtn.hidden = !opts.dismissible;
+				const active = getActiveRoster();
+				rcSelectedKind = active ? active.kind : 'team';
+				if (!rosters.some((r) => r.kind === rcSelectedKind) && rosters.length) {
+					rcSelectedKind = rosters[0].kind;
+				}
+				const err = el.querySelector('[data-rc-error]'); if (err) err.textContent = '';
+				const nf = el.querySelector('[data-rc-new-form]'); if (nf) nf.hidden = true;
+				renderChooser();
+				el.hidden = false;
+				document.body.style.overflow = 'hidden';
+			}
+			function closeRosterChooser() {
+				const el = document.querySelector('[data-roster-chooser]');
+				if (el) el.hidden = true;
+				document.body.style.overflow = '';
+			}
+			function renderChooser() {
+				const listEl = document.querySelector('[data-rc-list]');
+				document.querySelectorAll('[data-rc-kind]').forEach((b) => {
+					b.classList.toggle('is-active', b.dataset.rcKind === rcSelectedKind);
+				});
+				if (!listEl) return;
+				const items = rosters.filter((r) => r.kind === rcSelectedKind);
+				if (!items.length) {
+					listEl.innerHTML = '<div class="rc-empty">No ' + (rcSelectedKind === 'private' ? 'private lessons' : 'team rosters') + ' yet — create one below.</div>';
+					return;
+				}
+				listEl.innerHTML = items.map((r) =>
+					'<button class="rc-roster' + (r.id === activeRosterId ? ' is-active' : '') + '" type="button" data-rc-pick="' + r.id + '">' +
+					'<span class="rc-roster-name">' + escapeHtml(r.name) + '</span>' +
+					'<span class="rc-roster-count">' + r.player_count + ' player' + (r.player_count === 1 ? '' : 's') + '</span>' +
+					'</button>'
+				).join('');
+			}
+			async function createRosterFromChooser() {
+				const nameInput = document.querySelector('[data-rc-new-name]');
+				const errEl = document.querySelector('[data-rc-error]');
+				const name = ((nameInput && nameInput.value) || '').trim();
+				if (errEl) errEl.textContent = '';
+				if (!name) { if (errEl) errEl.textContent = 'Give the roster a name.'; return; }
+				try {
+					const res = await fetch('/api/rosters', {
+						method: 'POST', credentials: 'include',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ name, kind: rcSelectedKind }),
+					});
+					if (!res.ok) { if (errEl) errEl.textContent = await parseErrorMessage(res); return; }
+					const roster = await res.json();
+					await loadRosters();
+					if (nameInput) nameInput.value = '';
+					await setActiveRoster(roster.id);
+				} catch (e) { if (errEl) errEl.textContent = 'Could not create roster.'; }
+			}
+
+			(function wireRosterChooser() {
+				const chooserEl = document.querySelector('[data-roster-chooser]');
+				if (chooserEl) {
+					chooserEl.addEventListener('click', async (event) => {
+						if (event.target === chooserEl) {
+							const cb = chooserEl.querySelector('[data-rc-close]');
+							if (cb && !cb.hidden) closeRosterChooser();
+							return;
+						}
+						const kindBtn = event.target.closest('[data-rc-kind]');
+						if (kindBtn) { rcSelectedKind = kindBtn.dataset.rcKind; renderChooser(); return; }
+						const pick = event.target.closest('[data-rc-pick]');
+						if (pick) { await setActiveRoster(pick.dataset.rcPick); return; }
+						if (event.target.closest('[data-rc-close]')) { closeRosterChooser(); return; }
+						if (event.target.closest('[data-rc-new]')) {
+							const nf = chooserEl.querySelector('[data-rc-new-form]');
+							if (nf) { nf.hidden = !nf.hidden; const inp = nf.querySelector('[data-rc-new-name]'); if (!nf.hidden && inp) inp.focus(); }
+							return;
+						}
+						if (event.target.closest('[data-rc-create]')) { await createRosterFromChooser(); return; }
+					});
+					const newName = chooserEl.querySelector('[data-rc-new-name]');
+					if (newName) newName.addEventListener('keydown', (e) => {
+						if (e.key === 'Enter') { e.preventDefault(); createRosterFromChooser(); }
+					});
+				}
+				const rosterPill = document.querySelector('[data-roster-switch]');
+				if (rosterPill) rosterPill.addEventListener('click', () => openRosterChooser({ dismissible: true }));
+			})();
+
+			// ---- Manage roster members (add/remove existing players, rename, delete) ----
+			async function renderRosterMembers() {
+				const active = getActiveRoster();
+				const titleEl = document.querySelector('[data-rm-title]');
+				const nameEl = document.querySelector('[data-rm-name]');
+				const kindEl = document.querySelector('[data-rm-kind]');
+				const membersEl = document.querySelector('[data-rm-members]');
+				const availEl = document.querySelector('[data-rm-available]');
+				const countEl = document.querySelector('[data-rm-members-count]');
+				const errEl = document.querySelector('[data-rm-error]');
+				if (errEl) errEl.textContent = '';
+				if (!active) {
+					if (titleEl) titleEl.textContent = 'No roster selected';
+					if (membersEl) membersEl.innerHTML = '<div class="rm-empty">Pick or create a roster first.</div>';
+					if (availEl) availEl.innerHTML = '';
+					return;
+				}
+				if (titleEl) titleEl.textContent = active.name;
+				if (nameEl) nameEl.value = active.name;
+				if (kindEl) kindEl.value = active.kind;
+				if (membersEl) membersEl.innerHTML = '<div class="rm-empty">Loading…</div>';
+				if (availEl) availEl.innerHTML = '';
+				let members = [], all = [];
+				try {
+					const [mRes, aRes] = await Promise.all([
+						fetch('/api/rosters/' + active.id + '/players', { credentials: 'include' }),
+						fetch('/api/players', { credentials: 'include' }),
+					]);
+					if (mRes.ok) members = await mRes.json();
+					if (aRes.ok) all = await aRes.json();
+				} catch (e) {}
+				const memberIds = new Set(members.map((pl) => pl.id));
+				if (countEl) countEl.textContent = '(' + members.length + ')';
+				const tierName = (pl) => { const t = tiers.find((x) => x.id === pl.tier_id); return t ? t.name : ''; };
+				const row = (pl, btn) =>
+					'<div class="rm-row"><span class="rm-row-name">' + escapeHtml(pl.name) + '</span>' +
+					(tierName(pl) ? '<span class="rm-row-tier">' + escapeHtml(tierName(pl)) + '</span>' : '') + btn + '</div>';
+				if (membersEl) {
+					membersEl.innerHTML = members.length
+						? members.map((pl) => row(pl, '<button type="button" data-rm-remove="' + pl.id + '">Remove</button>')).join('')
+						: '<div class="rm-empty">No players yet. Add existing ones below, or use “Add a player”.</div>';
+				}
+				const available = all.filter((pl) => !memberIds.has(pl.id));
+				if (availEl) {
+					availEl.innerHTML = available.length
+						? available.map((pl) => row(pl, '<button type="button" class="rm-add" data-rm-add="' + pl.id + '">Add</button>')).join('')
+						: '<div class="rm-empty">Everyone is already in this roster.</div>';
+				}
+			}
+
+			(function wireRosterMembers() {
+				const rmModal = document.querySelector('[data-modal="roster-members"]');
+				if (!rmModal) return;
+				rmModal.addEventListener('click', async (event) => {
+					const active = getActiveRoster();
+					if (!active) return;
+					const addBtn = event.target.closest('[data-rm-add]');
+					if (addBtn) {
+						await fetch('/api/rosters/' + active.id + '/players', { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ player_ids: [addBtn.dataset.rmAdd] }) });
+						await loadRosters(); renderRosterPill(); await renderRosterMembers(); await loadPlayers();
+						return;
+					}
+					const remBtn = event.target.closest('[data-rm-remove]');
+					if (remBtn) {
+						await fetch('/api/rosters/' + active.id + '/players/' + remBtn.dataset.rmRemove, { method: 'DELETE', credentials: 'include' });
+						await loadRosters(); renderRosterPill(); await renderRosterMembers(); await loadPlayers();
+						return;
+					}
+					if (event.target.closest('[data-rm-save]')) {
+						const nameEl = document.querySelector('[data-rm-name]');
+						const kindEl = document.querySelector('[data-rm-kind]');
+						const errEl = document.querySelector('[data-rm-error]');
+						const name = ((nameEl && nameEl.value) || '').trim();
+						if (!name) { if (errEl) errEl.textContent = 'Name cannot be empty.'; return; }
+						const res = await fetch('/api/rosters/' + active.id, { method: 'PATCH', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, kind: kindEl.value }) });
+						if (!res.ok) { if (errEl) errEl.textContent = await parseErrorMessage(res); return; }
+						await loadRosters(); renderRosterPill(); await renderRosterMembers();
+						return;
+					}
+					if (event.target.closest('[data-rm-delete]')) {
+						const errEl = document.querySelector('[data-rm-error]');
+						if (rosters.length <= 1) { if (errEl) errEl.textContent = 'You need at least one roster.'; return; }
+						if (!window.confirm('Delete this roster? Your players stay in your other rosters.')) return;
+						await fetch('/api/rosters/' + active.id, { method: 'DELETE', credentials: 'include' });
+						await loadRosters();
+						closeModal(rmModal);
+						const next = rosters[0] ? rosters[0].id : null;
+						activeRosterId = null;
+						await setActiveRoster(next);
+						return;
+					}
+				});
+			})();
 
 			(async () => {
 				syncDuration('60');

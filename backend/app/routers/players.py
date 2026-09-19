@@ -5,7 +5,7 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session as DbSession
 
 from app.database import get_db
-from app.models import Player, Tier, User
+from app.models import Player, Roster, RosterPlayer, Tier, User
 from app.rate_limit import limiter
 from app.schemas import (
     PlayerCreate,
@@ -28,6 +28,14 @@ def _validate_tier(db: DbSession, tier_id: Optional[str], current_user: User) ->
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Unknown tier_id")
 
 
+def _validate_roster(db: DbSession, roster_id: Optional[str], current_user: User) -> None:
+    if roster_id is None:
+        return
+    roster = db.query(Roster).filter(Roster.id == roster_id, Roster.user_id == current_user.id).first()
+    if roster is None:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Unknown roster_id")
+
+
 def _get_owned_player(db: DbSession, player_id: str, current_user: User) -> Player:
     player = db.query(Player).filter(Player.id == player_id, Player.user_id == current_user.id).first()
     if player is None:
@@ -46,15 +54,16 @@ def _next_rank_in_tier(db: DbSession, user_id: str, tier_id: str) -> int:
 
 @router.get("", response_model=list[PlayerOut])
 def list_players(
+    roster_id: Optional[str] = None,
     current_user: User = Depends(get_current_user),
     db: DbSession = Depends(get_db),
 ):
-    return (
-        db.query(Player)
-        .filter(Player.user_id == current_user.id)
-        .order_by(Player.rank.is_(None), Player.rank.asc(), Player.name.asc())
-        .all()
-    )
+    query = db.query(Player).filter(Player.user_id == current_user.id)
+    if roster_id is not None:
+        query = query.join(RosterPlayer, RosterPlayer.player_id == Player.id).filter(
+            RosterPlayer.roster_id == roster_id
+        )
+    return query.order_by(Player.rank.is_(None), Player.rank.asc(), Player.name.asc()).all()
 
 
 @router.post("", response_model=PlayerOut, status_code=status.HTTP_201_CREATED)
@@ -64,6 +73,7 @@ def create_player(
     db: DbSession = Depends(get_db),
 ):
     _validate_tier(db, payload.tier_id, current_user)
+    _validate_roster(db, payload.roster_id, current_user)
     rank = _next_rank_in_tier(db, current_user.id, payload.tier_id) if payload.tier_id else None
     player = Player(
         user_id=current_user.id,
@@ -73,6 +83,11 @@ def create_player(
         notes=payload.notes,
     )
     db.add(player)
+    db.flush()
+    # New players join the active roster they were created from, so they show up
+    # immediately in the roster the coach is looking at.
+    if payload.roster_id is not None:
+        db.add(RosterPlayer(roster_id=payload.roster_id, player_id=player.id))
     db.commit()
     db.refresh(player)
     return player

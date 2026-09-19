@@ -1,6 +1,7 @@
 import calendar
 import datetime as dt
 from collections import defaultdict
+from typing import Optional
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session as DbSession
@@ -11,6 +12,7 @@ from app.models import (
     CompletedSessionDrill,
     CompletedSessionPlayer,
     Player,
+    RosterPlayer,
     Tier,
     User,
 )
@@ -70,9 +72,23 @@ def _last_months(today: dt.date, count: int) -> list[tuple[int, int]]:
 
 @router.get("/summary", response_model=AnalyticsSummary)
 def analytics_summary(
+    roster_id: Optional[str] = None,
     current_user: User = Depends(get_current_user),
     db: DbSession = Depends(get_db),
 ):
+    # When a roster is active, the roster-membership metrics (size, tier balance,
+    # attendance rate) reflect only that roster. Historical session/leaderboard
+    # data comes from past-session snapshots that predate rosters, so it stays
+    # account-wide.
+    member_ids: Optional[set[str]] = None
+    if roster_id is not None:
+        member_ids = {
+            row.player_id
+            for row in db.query(RosterPlayer.player_id)
+            .filter(RosterPlayer.roster_id == roster_id)
+            .all()
+        }
+
     sessions = (
         db.query(CompletedSession)
         .filter(CompletedSession.user_id == current_user.id)
@@ -128,7 +144,10 @@ def analytics_summary(
                 player_latest_tier[cp.player_name] = cp.tier_name
 
     num_sessions = len(sessions)
-    roster_size = db.query(Player).filter(Player.user_id == current_user.id).count()
+    roster_size_query = db.query(Player).filter(Player.user_id == current_user.id)
+    if member_ids is not None:
+        roster_size_query = roster_size_query.filter(Player.id.in_(member_ids))
+    roster_size = roster_size_query.count()
 
     avg_attendance = round(total_attendance / num_sessions) if num_sessions else 0
     avg_session_minutes = round(total_minutes / num_sessions) if num_sessions else 0
@@ -176,7 +195,10 @@ def analytics_summary(
         .all()
     )
     counts_by_tier: dict[object, int] = defaultdict(int)
-    for (tier_id,) in db.query(Player.tier_id).filter(Player.user_id == current_user.id).all():
+    tier_count_query = db.query(Player.tier_id).filter(Player.user_id == current_user.id)
+    if member_ids is not None:
+        tier_count_query = tier_count_query.filter(Player.id.in_(member_ids))
+    for (tier_id,) in tier_count_query.all():
         counts_by_tier[tier_id] += 1
     tier_balance = [{"name": t.name, "count": counts_by_tier.get(t.id, 0)} for t in tiers]
     if counts_by_tier.get(None):

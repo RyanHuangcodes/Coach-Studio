@@ -145,9 +145,17 @@ class Practice(Base):
     plan_id: Mapped[Optional[str]] = mapped_column(
         UUID(as_uuid=False), ForeignKey("plans.id", ondelete="SET NULL"), nullable=True
     )
+    # Which roster this session belongs to. Nullable for legacy rows; every new
+    # session carries one, so a coach can run a team practice AND a private lesson
+    # on the same day without the two colliding on the same (user, date) slot.
+    roster_id: Mapped[Optional[str]] = mapped_column(
+        UUID(as_uuid=False), ForeignKey("rosters.id", ondelete="SET NULL"), nullable=True, index=True
+    )
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, nullable=False)
 
-    __table_args__ = (UniqueConstraint("user_id", "date", name="practice_user_date_unique"),)
+    __table_args__ = (
+        UniqueConstraint("user_id", "date", "roster_id", name="practice_user_date_roster_unique"),
+    )
 
 
 class AttendanceRecord(Base):
@@ -195,6 +203,45 @@ class PracticeGroupPlayer(Base):
 
     __table_args__ = (
         UniqueConstraint("group_id", "player_id", name="group_player_unique"),
+    )
+
+
+class Roster(Base):
+    """A named list of players a coach works with — a squad, a class, or a
+    single private student. Players join rosters many-to-many, so someone on the
+    team can also have their own private roster."""
+
+    __tablename__ = "rosters"
+
+    id: Mapped[str] = mapped_column(UUID(as_uuid=False), primary_key=True, default=_uuid)
+    user_id: Mapped[str] = mapped_column(
+        UUID(as_uuid=False), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    name: Mapped[str] = mapped_column(String(80), nullable=False)
+    # 'team' (group training) or 'private' (1-on-1 / 1-on-2 lessons).
+    kind: Mapped[str] = mapped_column(String(20), nullable=False, default="team")
+    sort_order: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, nullable=False)
+
+    __table_args__ = (
+        CheckConstraint("kind IN ('team', 'private')", name="roster_kind_valid"),
+    )
+
+
+class RosterPlayer(Base):
+    __tablename__ = "roster_players"
+
+    id: Mapped[str] = mapped_column(UUID(as_uuid=False), primary_key=True, default=_uuid)
+    roster_id: Mapped[str] = mapped_column(
+        UUID(as_uuid=False), ForeignKey("rosters.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    player_id: Mapped[str] = mapped_column(
+        UUID(as_uuid=False), ForeignKey("players.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, nullable=False)
+
+    __table_args__ = (
+        UniqueConstraint("roster_id", "player_id", name="roster_player_unique"),
     )
 
 

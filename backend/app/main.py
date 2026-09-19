@@ -18,6 +18,7 @@ from app.routers import (
     players,
     plans,
     practices,
+    rosters,
     tiers,
 )
 
@@ -37,6 +38,7 @@ app.include_router(drafts.router)
 app.include_router(tiers.router)
 app.include_router(players.router)
 app.include_router(practices.router)
+app.include_router(rosters.router)
 app.include_router(groups.router)
 app.include_router(drills.router)
 app.include_router(insights.router)

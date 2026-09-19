@@ -7,7 +7,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session as DbSession
 
 from app.database import get_db
-from app.models import AttendanceRecord, Player, Practice, User
+from app.models import AttendanceRecord, Player, Practice, Roster, User
 from app.schemas import AttendanceCheckIn, AttendanceOut, PracticeOut, TodayPracticeRequest
 from app.security import get_current_user
 
@@ -26,7 +26,10 @@ def _get_owned_practice(db: DbSession, practice_id: str, current_user: User) -> 
 
 
 def get_or_create_today_practice_row(
-    db: DbSession, user_id: str, local_date: Optional[date_type] = None
+    db: DbSession,
+    user_id: str,
+    local_date: Optional[date_type] = None,
+    roster_id: Optional[str] = None,
 ) -> Practice:
     # Coaches live in local time; the browser supplies its local date so evening
     # sessions don't roll onto tomorrow's UTC date. Server-side callers (group
@@ -37,24 +40,34 @@ def get_or_create_today_practice_row(
     if abs(today - utc_today) > timedelta(days=1):
         today = utc_today
 
+    # Sessions are scoped per roster so a coach can run a team practice and a
+    # private lesson on the same day without them sharing one attendance sheet.
     practice = (
         db.query(Practice)
-        .filter(Practice.user_id == user_id, Practice.date == today)
+        .filter(
+            Practice.user_id == user_id,
+            Practice.date == today,
+            Practice.roster_id == roster_id,
+        )
         .first()
     )
     if practice is not None:
         return practice
 
-    practice = Practice(user_id=user_id, date=today)
+    practice = Practice(user_id=user_id, date=today, roster_id=roster_id)
     db.add(practice)
     try:
         db.commit()
     except IntegrityError:
-        # A concurrent request created the same (user, date) row first.
+        # A concurrent request created the same (user, date, roster) row first.
         db.rollback()
         practice = (
             db.query(Practice)
-            .filter(Practice.user_id == user_id, Practice.date == today)
+            .filter(
+                Practice.user_id == user_id,
+                Practice.date == today,
+                Practice.roster_id == roster_id,
+            )
             .first()
         )
         if practice is None:
@@ -84,7 +97,18 @@ def get_or_create_today_practice(
     db: DbSession = Depends(get_db),
 ):
     local_date = payload.date if payload else None
-    return get_or_create_today_practice_row(db, current_user.id, local_date)
+    roster_id = payload.roster_id if payload else None
+    if roster_id is not None:
+        roster = (
+            db.query(Roster)
+            .filter(Roster.id == roster_id, Roster.user_id == current_user.id)
+            .first()
+        )
+        if roster is None:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Unknown roster_id"
+            )
+    return get_or_create_today_practice_row(db, current_user.id, local_date, roster_id)
 
 
 @router.get("/{practice_id}/attendance", response_model=list[AttendanceOut])
