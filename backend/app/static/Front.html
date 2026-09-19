@@ -1644,15 +1644,18 @@
 			background: rgba(8, 8, 10, 0.72); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
 			border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 		}
-		.landing-brand { font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-size: 1.5rem; letter-spacing: -0.01em; color: #fff; margin-right: auto; }
+		.landing-brand { display: flex; align-items: center; gap: 10px; margin-right: auto; color: #fff; text-decoration: none; }
+		.landing-brand-mark { width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; font-family: 'Fraunces', Georgia, serif; font-weight: 700; font-size: 1.2rem; line-height: 1; color: var(--accent); background: radial-gradient(circle at 30% 24%, rgba(214, 173, 63, 0.4), rgba(20, 18, 12, 0.96)); border: 1px solid rgba(214, 173, 63, 0.4); box-shadow: 0 0 20px rgba(214, 173, 63, 0.22); }
+		.landing-brand-name { font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-size: 1.35rem; letter-spacing: -0.01em; }
 		.landing-nav-links { display: flex; gap: 26px; }
 		.landing-nav-links a { color: rgba(255, 255, 255, 0.72); font-size: 0.92rem; font-weight: 500; cursor: pointer; text-decoration: none; }
 		.landing-nav-links a:hover { color: #fff; }
-		.landing-nav-actions { display: flex; align-items: center; gap: 14px; margin-left: auto; }
-		.landing-nav-login { background: transparent; border: 0; color: rgba(255, 255, 255, 0.85); font: inherit; font-weight: 600; font-size: 0.92rem; cursor: pointer; padding: 8px 4px; }
+		.landing-nav-actions { display: flex; align-items: center; gap: 16px; margin-left: auto; }
+		.landing-nav-actions::before { content: ""; width: 1px; height: 20px; background: rgba(255, 255, 255, 0.14); margin-right: 2px; }
+		.landing-nav-login { background: transparent; border: 0; color: rgba(255, 255, 255, 0.66); font: inherit; font-weight: 500; font-size: 0.92rem; cursor: pointer; padding: 8px 4px; }
 		.landing-nav-login:hover { color: #fff; }
-		.landing-nav-cta { background: transparent; color: #fff; border: 1px solid rgba(255, 255, 255, 0.35); border-radius: 999px; font: inherit; font-weight: 600; font-size: 0.92rem; padding: 9px 20px; cursor: pointer; }
-		.landing-nav-cta:hover { background: #fff; color: #0a0b0d; border-color: #fff; }
+		.landing-nav-cta { background: #fff; color: #0a0b0d; border: 1px solid #fff; border-radius: 999px; font: inherit; font-weight: 600; font-size: 0.92rem; padding: 9px 18px; cursor: pointer; }
+		.landing-nav-cta:hover { background: rgba(255, 255, 255, 0.88); border-color: rgba(255, 255, 255, 0.88); }
 
 		.landing-hero {
 			--hero-photo: url('/static/media/hero-athlete.jpg?v=5');
@@ -1882,6 +1885,10 @@
 		}
 		.landing-band ul { margin: 12px 0 0; padding-left: 18px; color: var(--muted); line-height: 1.9; }
 		.landing-band ul strong { color: var(--text); }
+		.landing-photo { border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 22px; overflow: hidden; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5); background: #0f0f11; }
+		.landing-photo img { display: block; width: 100%; height: auto; }
+		.landing-section-title.landing-xl { font-size: clamp(2.6rem, 7vw, 4.4rem); line-height: 1.02; margin-bottom: 16px; }
+		.landing-access-copy { margin: 0; color: var(--muted); font-size: 1.02rem; line-height: 1.7; max-width: 46ch; }
 
 		.landing-final { text-align: center; padding: 20px 0 8px; }
 		.landing-final h2 { margin: 0 0 18px; font-size: clamp(1.8rem, 5vw, 2.8rem); letter-spacing: -0.03em; font-weight: 900; }
@@ -3191,7 +3198,7 @@
 			<button type="button" data-landing-start>Get started &rarr;</button>
 		</div>
 		<header class="landing-nav">
-			<div class="landing-brand">Coach Studio</div>
+			<div class="landing-brand"><span class="landing-brand-mark">C</span><span class="landing-brand-name">Coach Studio</span></div>
 			<nav class="landing-nav-links">
 				<a data-scroll="features">Features</a>
 				<a data-scroll="stats">Analytics</a>
@@ -3285,6 +3292,15 @@
 					<div class="lp-bars">
 						<span class="lp-bar" style="height:55%"></span><span class="lp-bar" style="height:70%"></span><span class="lp-bar" style="height:48%"></span><span class="lp-bar" style="height:82%"></span><span class="lp-bar" style="height:66%"></span><span class="lp-bar" style="height:90%"></span><span class="lp-bar" style="height:60%"></span>
 					</div>
+				</div>
+			</div>
+
+			<div class="landing-band landing-access">
+				<div class="landing-photo"><img src="/static/media/landing-ipad.jpg?v=2" alt="Coach Studio open on an iPad" loading="lazy"></div>
+				<div>
+					<div class="landing-section-eyebrow">On every screen</div>
+					<h2 class="landing-section-title landing-xl">Easily accessible.</h2>
+					<p class="landing-access-copy">Coach Studio runs right in your browser — nothing to install. Pull it up on your phone courtside, a tablet on the wall, or your laptop at home. Your plans, roster, and timers are always one tap away.</p>
 				</div>
 			</div>
 
