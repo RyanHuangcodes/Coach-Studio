@@ -3,13 +3,25 @@ from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session as DbSession
 
 from app.database import get_db
 from app.models import AttendanceRecord, Player, Practice, Roster, User
-from app.schemas import AttendanceCheckIn, AttendanceOut, PracticeOut, TodayPracticeRequest
+from app.schemas import (
+    AttendanceCheckIn,
+    AttendanceOut,
+    CalendarDayOut,
+    PracticeByDateOut,
+    PracticeForDateRequest,
+    PracticeOut,
+    TodayPracticeRequest,
+)
 from app.security import get_current_user
+
+# A lesson may be recorded for a past or upcoming date, but not an absurd one.
+_MAX_DATE_SPAN_DAYS = 366 * 5
 
 router = APIRouter(prefix="/api/practices", tags=["practices"])
 
@@ -109,6 +121,122 @@ def get_or_create_today_practice(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Unknown roster_id"
             )
     return get_or_create_today_practice_row(db, current_user.id, local_date, roster_id)
+
+
+def _validate_owned_roster(db: DbSession, roster_id, current_user: User) -> None:
+    if roster_id is None:
+        return
+    roster = (
+        db.query(Roster).filter(Roster.id == roster_id, Roster.user_id == current_user.id).first()
+    )
+    if roster is None:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Unknown roster_id"
+        )
+
+
+def get_or_create_practice_for_date(
+    db: DbSession, user_id: str, target_date: date_type, roster_id
+) -> Practice:
+    """Get (or lazily create) the lesson for a specific date + roster. Unlike
+    the 'today' helper this accepts any reasonable past/future date so a coach
+    can record or review attendance for a specific training session."""
+    utc_today = datetime.now(timezone.utc).date()
+    if abs((target_date - utc_today).days) > _MAX_DATE_SPAN_DAYS:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Date out of range"
+        )
+    practice = (
+        db.query(Practice)
+        .filter(
+            Practice.user_id == user_id,
+            Practice.date == target_date,
+            Practice.roster_id == roster_id,
+        )
+        .first()
+    )
+    if practice is not None:
+        return practice
+    practice = Practice(user_id=user_id, date=target_date, roster_id=roster_id)
+    db.add(practice)
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        practice = (
+            db.query(Practice)
+            .filter(
+                Practice.user_id == user_id,
+                Practice.date == target_date,
+                Practice.roster_id == roster_id,
+            )
+            .first()
+        )
+        if practice is None:
+            raise
+        return practice
+    db.refresh(practice)
+    return practice
+
+
+@router.post("/for-date", response_model=PracticeOut, status_code=status.HTTP_200_OK)
+def get_or_create_practice_for_date_endpoint(
+    payload: PracticeForDateRequest,
+    current_user: User = Depends(get_current_user),
+    db: DbSession = Depends(get_db),
+):
+    _validate_owned_roster(db, payload.roster_id, current_user)
+    return get_or_create_practice_for_date(db, current_user.id, payload.date, payload.roster_id)
+
+
+@router.get("/by-date", response_model=PracticeByDateOut)
+def get_practice_by_date(
+    date: date_type,
+    roster_id: Optional[str] = None,
+    current_user: User = Depends(get_current_user),
+    db: DbSession = Depends(get_db),
+):
+    """The lesson (if any) for a date + roster, with who is checked in. Returns a
+    null practice_id when no lesson has been recorded yet for that date."""
+    _validate_owned_roster(db, roster_id, current_user)
+    practice = (
+        db.query(Practice)
+        .filter(
+            Practice.user_id == current_user.id,
+            Practice.date == date,
+            Practice.roster_id == roster_id,
+        )
+        .first()
+    )
+    if practice is None:
+        return PracticeByDateOut(practice_id=None, player_ids=[])
+    player_ids = [
+        row.player_id
+        for row in db.query(AttendanceRecord.player_id)
+        .filter(AttendanceRecord.practice_id == practice.id)
+        .all()
+    ]
+    return PracticeByDateOut(practice_id=practice.id, player_ids=player_ids)
+
+
+@router.get("/calendar", response_model=list[CalendarDayOut])
+def practice_calendar(
+    roster_id: Optional[str] = None,
+    current_user: User = Depends(get_current_user),
+    db: DbSession = Depends(get_db),
+):
+    """Every recorded training date for a roster, with how many attended — the
+    data behind the attendance calendar."""
+    _validate_owned_roster(db, roster_id, current_user)
+    rows = (
+        db.query(Practice.date, func.count(AttendanceRecord.id))
+        .outerjoin(AttendanceRecord, AttendanceRecord.practice_id == Practice.id)
+        .filter(Practice.user_id == current_user.id, Practice.roster_id == roster_id)
+        .group_by(Practice.date)
+        .order_by(Practice.date.asc())
+        .all()
+    )
+    return [CalendarDayOut(date=day, attendee_count=count) for day, count in rows]
 
 
 @router.get("/{practice_id}/attendance", response_model=list[AttendanceOut])

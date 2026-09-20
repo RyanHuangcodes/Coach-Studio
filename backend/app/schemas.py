@@ -177,6 +177,10 @@ class PlayerOut(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class PlayerAttendanceOut(BaseModel):
+    dates: list[dt.date]
+
+
 class PlayerMove(BaseModel):
     direction: str
 
@@ -348,6 +352,21 @@ class PracticeOut(BaseModel):
     created_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class PracticeForDateRequest(BaseModel):
+    roster_id: Optional[str] = None
+    date: dt.date
+
+
+class PracticeByDateOut(BaseModel):
+    practice_id: Optional[str] = None
+    player_ids: list[str] = []
+
+
+class CalendarDayOut(BaseModel):
+    date: dt.date
+    attendee_count: int
 
 
 class AttendanceCheckIn(BaseModel):

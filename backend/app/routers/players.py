@@ -5,9 +5,10 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session as DbSession
 
 from app.database import get_db
-from app.models import Player, Roster, RosterPlayer, Tier, User
+from app.models import AttendanceRecord, Player, Practice, Roster, RosterPlayer, Tier, User
 from app.rate_limit import limiter
 from app.schemas import (
+    PlayerAttendanceOut,
     PlayerCreate,
     PlayerMove,
     PlayerOut,
@@ -91,6 +92,27 @@ def create_player(
     db.commit()
     db.refresh(player)
     return player
+
+
+@router.get("/{player_id}/attendance", response_model=PlayerAttendanceOut)
+def player_attendance(
+    player_id: str,
+    roster_id: Optional[str] = None,
+    current_user: User = Depends(get_current_user),
+    db: DbSession = Depends(get_db),
+):
+    """Every training date this player was checked in for (optionally within a
+    single roster) — the data behind a player's attendance calendar."""
+    player = _get_owned_player(db, player_id, current_user)
+    query = (
+        db.query(Practice.date)
+        .join(AttendanceRecord, AttendanceRecord.practice_id == Practice.id)
+        .filter(AttendanceRecord.player_id == player.id, Practice.user_id == current_user.id)
+    )
+    if roster_id is not None:
+        query = query.filter(Practice.roster_id == roster_id)
+    dates = sorted({row.date for row in query.all()})
+    return PlayerAttendanceOut(dates=dates)
 
 
 @router.post("/extract-image", response_model=RosterImageResponse)

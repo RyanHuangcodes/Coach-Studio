@@ -3241,6 +3241,57 @@
     .rm-delete { margin-top: 18px; background: transparent; border: 1px solid rgba(255,90,90,0.4); color: #ff8a8a; border-radius: 12px; padding: 10px 14px; font: inherit; font-weight: 700; cursor: pointer; }
     @media (max-width: 520px) { .rc-kinds { grid-template-columns: 1fr; } .rc-card { padding: 22px; } }
 
+
+    /* ---- Players tab: roster picker chips ---- */
+    .roster-select-title { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); font-weight: 800; margin-bottom: 10px; }
+    .roster-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .roster-chip { display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.03); color: var(--text); font: inherit; font-weight: 700; font-size: 0.9rem; cursor: pointer; }
+    .roster-chip:hover { border-color: rgba(214,173,63,0.5); }
+    .roster-chip.is-active { border-color: var(--accent); background: rgba(214,173,63,0.1); color: var(--accent); }
+    .roster-chip-kind { font-size: 0.54rem; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.7; font-weight: 800; }
+    .roster-chip-count { font-size: 0.78rem; color: var(--muted); font-weight: 700; }
+    .roster-chip.is-active .roster-chip-count { color: rgba(214,173,63,0.85); }
+    .roster-chip-new { border-style: dashed; color: var(--accent); border-color: rgba(214,173,63,0.4); background: transparent; }
+    .players-empty-hint { color: var(--muted); font-size: 0.95rem; padding: 26px 4px; text-align: center; border: 1px dashed rgba(255,255,255,0.1); border-radius: 16px; margin-top: 14px; }
+    .players-area { margin-top: 16px; display: grid; gap: 18px; }
+
+
+    /* ---- Per-lesson attendance + training calendar ---- */
+    .attendance-bar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 14px; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; background: rgba(255,255,255,0.02); }
+    .attendance-bar-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); font-weight: 800; }
+    .lesson-date-input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; padding: 8px 12px; color: var(--text); font: inherit; color-scheme: dark; }
+    .lesson-summary { margin-left: auto; font-size: 0.85rem; color: var(--accent); font-weight: 800; }
+    .training-cal { border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 14px; background: rgba(255,255,255,0.02); }
+    .cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .cal-title { font-weight: 800; font-size: 0.98rem; }
+    .cal-nav { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: var(--text); border-radius: 10px; width: 34px; height: 34px; font-size: 1.1rem; cursor: pointer; }
+    .cal-nav:hover { border-color: rgba(214,173,63,0.5); }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+    .cal-dow { text-align: center; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 800; padding-bottom: 4px; }
+    .cal-cell { position: relative; aspect-ratio: 1 / 1; border: 1px solid transparent; border-radius: 10px; background: rgba(255,255,255,0.03); color: var(--text); font: inherit; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 0; }
+    .cal-cell.is-empty { background: transparent; border: 0; cursor: default; }
+    .cal-cell:hover:not(.is-empty) { border-color: rgba(214,173,63,0.5); }
+    .cal-cell.is-today { border-color: rgba(255,255,255,0.35); }
+    .cal-cell.is-selected { border-color: var(--accent); background: rgba(214,173,63,0.12); }
+    .cal-cell.has-lesson .cal-num { color: var(--accent); font-weight: 800; }
+    .cal-num { font-size: 0.85rem; }
+    .cal-count { font-size: 0.56rem; font-weight: 800; color: #0b0b0c; background: var(--accent); border-radius: 999px; min-width: 15px; height: 15px; display: grid; place-items: center; padding: 0 3px; }
+    .cal-legend { margin-top: 10px; font-size: 0.72rem; color: var(--muted); line-height: 1.5; }
+
+
+    /* ---- Per-player attendance calendar (opens on player click) ---- */
+    .player-name-link { background: transparent; border: 0; cursor: pointer; padding: 0; text-align: left; }
+    .player-name-link:hover { color: var(--accent); text-decoration: underline; }
+    .cal-player-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+    .cal-player-name { font-weight: 800; font-size: 1.05rem; }
+    .cal-player-sub { display: block; font-size: 0.8rem; color: var(--muted); font-weight: 700; margin-top: 2px; }
+    .cal-close { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: var(--text); border-radius: 10px; width: 32px; height: 32px; font-size: 1.2rem; line-height: 1; cursor: pointer; flex: 0 0 auto; }
+    .cal-close:hover { border-color: rgba(214,173,63,0.5); }
+    .cal-cell.is-present { border-color: var(--accent); background: rgba(214,173,63,0.16); }
+    .cal-cell.is-present .cal-num { color: var(--accent); font-weight: 800; }
+    .cal-cell.is-session { border-color: rgba(255,255,255,0.28); }
+    .cal-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+
 	</style>
 </head>
 <body>
@@ -3543,16 +3594,44 @@
 					</div>
 					<p>Showing <strong data-players-roster-label>your roster</strong> — check players in and manage who's in it.</p>
 				</div>
-				<div class="players-actions">
-					<button class="secondary-button" type="button" data-modal-open="roster-members">Manage roster</button>
-					<button class="secondary-button" type="button" data-modal-open="tiers">Manage tiers</button>
-					<button class="secondary-button" type="button" data-modal-open="groups">Make groups</button>
-					<button class="secondary-button" type="button" data-modal-open="bulk-players">Paste roster</button>
-					<button class="secondary-button" type="button" data-import-photo>Import from photo</button>
-					<button class="primary-button" type="button" data-modal-open="new-player">Add player</button>
+				<div class="roster-select">
+					<div class="roster-select-title">Choose a roster</div>
+					<div class="roster-chips" data-roster-chips></div>
 				</div>
-				<input type="file" accept="image/png,image/jpeg,image/webp,image/gif" data-import-file hidden>
-				<div class="players-list" data-players-list></div>
+				<div class="players-empty-hint" data-players-empty-hint>Select a roster above to view and add its players.</div>
+				<div class="players-area" data-players-area hidden>
+					<div class="players-actions">
+						<button class="secondary-button" type="button" data-modal-open="roster-members">Manage roster</button>
+						<button class="secondary-button" type="button" data-modal-open="tiers">Manage tiers</button>
+						<button class="secondary-button" type="button" data-modal-open="groups">Make groups</button>
+						<button class="secondary-button" type="button" data-modal-open="bulk-players">Paste roster</button>
+						<button class="secondary-button" type="button" data-import-photo>Import from photo</button>
+						<button class="primary-button" type="button" data-modal-open="new-player">Add player</button>
+					</div>
+					<input type="file" accept="image/png,image/jpeg,image/webp,image/gif" data-import-file hidden>
+					<div class="attendance-bar">
+						<span class="attendance-bar-label">Attendance for</span>
+						<input type="date" class="lesson-date-input" data-lesson-date>
+						<span class="lesson-summary" data-lesson-summary></span>
+					</div>
+					<div class="players-list" data-players-list></div>
+					<div class="training-cal" data-training-cal hidden>
+						<div class="cal-player-head">
+							<div>
+								<span class="cal-player-name" data-cal-player-name></span>
+								<span class="cal-player-sub" data-cal-player-sub></span>
+							</div>
+							<button type="button" class="cal-close" data-cal-close aria-label="Close">&times;</button>
+						</div>
+						<div class="cal-head">
+							<button type="button" class="cal-nav" data-cal-prev aria-label="Previous month">&lsaquo;</button>
+							<span class="cal-title" data-cal-title></span>
+							<button type="button" class="cal-nav" data-cal-next aria-label="Next month">&rsaquo;</button>
+						</div>
+						<div class="cal-grid" data-cal-grid></div>
+						<div class="cal-legend">Gold dates are sessions this player attended; outlined dates are sessions they missed.</div>
+					</div>
+				</div>
 			</div>
 		</section>
 
@@ -4074,6 +4153,13 @@
 			let activeRosterId = null;
 			let currentUser = null;
 			let rcSelectedKind = 'team';
+			let playersViewSelected = false;
+			let lessonDate = null;
+			let calendarMonth = null;
+			let calendarDays = [];
+			let calendarPlayerId = null;
+			let calendarPlayerName = '';
+			let playerAttendedDates = new Set();
 			let todayPracticeId = null;
 			let todayAttendance = new Set();
 			let activePlayerId = null;
@@ -4274,7 +4360,7 @@
 						${moveButtons}
 						<div class="player-info">
 							<div class="player-name-row">
-								<span class="player-name">${escapeHtml(player.name)}</span>
+								<button type="button" class="player-name player-name-link" data-player-history="${escapeHtml(player.id)}">${escapeHtml(player.name)}</button>
 								${tierName ? `<span class="player-tier-badge">${escapeHtml(tierName)}</span>` : ''}
 							</div>
 							${player.notes ? `<div class="player-notes">${escapeHtml(player.notes)}</div>` : ''}
@@ -4410,6 +4496,7 @@
 					history.replaceState(null, '', `#${page}`);
 				}
 				if (page === 'players') {
+					resetPlayersView();
 					loadPlayersPageData();
 				}
 				if (page === 'history') {
@@ -4954,7 +5041,10 @@
 			}
 
 			async function toggleCheckIn(playerId) {
-				if (!todayPracticeId) return;
+				if (!todayPracticeId) {
+					await ensureLessonPractice();
+					if (!todayPracticeId) return;
+				}
 				const isCheckedIn = todayAttendance.has(playerId);
 				const endpoint = `/api/practices/${todayPracticeId}/attendance${isCheckedIn ? `/${playerId}` : ''}`;
 				const response = await fetch(endpoint, {
@@ -4976,6 +5066,8 @@
 				}
 				renderPlayers();
 				renderAttendanceList();
+				updateLessonSummary();
+				bumpCalendarCount();
 			}
 
 			async function handleSaveDraft() {
@@ -5187,6 +5279,11 @@
 					return;
 				}
 
+				const playerHistoryButton = event.target.closest('[data-player-history]');
+				if (playerHistoryButton) {
+					showPlayerCalendar(playerHistoryButton.dataset.playerHistory);
+					return;
+				}
 				const checkinButton = event.target.closest('[data-checkin-toggle]');
 				if (checkinButton) {
 					toggleCheckIn(checkinButton.dataset.playerId);
@@ -7293,6 +7390,7 @@
 				if (nameEl) nameEl.textContent = active ? active.name : 'No roster';
 				if (kindEl) kindEl.textContent = active ? (active.kind === 'private' ? 'Private' : 'Team') : '';
 				if (labelEl) labelEl.textContent = active ? active.name : 'your roster';
+				renderRosterChips();
 			}
 
 			async function setActiveRoster(id) {
@@ -7306,7 +7404,7 @@
 				todayAttendance = new Set();
 				renderRosterPill();
 				await loadPlayers();
-				if (dashboard.dataset.page === 'players') { await loadTodayAttendance(); renderPlayers(); }
+				if (dashboard.dataset.page === 'players') { await revealPlayersArea(); }
 				if (dashboard.dataset.page === 'analytics') { await loadAnalytics(); }
 			}
 
@@ -7400,6 +7498,184 @@
 				const rosterPill = document.querySelector('[data-roster-switch]');
 				if (rosterPill) rosterPill.addEventListener('click', () => openRosterChooser({ dismissible: true }));
 			})();
+
+			// ---- Players tab: pick a roster, then reveal its players ----
+			function renderRosterChips() {
+				const wrap = document.querySelector('[data-roster-chips]');
+				if (!wrap) return;
+				const ordered = rosters.slice().sort((a, b) => (a.kind === b.kind ? 0 : (a.kind === 'private' ? 1 : -1)));
+				const chip = (r) =>
+					'<button class="roster-chip' + (playersViewSelected && r.id === activeRosterId ? ' is-active' : '') + '" type="button" data-players-roster="' + r.id + '">' +
+					'<span class="roster-chip-kind">' + (r.kind === 'private' ? '1:1' : 'Team') + '</span>' +
+					'<span class="roster-chip-name">' + escapeHtml(r.name) + '</span>' +
+					'<span class="roster-chip-count">' + r.player_count + '</span></button>';
+				wrap.innerHTML = ordered.map(chip).join('') +
+					'<button class="roster-chip roster-chip-new" type="button" data-players-new>+ New roster</button>';
+			}
+			function resetPlayersView() {
+				playersViewSelected = false;
+				const area = document.querySelector('[data-players-area]');
+				const hint = document.querySelector('[data-players-empty-hint]');
+				if (area) area.hidden = true;
+				if (hint) hint.hidden = false;
+				renderRosterChips();
+			}
+			async function revealPlayersArea() {
+				playersViewSelected = true;
+				const area = document.querySelector('[data-players-area]');
+				const hint = document.querySelector('[data-players-empty-hint]');
+				if (area) area.hidden = false;
+				if (hint) hint.hidden = true;
+				renderRosterChips();
+				closePlayerCalendar();
+				lessonDate = localDateString();
+				calendarMonth = firstOfMonth(new Date());
+				const dateInput = document.querySelector('[data-lesson-date]');
+				if (dateInput) dateInput.value = lessonDate;
+				await loadCalendar();
+				await loadLessonForDate(lessonDate);
+			}
+			async function selectPlayersRoster(id) {
+				if (id !== activeRosterId) { await setActiveRoster(id); }
+				else { await loadPlayersPageData(); await revealPlayersArea(); }
+			}
+			(function wirePlayersRosterChips() {
+				const chipsWrap = document.querySelector('[data-roster-chips]');
+				if (!chipsWrap) return;
+				chipsWrap.addEventListener('click', async (event) => {
+					const c = event.target.closest('[data-players-roster]');
+					if (c) { await selectPlayersRoster(c.dataset.playersRoster); return; }
+					if (event.target.closest('[data-players-new]')) { openRosterChooser({ dismissible: true }); return; }
+				});
+			})();
+
+      // ---- Per-lesson attendance + training calendar ----
+      function firstOfMonth(d) { return new Date(d.getFullYear(), d.getMonth(), 1); }
+      function ymdLocal(y, mZeroBased, day) {
+        return y + '-' + String(mZeroBased + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+      }
+      async function loadCalendar() {
+        if (!activeRosterId) { calendarDays = []; renderCalendar(); return; }
+        try {
+          const res = await fetch('/api/practices/calendar?roster_id=' + encodeURIComponent(activeRosterId), { credentials: 'include' });
+          calendarDays = res.ok ? await res.json() : [];
+        } catch (e) { calendarDays = []; }
+        renderCalendar();
+      }
+      async function loadLessonForDate(dateStr) {
+        lessonDate = dateStr;
+        const dateInput = document.querySelector('[data-lesson-date]');
+        if (dateInput && dateInput.value !== dateStr) dateInput.value = dateStr;
+        todayPracticeId = null;
+        todayAttendance = new Set();
+        if (activeRosterId) {
+          try {
+            const res = await fetch('/api/practices/by-date?roster_id=' + encodeURIComponent(activeRosterId) + '&date=' + encodeURIComponent(dateStr), { credentials: 'include' });
+            if (res.status === 401) { showAuthGate(); return; }
+            if (res.ok) { const d = await res.json(); todayPracticeId = d.practice_id; todayAttendance = new Set(d.player_ids); }
+          } catch (e) {}
+        }
+        renderPlayers();
+        updateLessonSummary();
+      }
+      async function ensureLessonPractice() {
+        if (todayPracticeId || !activeRosterId || !lessonDate) return;
+        try {
+          const res = await fetch('/api/practices/for-date', {
+            method: 'POST', credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ roster_id: activeRosterId, date: lessonDate }),
+          });
+          if (res.status === 401) { showAuthGate(); return; }
+          if (res.ok) { const practice = await res.json(); todayPracticeId = practice.id; }
+        } catch (e) {}
+      }
+      function updateLessonSummary() {
+        const el = document.querySelector('[data-lesson-summary]');
+        if (!el) return;
+        const total = players.length;
+        const inCount = players.filter((pl) => todayAttendance.has(pl.id)).length;
+        el.textContent = inCount + ' of ' + total + ' checked in';
+      }
+      function bumpCalendarCount() {
+        if (!lessonDate) return;
+        const count = todayAttendance.size;
+        const existing = calendarDays.find((d) => d.date === lessonDate);
+        if (existing) existing.attendee_count = count;
+        else calendarDays.push({ date: lessonDate, attendee_count: count });
+        if (calendarPlayerId) renderCalendar();
+      }
+      function renderCalendar() {
+        const grid = document.querySelector('[data-cal-grid]');
+        const title = document.querySelector('[data-cal-title]');
+        if (!grid) return;
+        if (!calendarMonth) calendarMonth = firstOfMonth(new Date());
+        const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        if (title) title.textContent = monthNames[calendarMonth.getMonth()] + ' ' + calendarMonth.getFullYear();
+        const sessions = new Set(calendarDays.map((d) => d.date));
+        const todayStr = localDateString();
+        const y = calendarMonth.getFullYear();
+        const m = calendarMonth.getMonth();
+        const startDow = new Date(y, m, 1).getDay();
+        const daysInMonth = new Date(y, m + 1, 0).getDate();
+        let cells = '';
+        ['S','M','T','W','T','F','S'].forEach((d) => { cells += '<div class="cal-dow">' + d + '</div>'; });
+        for (let i = 0; i < startDow; i++) cells += '<div class="cal-cell is-empty"></div>';
+        for (let day = 1; day <= daysInMonth; day++) {
+          const ds = ymdLocal(y, m, day);
+          const attended = playerAttendedDates.has(ds);
+          const isSession = sessions.has(ds);
+          const cls = ['cal-cell'];
+          if (attended) cls.push('is-present');
+          else if (isSession) cls.push('is-session');
+          if (ds === todayStr) cls.push('is-today');
+          cells += '<div class="' + cls.join(' ') + '"><span class="cal-num">' + day + '</span>' + (attended ? '<span class="cal-dot"></span>' : '') + '</div>';
+        }
+        grid.innerHTML = cells;
+      }
+      async function showPlayerCalendar(playerId) {
+        const player = players.find((pl) => pl.id === playerId);
+        calendarPlayerId = playerId;
+        calendarPlayerName = player ? player.name : 'Player';
+        await loadCalendar();
+        playerAttendedDates = new Set();
+        if (activeRosterId) {
+          try {
+            const res = await fetch('/api/players/' + playerId + '/attendance?roster_id=' + encodeURIComponent(activeRosterId), { credentials: 'include' });
+            if (res.status === 401) { showAuthGate(); return; }
+            if (res.ok) { const d = await res.json(); playerAttendedDates = new Set(d.dates); }
+          } catch (e) {}
+        }
+        calendarMonth = firstOfMonth(new Date());
+        const nameEl = document.querySelector('[data-cal-player-name]');
+        const subEl = document.querySelector('[data-cal-player-sub]');
+        if (nameEl) nameEl.textContent = calendarPlayerName;
+        if (subEl) subEl.textContent = 'Attended ' + playerAttendedDates.size + ' of ' + calendarDays.length + ' session' + (calendarDays.length === 1 ? '' : 's');
+        const cal = document.querySelector('[data-training-cal]');
+        if (cal) cal.hidden = false;
+        renderCalendar();
+        if (cal && cal.scrollIntoView) cal.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+      function closePlayerCalendar() {
+        calendarPlayerId = null;
+        playerAttendedDates = new Set();
+        const cal = document.querySelector('[data-training-cal]');
+        if (cal) cal.hidden = true;
+      }
+      (function wireAttendanceCalendar() {
+        const dateInput = document.querySelector('[data-lesson-date]');
+        if (dateInput) dateInput.addEventListener('change', () => {
+          const v = dateInput.value;
+          if (!v) return;
+          loadLessonForDate(v);
+        });
+        const closeBtn = document.querySelector('[data-cal-close]');
+        if (closeBtn) closeBtn.addEventListener('click', closePlayerCalendar);
+        const prev = document.querySelector('[data-cal-prev]');
+        const next = document.querySelector('[data-cal-next]');
+        if (prev) prev.addEventListener('click', () => { if (!calendarMonth) calendarMonth = firstOfMonth(new Date()); calendarMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() - 1, 1); renderCalendar(); });
+        if (next) next.addEventListener('click', () => { if (!calendarMonth) calendarMonth = firstOfMonth(new Date()); calendarMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1, 1); renderCalendar(); });
+      })();
 
 			// ---- Manage roster members (add/remove existing players, rename, delete) ----
 			async function renderRosterMembers() {
