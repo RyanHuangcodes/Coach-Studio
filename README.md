@@ -4,7 +4,7 @@ A web app that lets a coach send session plans and feedback to individual athlet
 
 I built this because I coach badminton, and the coordination problem is real: plans get buried in chat threads, feedback isn't tied to the session it came from, and nobody can see whether a player has actually improved over a training block. The app puts sessions, feedback, and athletes into one data model so that history is queryable instead of scrolled for.
 
-**Stack:** HTML · CSS · JavaScript · Java
+**Stack:** HTML · CSS · JavaScript · Python (FastAPI) · PostgreSQL
 
 ---
 
@@ -20,7 +20,7 @@ I built this because I coach badminton, and the coordination problem is real: pl
 
 ## Architecture
 
-The browser layer handles form input, rendering, and client-side validation in plain HTML, CSS, and JavaScript, with no framework. Below it, a Java application layer holds the domain logic and the relationships between the three core entities.
+The browser layer handles form input, rendering, and client-side validation in plain HTML, CSS, and JavaScript, with no framework. Below it, a Python (FastAPI) application layer holds the domain logic and the relationships between the three core entities.
 
 | Entity | Holds | Relationships |
 | `Athlete` | name, contact, training group | has many sessions, has many feedback entries |
@@ -33,7 +33,6 @@ Modelling feedback as a child of both a session and an athlete — rather than a
 
 ## What I'd build next
 
-- Move persistence to Postgres and expose the data through REST endpoints, so the front end talks to an API instead of to in-app logic.
 - Deploy it so coaches can use it without running anything locally.
 - Rebuild the front end in React with TypeScript — the current vanilla JS rendering is the part that gets hardest to extend as views multiply.
 - Email notifications when a coach publishes feedback.
@@ -42,6 +41,6 @@ Modelling feedback as a child of both a session and an athlete — rather than a
 
 ## Notes on the code
 
-The interface was built from scratch in HTML, CSS, and JavaScript, including the responsive breakpoints and the form validation. Java handles the domain logic and the relationships between athletes, sessions, and feedback. The project was built incrementally, so the commit history reflects how it actually came together rather than arriving in one drop.
+The interface was built from scratch in HTML, CSS, and JavaScript, including the responsive breakpoints and the form validation. Python (FastAPI) handles the domain logic and the relationships between athletes, sessions, and feedback. The project was built incrementally, so the commit history reflects how it actually came together rather than arriving in one drop.
 
 Questions or suggestions are welcome via issues.
