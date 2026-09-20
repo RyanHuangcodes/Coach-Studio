@@ -3292,6 +3292,28 @@
     .cal-cell.is-session { border-color: rgba(255,255,255,0.28); }
     .cal-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
 
+
+    /* ---- Bolder roster chips + shrink-to-fit + session slot toggle ---- */
+    .roster-select-title { font-size: 0.8rem; color: rgba(245,242,236,0.85); letter-spacing: 0.14em; margin-bottom: 12px; }
+    .roster-chips { gap: 10px; }
+    .roster-chip { padding: 12px 18px; font-size: 1rem; border-width: 1.5px; border-color: rgba(255,255,255,0.18); background: rgba(255,255,255,0.05); min-height: 52px; box-shadow: 0 2px 10px rgba(0,0,0,0.25); transition: transform .12s ease, border-color .12s ease, background .12s ease; max-width: 260px; min-width: 0; flex: 0 1 auto; }
+    .roster-chip:hover { transform: translateY(-1px); border-color: rgba(214,173,63,0.6); background: rgba(214,173,63,0.06); }
+    .roster-chip.is-active { border-color: var(--accent); background: rgba(214,173,63,0.14); color: var(--accent); box-shadow: 0 0 0 1.5px rgba(214,173,63,0.55), 0 6px 20px rgba(214,173,63,0.16); }
+    .roster-chip-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    /* Many rosters? shrink chips so they still fit. */
+    .roster-chips.is-compact { gap: 7px; }
+    .roster-chips.is-compact .roster-chip { padding: 8px 12px; font-size: 0.85rem; min-height: 40px; max-width: 170px; box-shadow: none; }
+    .roster-chips.is-compact .roster-chip-kind { display: none; }
+
+    .session-toggle { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.82rem; font-weight: 700; color: var(--muted); }
+    .session-toggle input { position: absolute; opacity: 0; width: 0; height: 0; }
+    .session-switch { position: relative; width: 40px; height: 22px; border-radius: 999px; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.18); transition: background .15s ease, border-color .15s ease; flex: 0 0 auto; }
+    .session-switch::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: transform .15s ease; }
+    .session-toggle input:checked + .session-switch { background: var(--accent); border-color: var(--accent); }
+    .session-toggle input:checked + .session-switch::after { transform: translateX(18px); }
+    .session-toggle input:focus-visible + .session-switch { box-shadow: 0 0 0 3px rgba(214,173,63,0.3); }
+    .session-slot-select { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; padding: 8px 12px; color: var(--text); font: inherit; font-weight: 700; color-scheme: dark; }
+
 	</style>
 </head>
 <body>
@@ -3612,6 +3634,16 @@
 					<div class="attendance-bar">
 						<span class="attendance-bar-label">Attendance for</span>
 						<input type="date" class="lesson-date-input" data-lesson-date>
+						<label class="session-toggle">
+							<input type="checkbox" data-multi-session>
+							<span class="session-switch"></span>
+							<span class="session-toggle-label">Multiple sessions/day</span>
+						</label>
+						<select class="session-slot-select" data-session-slot hidden aria-label="Session time">
+							<option value="morning">Morning</option>
+							<option value="afternoon">Afternoon</option>
+							<option value="night">Night</option>
+						</select>
 						<span class="lesson-summary" data-lesson-summary></span>
 					</div>
 					<div class="players-list" data-players-list></div>
@@ -4160,6 +4192,8 @@
 			let calendarPlayerId = null;
 			let calendarPlayerName = '';
 			let playerAttendedDates = new Set();
+			let lessonSlot = 'day';
+			let multiSession = false;
 			let todayPracticeId = null;
 			let todayAttendance = new Set();
 			let activePlayerId = null;
@@ -7509,6 +7543,7 @@
 					'<span class="roster-chip-kind">' + (r.kind === 'private' ? '1:1' : 'Team') + '</span>' +
 					'<span class="roster-chip-name">' + escapeHtml(r.name) + '</span>' +
 					'<span class="roster-chip-count">' + r.player_count + '</span></button>';
+				wrap.classList.toggle('is-compact', rosters.length > 4);
 				wrap.innerHTML = ordered.map(chip).join('') +
 					'<button class="roster-chip roster-chip-new" type="button" data-players-new>+ New roster</button>';
 			}
@@ -7532,6 +7567,12 @@
 				calendarMonth = firstOfMonth(new Date());
 				const dateInput = document.querySelector('[data-lesson-date]');
 				if (dateInput) dateInput.value = lessonDate;
+				lessonSlot = 'day';
+				multiSession = false;
+				const multiToggle = document.querySelector('[data-multi-session]');
+				const slotSelect = document.querySelector('[data-session-slot]');
+				if (multiToggle) multiToggle.checked = false;
+				if (slotSelect) slotSelect.hidden = true;
 				await loadCalendar();
 				await loadLessonForDate(lessonDate);
 			}
@@ -7570,7 +7611,7 @@
         todayAttendance = new Set();
         if (activeRosterId) {
           try {
-            const res = await fetch('/api/practices/by-date?roster_id=' + encodeURIComponent(activeRosterId) + '&date=' + encodeURIComponent(dateStr), { credentials: 'include' });
+            const res = await fetch('/api/practices/by-date?roster_id=' + encodeURIComponent(activeRosterId) + '&date=' + encodeURIComponent(dateStr) + '&slot=' + encodeURIComponent(lessonSlot), { credentials: 'include' });
             if (res.status === 401) { showAuthGate(); return; }
             if (res.ok) { const d = await res.json(); todayPracticeId = d.practice_id; todayAttendance = new Set(d.player_ids); }
           } catch (e) {}
@@ -7584,7 +7625,7 @@
           const res = await fetch('/api/practices/for-date', {
             method: 'POST', credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ roster_id: activeRosterId, date: lessonDate }),
+            body: JSON.stringify({ roster_id: activeRosterId, date: lessonDate, slot: lessonSlot }),
           });
           if (res.status === 401) { showAuthGate(); return; }
           if (res.ok) { const practice = await res.json(); todayPracticeId = practice.id; }
@@ -7668,6 +7709,18 @@
           const v = dateInput.value;
           if (!v) return;
           loadLessonForDate(v);
+        });
+        const multiToggle = document.querySelector('[data-multi-session]');
+        const slotSelect = document.querySelector('[data-session-slot]');
+        if (multiToggle) multiToggle.addEventListener('change', () => {
+          multiSession = multiToggle.checked;
+          if (slotSelect) slotSelect.hidden = !multiSession;
+          lessonSlot = multiSession ? (slotSelect ? slotSelect.value : 'morning') : 'day';
+          loadLessonForDate(lessonDate);
+        });
+        if (slotSelect) slotSelect.addEventListener('change', () => {
+          lessonSlot = slotSelect.value;
+          loadLessonForDate(lessonDate);
         });
         const closeBtn = document.querySelector('[data-cal-close]');
         if (closeBtn) closeBtn.addEventListener('click', closePlayerCalendar);

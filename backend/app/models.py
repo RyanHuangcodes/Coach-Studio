@@ -151,10 +151,15 @@ class Practice(Base):
     roster_id: Mapped[Optional[str]] = mapped_column(
         UUID(as_uuid=False), ForeignKey("rosters.id", ondelete="SET NULL"), nullable=True, index=True
     )
+    # Which session of the day: 'day' (a single session) or 'morning'/'afternoon'/
+    # 'night' so pros who train more than once a day keep separate attendance.
+    slot: Mapped[str] = mapped_column(String(12), nullable=False, server_default="day")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, nullable=False)
 
     __table_args__ = (
-        UniqueConstraint("user_id", "date", "roster_id", name="practice_user_date_roster_unique"),
+        UniqueConstraint(
+            "user_id", "date", "roster_id", "slot", name="practice_user_date_roster_slot_unique"
+        ),
     )
 
 

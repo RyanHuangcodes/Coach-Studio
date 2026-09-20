@@ -336,12 +336,27 @@ class AnalyticsSummary(BaseModel):
     sport_breakdown: list[AnalyticsSportStat]
 
 
+_ALLOWED_SLOTS = {"day", "morning", "afternoon", "night"}
+
+
+def _validate_slot(value: str) -> str:
+    if value not in _ALLOWED_SLOTS:
+        raise ValueError("slot must be one of: " + ", ".join(sorted(_ALLOWED_SLOTS)))
+    return value
+
+
 class TodayPracticeRequest(BaseModel):
     # dt.date, not bare `date`: the field's default binds `date = None` in the
     # class namespace before the annotation is evaluated, so a bare `date` here
     # would resolve to None and reject every real value.
     date: Optional[dt.date] = None
     roster_id: Optional[str] = None
+    slot: str = "day"
+
+    @field_validator("slot")
+    @classmethod
+    def _slot(cls, value: str) -> str:
+        return _validate_slot(value)
 
 
 class PracticeOut(BaseModel):
@@ -349,6 +364,7 @@ class PracticeOut(BaseModel):
     date: date
     plan_id: Optional[str]
     roster_id: Optional[str] = None
+    slot: str = "day"
     created_at: datetime
 
     model_config = {"from_attributes": True}
@@ -357,6 +373,12 @@ class PracticeOut(BaseModel):
 class PracticeForDateRequest(BaseModel):
     roster_id: Optional[str] = None
     date: dt.date
+    slot: str = "day"
+
+    @field_validator("slot")
+    @classmethod
+    def _slot(cls, value: str) -> str:
+        return _validate_slot(value)
 
 
 class PracticeByDateOut(BaseModel):

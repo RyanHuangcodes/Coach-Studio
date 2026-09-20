@@ -42,6 +42,7 @@ def get_or_create_today_practice_row(
     user_id: str,
     local_date: Optional[date_type] = None,
     roster_id: Optional[str] = None,
+    slot: str = "day",
 ) -> Practice:
     # Coaches live in local time; the browser supplies its local date so evening
     # sessions don't roll onto tomorrow's UTC date. Server-side callers (group
@@ -60,18 +61,19 @@ def get_or_create_today_practice_row(
             Practice.user_id == user_id,
             Practice.date == today,
             Practice.roster_id == roster_id,
+            Practice.slot == slot,
         )
         .first()
     )
     if practice is not None:
         return practice
 
-    practice = Practice(user_id=user_id, date=today, roster_id=roster_id)
+    practice = Practice(user_id=user_id, date=today, roster_id=roster_id, slot=slot)
     db.add(practice)
     try:
         db.commit()
     except IntegrityError:
-        # A concurrent request created the same (user, date, roster) row first.
+        # A concurrent request created the same (user, date, roster, slot) row first.
         db.rollback()
         practice = (
             db.query(Practice)
@@ -79,6 +81,7 @@ def get_or_create_today_practice_row(
                 Practice.user_id == user_id,
                 Practice.date == today,
                 Practice.roster_id == roster_id,
+                Practice.slot == slot,
             )
             .first()
         )
@@ -110,6 +113,7 @@ def get_or_create_today_practice(
 ):
     local_date = payload.date if payload else None
     roster_id = payload.roster_id if payload else None
+    slot = payload.slot if payload else "day"
     if roster_id is not None:
         roster = (
             db.query(Roster)
@@ -120,7 +124,7 @@ def get_or_create_today_practice(
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Unknown roster_id"
             )
-    return get_or_create_today_practice_row(db, current_user.id, local_date, roster_id)
+    return get_or_create_today_practice_row(db, current_user.id, local_date, roster_id, slot)
 
 
 def _validate_owned_roster(db: DbSession, roster_id, current_user: User) -> None:
@@ -136,7 +140,7 @@ def _validate_owned_roster(db: DbSession, roster_id, current_user: User) -> None
 
 
 def get_or_create_practice_for_date(
-    db: DbSession, user_id: str, target_date: date_type, roster_id
+    db: DbSession, user_id: str, target_date: date_type, roster_id, slot: str = "day"
 ) -> Practice:
     """Get (or lazily create) the lesson for a specific date + roster. Unlike
     the 'today' helper this accepts any reasonable past/future date so a coach
@@ -152,12 +156,13 @@ def get_or_create_practice_for_date(
             Practice.user_id == user_id,
             Practice.date == target_date,
             Practice.roster_id == roster_id,
+            Practice.slot == slot,
         )
         .first()
     )
     if practice is not None:
         return practice
-    practice = Practice(user_id=user_id, date=target_date, roster_id=roster_id)
+    practice = Practice(user_id=user_id, date=target_date, roster_id=roster_id, slot=slot)
     db.add(practice)
     try:
         db.commit()
@@ -169,6 +174,7 @@ def get_or_create_practice_for_date(
                 Practice.user_id == user_id,
                 Practice.date == target_date,
                 Practice.roster_id == roster_id,
+                Practice.slot == slot,
             )
             .first()
         )
@@ -186,18 +192,21 @@ def get_or_create_practice_for_date_endpoint(
     db: DbSession = Depends(get_db),
 ):
     _validate_owned_roster(db, payload.roster_id, current_user)
-    return get_or_create_practice_for_date(db, current_user.id, payload.date, payload.roster_id)
+    return get_or_create_practice_for_date(
+        db, current_user.id, payload.date, payload.roster_id, payload.slot
+    )
 
 
 @router.get("/by-date", response_model=PracticeByDateOut)
 def get_practice_by_date(
     date: date_type,
     roster_id: Optional[str] = None,
+    slot: str = "day",
     current_user: User = Depends(get_current_user),
     db: DbSession = Depends(get_db),
 ):
-    """The lesson (if any) for a date + roster, with who is checked in. Returns a
-    null practice_id when no lesson has been recorded yet for that date."""
+    """The lesson (if any) for a date + roster + slot, with who is checked in.
+    Returns a null practice_id when no lesson has been recorded yet."""
     _validate_owned_roster(db, roster_id, current_user)
     practice = (
         db.query(Practice)
@@ -205,6 +214,7 @@ def get_practice_by_date(
             Practice.user_id == current_user.id,
             Practice.date == date,
             Practice.roster_id == roster_id,
+            Practice.slot == slot,
         )
         .first()
     )
