@@ -1,4 +1,4 @@
-# Coach–Athlete Communication App
+# Coach Studio
 
 A web app that lets a coach send session plans and feedback to individual athletes and track their progress across training blocks, replacing the group chats and paper notes most clubs run on.
 
