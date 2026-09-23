@@ -5383,6 +5383,7 @@
 					if (window.confirm('Mark this lesson complete? Today\'s attendance and this plan\'s drills will be saved to History.')) {
 						completeSession(planId).then((ok) => {
 							if (ok) {
+								loadPlans();
 								setPage('history');
 							}
 						});

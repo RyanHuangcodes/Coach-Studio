@@ -150,6 +150,12 @@ def complete_session(
                 )
             )
 
+    # The lesson is now fully captured in history (drills + attendance are
+    # snapshotted above), so remove the plan — its drills cascade — and it drops
+    # out of Plans, living on only under Completed.
+    if plan is not None:
+        db.delete(plan)
+
     db.commit()
     db.refresh(session)
     session.drills.sort(key=lambda d: d.position)
