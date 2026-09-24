@@ -3314,6 +3314,13 @@
     .session-toggle input:focus-visible + .session-switch { box-shadow: 0 0 0 3px rgba(214,173,63,0.3); }
     .session-slot-select { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; padding: 8px 12px; color: var(--text); font: inherit; font-weight: 700; color-scheme: dark; }
 
+
+    /* ---- Install app button (shown only when the browser reports installable) ---- */
+    .install-btn { display: inline-flex; align-items: center; gap: 6px; background: transparent; border: 1px solid rgba(214, 173, 63, 0.5); color: var(--accent); border-radius: 999px; font: inherit; font-weight: 700; font-size: 0.85rem; padding: 8px 14px; cursor: pointer; }
+    .install-btn:hover { background: rgba(214, 173, 63, 0.1); }
+    .install-btn svg { width: 15px; height: 15px; flex: 0 0 auto; }
+    .install-btn[hidden] { display: none; }
+
 	</style>
 </head>
 <body>
@@ -3329,6 +3336,7 @@
 				<a data-scroll="stats">Analytics</a>
 			</nav>
 			<div class="landing-nav-actions">
+				<button class="install-btn" type="button" data-install-app hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v10"/><path d="M8 11l4 4 4-4"/><path d="M5 19h14"/></svg><span>Install app</span></button>
 				<button class="landing-nav-login" type="button" data-landing-login>Sign in</button>
 				<button class="landing-nav-cta" type="button" data-landing-start>Get Started</button>
 			</div>
@@ -3550,6 +3558,7 @@
 				<h1 class="brand">Coach <span data-display-name>Ryan</span></h1>
 			</div>
 			<div class="topbar-actions">
+				<button class="install-btn" type="button" data-install-app hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v10"/><path d="M8 11l4 4 4-4"/><path d="M5 19h14"/></svg><span>Install app</span></button>
 				<button class="roster-pill" type="button" data-roster-switch title="Switch roster"><span class="roster-pill-kind" data-roster-pill-kind>Team</span><span class="roster-pill-name" data-roster-pill-name>All Players</span><svg class="roster-pill-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
 				<div class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.6"/><path d="M5.5 19.5c0-3.6 2.9-5.6 6.5-5.6s6.5 2 6.5 5.6"/></svg></div>
 				<button class="logout-button" type="button" data-logout hidden>Log out</button>
@@ -7822,6 +7831,40 @@
 						await setActiveRoster(next);
 						return;
 					}
+				});
+			})();
+
+			// Register the service worker so Coach Studio installs as an app and
+			// the shell loads offline. Non-fatal if unsupported or it fails.
+			if ('serviceWorker' in navigator) {
+				window.addEventListener('load', () => {
+					navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(() => {});
+				});
+			}
+
+			(function wireInstallApp() {
+				let deferredPrompt = null;
+				const installButtons = () => Array.from(document.querySelectorAll('[data-install-app]'));
+				const setVisible = (visible) => installButtons().forEach((b) => { b.hidden = !visible; });
+				const inStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+				if (inStandalone) return;
+				window.addEventListener('beforeinstallprompt', (event) => {
+					event.preventDefault();
+					deferredPrompt = event;
+					setVisible(true);
+				});
+				document.addEventListener('click', (event) => {
+					const btn = event.target.closest('[data-install-app]');
+					if (!btn || !deferredPrompt) return;
+					deferredPrompt.prompt();
+					deferredPrompt.userChoice.finally(() => {
+						deferredPrompt = null;
+						setVisible(false);
+					});
+				});
+				window.addEventListener('appinstalled', () => {
+					deferredPrompt = null;
+					setVisible(false);
 				});
 			})();
 
