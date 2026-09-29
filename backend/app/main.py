@@ -10,6 +10,7 @@ from app.rate_limit import limiter
 from app.routers import (
     analytics,
     auth,
+    comms,
     drafts,
     drills,
     groups,
@@ -44,6 +45,7 @@ app.include_router(drills.router)
 app.include_router(insights.router)
 app.include_router(history.router)
 app.include_router(analytics.router)
+app.include_router(comms.router)
 
 _FRONTEND_PATH = Path(__file__).resolve().parent / "static" / "Front.html"
 _SW_PATH = _STATIC_DIR / "sw.js"

@@ -18,7 +18,7 @@ from app.schemas import (
     PracticeOut,
     TodayPracticeRequest,
 )
-from app.security import get_current_user
+from app.security import get_current_coach
 
 # A lesson may be recorded for a past or upcoming date, but not an absurd one.
 _MAX_DATE_SPAN_DAYS = 366 * 5
@@ -94,7 +94,7 @@ def get_or_create_today_practice_row(
 
 @router.get("", response_model=list[PracticeOut])
 def list_practices(
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     return (
@@ -108,7 +108,7 @@ def list_practices(
 @router.post("/today", response_model=PracticeOut, status_code=status.HTTP_200_OK)
 def get_or_create_today_practice(
     payload: Optional[TodayPracticeRequest] = None,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     local_date = payload.date if payload else None
@@ -188,7 +188,7 @@ def get_or_create_practice_for_date(
 @router.post("/for-date", response_model=PracticeOut, status_code=status.HTTP_200_OK)
 def get_or_create_practice_for_date_endpoint(
     payload: PracticeForDateRequest,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     _validate_owned_roster(db, payload.roster_id, current_user)
@@ -202,7 +202,7 @@ def get_practice_by_date(
     date: date_type,
     roster_id: Optional[str] = None,
     slot: str = "day",
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     """The lesson (if any) for a date + roster + slot, with who is checked in.
@@ -232,7 +232,7 @@ def get_practice_by_date(
 @router.get("/calendar", response_model=list[CalendarDayOut])
 def practice_calendar(
     roster_id: Optional[str] = None,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     """Every recorded training date for a roster, with how many attended — the
@@ -252,7 +252,7 @@ def practice_calendar(
 @router.get("/{practice_id}/attendance", response_model=list[AttendanceOut])
 def list_attendance(
     practice_id: str,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     practice = _get_owned_practice(db, practice_id, current_user)
@@ -267,7 +267,7 @@ def list_attendance(
 def check_in(
     practice_id: str,
     payload: AttendanceCheckIn,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     practice = _get_owned_practice(db, practice_id, current_user)
@@ -301,7 +301,7 @@ def check_in(
 def check_out(
     practice_id: str,
     player_id: str,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     practice = _get_owned_practice(db, practice_id, current_user)

@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime, timezone
 from typing import Optional
 
-from sqlalchemy import CheckConstraint, Date, ForeignKey, String, DateTime, Integer, Text, UniqueConstraint
+from sqlalchemy import Boolean, CheckConstraint, Date, ForeignKey, String, DateTime, Integer, Text, UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -24,7 +24,12 @@ class User(Base):
     email: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(String, nullable=False)
     display_name: Mapped[str] = mapped_column(String, nullable=False)
+    # 'coach' runs the app; 'player' is a login a coach creates for one of their
+    # athletes (linked via Player.login_user_id).
+    role: Mapped[str] = mapped_column(String(12), nullable=False, server_default="coach")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, nullable=False)
+
+    __table_args__ = (CheckConstraint("role IN ('coach', 'player')", name="user_role_valid"),)
 
 
 class Session(Base):
@@ -131,6 +136,12 @@ class Player(Base):
     )
     rank: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    # A player login the coach created for this athlete (one account per player),
+    # and whether the coach has shared trainings with them (default: no).
+    login_user_id: Mapped[Optional[str]] = mapped_column(
+        UUID(as_uuid=False), ForeignKey("users.id", ondelete="SET NULL"), nullable=True, unique=True
+    )
+    can_view_trainings: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="false")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, nullable=False)
 
 
@@ -247,6 +258,54 @@ class RosterPlayer(Base):
 
     __table_args__ = (
         UniqueConstraint("roster_id", "player_id", name="roster_player_unique"),
+    )
+
+
+class Assignment(Base):
+    """A to-do a coach gives a player for home or the gym, grouped by focus:
+    'skills', 'strength' (strength & conditioning) or 'recovery'."""
+
+    __tablename__ = "assignments"
+
+    id: Mapped[str] = mapped_column(UUID(as_uuid=False), primary_key=True, default=_uuid)
+    coach_id: Mapped[str] = mapped_column(
+        UUID(as_uuid=False), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    player_id: Mapped[str] = mapped_column(
+        UUID(as_uuid=False), ForeignKey("players.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    category: Mapped[str] = mapped_column(String(20), nullable=False)
+    title: Mapped[str] = mapped_column(String(200), nullable=False)
+    notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    done: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="false")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, nullable=False)
+    done_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    __table_args__ = (
+        CheckConstraint(
+            "category IN ('skills', 'strength', 'recovery')", name="assignment_category_valid"
+        ),
+    )
+
+
+class Message(Base):
+    """One line in the 1:1 thread between a coach and a player. The thread is
+    identified by player_id; sender_role says which side wrote it."""
+
+    __tablename__ = "messages"
+
+    id: Mapped[str] = mapped_column(UUID(as_uuid=False), primary_key=True, default=_uuid)
+    player_id: Mapped[str] = mapped_column(
+        UUID(as_uuid=False), ForeignKey("players.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    sender_role: Mapped[str] = mapped_column(String(12), nullable=False)
+    body: Mapped[str] = mapped_column(Text, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=_now, nullable=False, index=True
+    )
+
+    __table_args__ = (
+        CheckConstraint("sender_role IN ('coach', 'player')", name="message_sender_role_valid"),
     )
 
 

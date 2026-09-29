@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session as DbSession
 from app.database import get_db
 from app.models import Tier, User
 from app.schemas import TierCreate, TierOut
-from app.security import get_current_user
+from app.security import get_current_coach
 
 router = APIRouter(prefix="/api/tiers", tags=["tiers"])
 
@@ -19,7 +19,7 @@ def _get_owned_tier(db: DbSession, tier_id: str, current_user: User) -> Tier:
 
 @router.get("", response_model=list[TierOut])
 def list_tiers(
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     return (
@@ -33,7 +33,7 @@ def list_tiers(
 @router.post("", response_model=TierOut, status_code=status.HTTP_201_CREATED)
 def create_tier(
     payload: TierCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     max_sort_order = (
@@ -54,7 +54,7 @@ def create_tier(
 def rename_tier(
     tier_id: str,
     payload: TierCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     tier = _get_owned_tier(db, tier_id, current_user)
@@ -67,7 +67,7 @@ def rename_tier(
 @router.delete("/{tier_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_tier(
     tier_id: str,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     tier = _get_owned_tier(db, tier_id, current_user)

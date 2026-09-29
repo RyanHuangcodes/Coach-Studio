@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session as DbSession
 from app.database import get_db
 from app.models import Draft, Plan, User
 from app.schemas import DraftCreate, DraftOut, PlanOut
-from app.security import get_current_user
+from app.security import get_current_coach
 from app.sports import InvalidSportError, resolve_sport
 
 router = APIRouter(prefix="/api/drafts", tags=["drafts"])
@@ -28,7 +28,7 @@ def _resolve_sport_or_422(sport: str, custom_sport: Optional[str]) -> str:
 
 @router.get("", response_model=list[DraftOut])
 def list_drafts(
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     return (
@@ -42,7 +42,7 @@ def list_drafts(
 @router.post("", response_model=DraftOut, status_code=status.HTTP_201_CREATED)
 def create_draft(
     payload: DraftCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     sport = _resolve_sport_or_422(payload.sport, payload.custom_sport)
@@ -57,7 +57,7 @@ def create_draft(
 def update_draft(
     draft_id: str,
     payload: DraftCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     draft = _get_owned_draft(db, draft_id, current_user)
@@ -72,7 +72,7 @@ def update_draft(
 def promote_draft(
     draft_id: str,
     payload: DraftCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     draft = _get_owned_draft(db, draft_id, current_user)
@@ -94,7 +94,7 @@ def promote_draft(
 @router.delete("/{draft_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_draft(
     draft_id: str,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     draft = _get_owned_draft(db, draft_id, current_user)

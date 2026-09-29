@@ -11,7 +11,7 @@ from app.models import AttendanceRecord, Drill, Plan, Player, Tier, User
 from app.rate_limit import limiter
 from app.routers.practices import get_or_create_today_practice_row
 from app.schemas import InsightOut, InsightRequest, ObjectiveIdeasOut, ObjectiveIdeasRequest
-from app.security import get_current_user
+from app.security import get_current_coach
 
 router = APIRouter(prefix="/api/insights", tags=["insights"])
 
@@ -177,7 +177,7 @@ def _call_claude(system_prompt: str, user_content: str, schema: dict) -> dict:
 def generate_insight(
     payload: InsightRequest,
     request: Request,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     context = _build_context(db, current_user, payload.plan_id, payload.sport)
@@ -193,7 +193,7 @@ def generate_insight(
 def suggest_objectives(
     payload: ObjectiveIdeasRequest,
     request: Request,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     context = _build_context(db, current_user, None, payload.sport)

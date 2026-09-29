@@ -17,7 +17,7 @@ from app.models import (
     User,
 )
 from app.schemas import AnalyticsSummary
-from app.security import get_current_user
+from app.security import get_current_coach
 
 router = APIRouter(prefix="/api/analytics", tags=["analytics"])
 
@@ -73,7 +73,7 @@ def _last_months(today: dt.date, count: int) -> list[tuple[int, int]]:
 @router.get("/summary", response_model=AnalyticsSummary)
 def analytics_summary(
     roster_id: Optional[str] = None,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     # When a roster is active, the roster-membership metrics (size, tier balance,

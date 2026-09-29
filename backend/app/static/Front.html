@@ -743,6 +743,7 @@
 		.dashboard[data-page="players"] .home-content,
 		.dashboard[data-page="history"] .home-content,
 		.dashboard[data-page="analytics"] .home-content,
+		.dashboard[data-page="comms"] .home-content,
 		.dashboard[data-page="planner"] .home-content {
 			display: none;
 		}
@@ -751,6 +752,7 @@
 		.dashboard[data-page="players"] .page-shell[data-page-panel="players"],
 		.dashboard[data-page="history"] .page-shell[data-page-panel="history"],
 		.dashboard[data-page="analytics"] .page-shell[data-page-panel="analytics"],
+		.dashboard[data-page="comms"] .page-shell[data-page-panel="comms"],
 		.dashboard[data-page="planner"] .page-shell[data-page-panel="planner"] {
 			display: grid;
 		}
@@ -1098,6 +1100,7 @@
 		.dashboard[data-page="players"] .nav-item[data-page="players"],
 		.dashboard[data-page="history"] .nav-item[data-page="history"],
 		.dashboard[data-page="analytics"] .nav-item[data-page="analytics"],
+		.dashboard[data-page="comms"] .nav-item[data-page="comms"],
 		.dashboard[data-page="home"] .nav-item[data-page="home"] {
 			color: var(--accent);
 		}
@@ -1106,6 +1109,7 @@
 		.dashboard[data-page="players"] .nav-item[data-page="players"] .icon,
 		.dashboard[data-page="history"] .nav-item[data-page="history"] .icon,
 		.dashboard[data-page="analytics"] .nav-item[data-page="analytics"] .icon,
+		.dashboard[data-page="comms"] .nav-item[data-page="comms"] .icon,
 		.dashboard[data-page="home"] .nav-item[data-page="home"] .icon {
 			background: rgba(214, 173, 63, 0.14);
 			box-shadow: inset 0 0 0 1px rgba(214, 173, 63, 0.16), 0 0 16px rgba(214, 173, 63, 0.12);
@@ -1564,7 +1568,7 @@
 			align-self: end;
 			position: static;
 			display: grid;
-			grid-template-columns: repeat(5, 1fr);
+			grid-template-columns: repeat(6, 1fr);
 			gap: 6px;
 			padding: 14px 10px 12px;
 			border-radius: 28px;
@@ -3321,6 +3325,102 @@
     .install-btn svg { width: 15px; height: 15px; flex: 0 0 auto; }
     .install-btn[hidden] { display: none; }
 
+
+    /* ================= Communication + player app + chat ================= */
+    .comms-panel { display: grid; gap: 16px; }
+    .comms-layout { display: grid; grid-template-columns: minmax(180px, 240px) 1fr; gap: 16px; align-items: start; }
+    .comms-players { display: flex; flex-direction: column; gap: 6px; max-height: 62vh; overflow-y: auto; }
+    .comms-player { display: flex; align-items: center; gap: 8px; text-align: left; padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02); color: var(--text); font: inherit; font-weight: 700; cursor: pointer; }
+    .comms-player:hover { border-color: rgba(214,173,63,0.5); }
+    .comms-player.is-active { border-color: var(--accent); background: rgba(214,173,63,0.1); color: var(--accent); }
+    .comms-player-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .comms-player-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.2); flex: 0 0 auto; }
+    .comms-player-dot.on { background: var(--accent); }
+    .comms-detail { min-width: 0; display: grid; gap: 14px; }
+    .comms-empty { color: var(--muted); padding: 30px 4px; text-align: center; border: 1px dashed rgba(255,255,255,0.1); border-radius: 16px; }
+    .comms-detail-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 14px; justify-content: space-between; }
+    .comms-detail-name { font-family: 'Fraunces', Georgia, serif; font-size: 1.45rem; font-weight: 600; }
+    .comms-controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .comms-section-title { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); font-weight: 800; margin: 6px 0 2px; }
+    .comms-toggle { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.82rem; font-weight: 700; color: var(--muted); }
+    .comms-toggle input { position: absolute; opacity: 0; width: 0; height: 0; }
+    .comms-switch { position: relative; width: 40px; height: 22px; border-radius: 999px; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.18); flex: 0 0 auto; transition: background .15s; }
+    .comms-switch::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: transform .15s; }
+    .comms-toggle input:checked + .comms-switch { background: var(--accent); border-color: var(--accent); }
+    .comms-toggle input:checked + .comms-switch::after { transform: translateX(18px); }
+
+    .chat-thread { display: flex; flex-direction: column; gap: 8px; padding: 14px; border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; background: rgba(255,255,255,0.02); max-height: 44vh; overflow-y: auto; }
+    .chat-msg { max-width: 78%; padding: 9px 13px; border-radius: 16px; font-size: 0.92rem; line-height: 1.4; overflow-wrap: anywhere; }
+    .chat-msg.is-mine { align-self: flex-end; background: var(--accent); color: #1b1508; border-bottom-right-radius: 5px; }
+    .chat-msg.is-them { align-self: flex-start; background: rgba(255,255,255,0.08); color: var(--text); border-bottom-left-radius: 5px; }
+    .chat-msg-time { display: block; font-size: 0.62rem; opacity: 0.6; margin-top: 3px; }
+    .chat-empty { color: var(--muted); font-size: 0.88rem; text-align: center; padding: 16px; }
+    .chat-form { display: flex; gap: 8px; }
+    .chat-form input { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; padding: 11px 16px; color: var(--text); font: inherit; }
+    .chat-form input:focus { outline: none; border-color: rgba(214,173,63,0.6); }
+    .chat-form button { background: var(--accent); color: #1b1508; border: 0; border-radius: 999px; padding: 11px 18px; font: inherit; font-weight: 800; cursor: pointer; }
+
+    .assign-add { display: flex; flex-wrap: wrap; gap: 8px; }
+    .assign-add select, .assign-add input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; padding: 10px 12px; color: var(--text); font: inherit; color-scheme: dark; }
+    .assign-add input { flex: 1; min-width: 140px; }
+    .assign-add button { background: var(--accent); color: #1b1508; border: 0; border-radius: 10px; padding: 10px 16px; font: inherit; font-weight: 800; cursor: pointer; }
+    .assign-groups { display: grid; gap: 16px; }
+    .assign-group-title { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); font-weight: 800; margin-bottom: 6px; }
+    .assign-item { display: flex; align-items: center; gap: 10px; padding: 11px 13px; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; background: rgba(255,255,255,0.02); margin-bottom: 6px; }
+    .assign-item.done .assign-item-title { text-decoration: line-through; color: var(--muted); }
+    .assign-item-title { flex: 1; font-weight: 650; }
+    .assign-check { width: 22px; height: 22px; border-radius: 6px; border: 1.5px solid rgba(255,255,255,0.3); background: transparent; cursor: pointer; display: grid; place-items: center; color: var(--accent); flex: 0 0 auto; font-size: 0.8rem; font-weight: 900; }
+    .assign-check.on { border-color: var(--accent); background: rgba(214,173,63,0.15); }
+    .assign-del { background: transparent; border: 0; color: var(--muted); font-size: 1.15rem; cursor: pointer; line-height: 1; }
+    .assign-empty { color: var(--muted); font-size: 0.85rem; }
+
+    .comms-login-form { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 4px; }
+    .comms-login-form input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; padding: 9px 12px; color: var(--text); font: inherit; }
+    .comms-login-form button { background: transparent; border: 1px solid rgba(214,173,63,0.5); color: var(--accent); border-radius: 10px; padding: 9px 14px; font: inherit; font-weight: 700; cursor: pointer; }
+    .comms-login-status { font-size: 0.8rem; color: var(--muted); }
+
+    /* player app */
+    .player-app { width: 100vw; min-height: 100vh; background: #0b0b0c; color: var(--text); }
+    .player-topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px max(20px, env(safe-area-inset-left, 0px)); border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .player-brand { display: flex; align-items: center; gap: 10px; font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-size: 1.15rem; }
+    .player-brand-mark { width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; color: var(--accent); font-weight: 700; border: 1px solid rgba(214,173,63,0.4); background: rgba(214,173,63,0.12); }
+    .player-topbar-actions { display: flex; align-items: center; gap: 12px; }
+    .player-hi { color: var(--muted); font-size: 0.9rem; }
+    .player-content { width: min(720px, 100%); margin: 0 auto; padding: 26px 18px 120px; display: grid; gap: 18px; }
+    .player-hero { padding: 6px 2px 4px; }
+    .player-hero .blank-eyebrow { color: var(--accent); }
+    .player-hero-title { font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-size: clamp(1.9rem, 6vw, 2.6rem); letter-spacing: -0.02em; margin: 6px 0 6px; }
+    .player-hero-sub { color: var(--muted); margin: 0; }
+    .player-card { border: 1px solid rgba(255,255,255,0.07); border-radius: 20px; background: #161617; padding: 20px; }
+    .player-card-title { font-family: 'Fraunces', Georgia, serif; font-weight: 600; font-size: 1.3rem; margin: 0 0 14px; }
+    .player-locked { color: var(--muted); border: 1px dashed rgba(255,255,255,0.12); border-radius: 14px; padding: 22px; text-align: center; }
+    .training-item { border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 14px; margin-bottom: 10px; }
+    .training-item h4 { margin: 0 0 4px; font-size: 1.02rem; }
+    .training-item-meta { color: var(--muted); font-size: 0.82rem; margin-bottom: 8px; }
+    .training-drill { font-size: 0.88rem; color: var(--muted); padding: 2px 0; }
+
+    /* chat bubble + popup (home only) */
+    .chat-bubble { position: fixed; right: 20px; bottom: calc(90px + env(safe-area-inset-bottom, 0px)); z-index: 95; width: 58px; height: 58px; border-radius: 50%; border: 0; background: var(--accent); color: #1b1508; display: grid; place-items: center; cursor: pointer; box-shadow: 0 12px 30px rgba(0,0,0,0.4); }
+    .chat-bubble svg { width: 26px; height: 26px; }
+    .chat-bubble[hidden] { display: none; }
+    .chat-popup { position: fixed; right: 20px; bottom: calc(90px + env(safe-area-inset-bottom, 0px)); z-index: 96; width: min(360px, calc(100vw - 32px)); height: min(520px, calc(100vh - 150px)); background: #161617; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; box-shadow: 0 24px 60px rgba(0,0,0,0.5); display: flex; flex-direction: column; overflow: hidden; }
+    .chat-popup[hidden] { display: none; }
+    .chat-popup-head { display: flex; align-items: center; gap: 8px; padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .chat-popup-title { font-weight: 800; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .chat-popup-player { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; padding: 7px 10px; color: var(--text); font: inherit; color-scheme: dark; }
+    .chat-popup-close { background: transparent; border: 0; color: var(--muted); font-size: 1.4rem; line-height: 1; cursor: pointer; }
+    .chat-popup-body { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+    .chat-popup-form { display: flex; gap: 8px; padding: 12px; border-top: 1px solid rgba(255,255,255,0.08); }
+    .chat-popup-form input { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14); border-radius: 999px; padding: 10px 14px; color: var(--text); font: inherit; }
+    .chat-popup-form input:focus { outline: none; border-color: rgba(214,173,63,0.6); }
+    .chat-popup-form button { background: var(--accent); color: #1b1508; border: 0; border-radius: 999px; padding: 10px 16px; font: inherit; font-weight: 800; cursor: pointer; }
+
+    @media (max-width: 700px) {
+      .comms-layout { grid-template-columns: 1fr; }
+      .comms-players { flex-direction: row; overflow-x: auto; max-height: none; padding-bottom: 4px; }
+      .comms-player { flex: 0 0 auto; }
+    }
+
 	</style>
 </head>
 <body>
@@ -3702,6 +3802,22 @@
 			</div>
 		</section>
 
+		<section class="page-shell" data-page-panel="comms" aria-label="Communication page">
+			<div class="blank-panel comms-panel">
+				<div class="plans-header">
+					<div>
+						<div class="blank-eyebrow">Communication</div>
+						<h2>Players &amp; messages</h2>
+					</div>
+					<p>Message a player, set home &amp; gym assignments, and control what they can see.</p>
+				</div>
+				<div class="comms-layout">
+					<div class="comms-players" data-comms-players></div>
+					<div class="comms-detail" data-comms-detail></div>
+				</div>
+			</div>
+		</section>
+
 		
 
 		<section class="cards" aria-label="Quick actions">
@@ -3738,8 +3854,51 @@
 				<span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16"/><path d="M7 20v-5"/><path d="M12 20V8"/><path d="M17 20v-8"/></svg></span>
 				<span>Stats</span>
 			</button>
+			<button class="nav-item" type="button" data-page="comms">
+				<span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5h14a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9l-4 4V6a1 1 0 0 1 1-1z"/></svg></span>
+				<span>Comms</span>
+			</button>
 		</nav>
 	</main>
+
+	<main class="player-app" data-player-app style="display:none">
+		<header class="player-topbar">
+			<div class="player-brand"><span class="player-brand-mark">C</span><span class="player-brand-name">Coach Studio</span></div>
+			<div class="player-topbar-actions">
+				<span class="player-hi">Hi, <strong data-player-name>Player</strong></span>
+				<button class="logout-button" type="button" data-player-logout>Log out</button>
+			</div>
+		</header>
+		<div class="player-content">
+			<section class="player-hero">
+				<div class="blank-eyebrow" data-player-coach>Your training hub</div>
+				<h1 class="player-hero-title">Welcome back.</h1>
+				<p class="player-hero-sub">Assignments and messages from your coach, all in one place.</p>
+			</section>
+			<section class="player-card">
+				<h2 class="player-card-title">Your assignments</h2>
+				<div class="assign-groups" data-player-assignments></div>
+			</section>
+			<section class="player-card" data-player-trainings-card>
+				<h2 class="player-card-title">Your trainings</h2>
+				<div data-player-trainings></div>
+			</section>
+		</div>
+	</main>
+
+	<button class="chat-bubble" type="button" data-chat-bubble hidden aria-label="Messages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5h14a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9l-4 4V6a1 1 0 0 1 1-1z"/></svg></button>
+	<div class="chat-popup" data-chat-popup hidden>
+		<div class="chat-popup-head">
+			<span class="chat-popup-title" data-chat-title>Messages</span>
+			<select class="chat-popup-player" data-chat-player hidden aria-label="Choose a player"></select>
+			<button class="chat-popup-close" type="button" data-chat-close aria-label="Close">&times;</button>
+		</div>
+		<div class="chat-popup-body" data-chat-messages></div>
+		<form class="chat-popup-form" data-chat-form>
+			<input type="text" data-chat-input placeholder="Type a message…" maxlength="4000" autocomplete="off">
+			<button type="submit">Send</button>
+		</form>
+	</div>
 
 	<div class="modal-layer" data-modal="new-plan" aria-hidden="true">
 		<div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="new-plan-title">
@@ -4548,6 +4707,10 @@
 				if (page === 'analytics') {
 					loadAnalytics();
 				}
+				if (page === 'comms') {
+					loadComms();
+				}
+				setChatBubbleVisible(page === 'home');
 			};
 
 			const formatDateTime = (isoString) => new Date(isoString).toLocaleString(undefined, {
@@ -4967,6 +5130,7 @@
 			};
 
 			function showLanding() {
+				hidePlayerView();
 				landing.classList.add('is-active');
 				authGate.classList.remove('is-active');
 				dashboard.style.display = 'none';
@@ -4975,6 +5139,7 @@
 			}
 
 			function showAuthGate() {
+				hidePlayerView();
 				landing.classList.remove('is-active');
 				authGate.classList.add('is-active');
 				dashboard.style.display = 'none';
@@ -5141,6 +5306,8 @@
 
 			async function applyAuthenticatedUser(user, opts = {}) {
 				currentUser = user;
+				if (user.role === 'player') { await enterPlayerApp(user); return; }
+				document.body.dataset.role = 'coach';
 				if (displayNameEl) displayNameEl.textContent = user.display_name;
 				hideAuthGate();
 
@@ -5152,7 +5319,7 @@
 				renderRosterPill();
 
 				const initialPage = location.hash.slice(1);
-				if (['home', 'plans', 'players', 'history', 'planner'].includes(initialPage)) {
+				if (['home', 'plans', 'players', 'history', 'planner', 'analytics', 'comms'].includes(initialPage)) {
 					setPage(initialPage);
 				} else {
 					setPage('home');
@@ -7867,6 +8034,319 @@
 					setVisible(false);
 				});
 			})();
+
+			// ==================== Communication (coach + player) ====================
+			let commsPlayers = [];
+			let commsSelectedId = null;
+			const ASSIGN_CATS = [["skills", "Skills"], ["strength", "Strength & Conditioning"], ["recovery", "Recovery"]];
+
+			function chatEls() {
+				return { bubble: document.querySelector("[data-chat-bubble]"), popup: document.querySelector("[data-chat-popup]") };
+			}
+			function setChatBubbleVisible(visible) {
+				const { bubble, popup } = chatEls();
+				if (bubble) bubble.hidden = !visible;
+				if (!visible && popup) popup.hidden = true;
+			}
+			function hidePlayerView() {
+				const pa = document.querySelector("[data-player-app]");
+				if (pa) pa.style.display = "none";
+				setChatBubbleVisible(false);
+			}
+			function chatMyRole() {
+				return currentUser && currentUser.role === "player" ? "player" : "coach";
+			}
+
+			function renderThread(container, messages, myRole) {
+				if (!container) return;
+				if (!messages.length) {
+					container.innerHTML = '<div class="chat-empty">No messages yet.</div>';
+					return;
+				}
+				container.innerHTML = messages.map((m) => {
+					const mine = m.sender_role === myRole;
+					const t = new Date(m.created_at).toLocaleString(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+					return '<div class="chat-msg ' + (mine ? "is-mine" : "is-them") + '">' + escapeHtml(m.body) + '<span class="chat-msg-time">' + escapeHtml(t) + "</span></div>";
+				}).join("");
+				container.scrollTop = container.scrollHeight;
+			}
+
+			// ---------------- Player app ----------------
+			async function loadPlayerProfile() {
+				try {
+					const res = await fetch("/api/me/profile", { credentials: "include" });
+					if (res.status === 401) { showAuthGate(); return; }
+					if (!res.ok) return;
+					const p = await res.json();
+					const nameEl = document.querySelector("[data-player-name]");
+					const coachEl = document.querySelector("[data-player-coach]");
+					if (nameEl) nameEl.textContent = p.player_name;
+					if (coachEl) coachEl.textContent = "Training with " + p.coach_name;
+				} catch (e) {}
+			}
+
+			async function loadPlayerAssignments() {
+				const wrap = document.querySelector("[data-player-assignments]");
+				if (!wrap) return;
+				let items = [];
+				try { const res = await fetch("/api/me/assignments", { credentials: "include" }); if (res.ok) items = await res.json(); } catch (e) {}
+				wrap.innerHTML = ASSIGN_CATS.map(([cat, label]) => {
+					const list = items.filter((a) => a.category === cat);
+					const body = list.length ? list.map((a) =>
+						'<div class="assign-item ' + (a.done ? "done" : "") + '">' +
+						'<button class="assign-check ' + (a.done ? "on" : "") + '" type="button" data-my-assign="' + a.id + '" data-done="' + (a.done ? "1" : "0") + '" aria-label="Toggle done">' + (a.done ? "✓" : "") + "</button>" +
+						'<span class="assign-item-title">' + escapeHtml(a.title) + (a.notes ? ' — <span style="color:var(--muted);font-weight:500">' + escapeHtml(a.notes) + "</span>" : "") + "</span></div>"
+					).join("") : '<div class="assign-empty">Nothing here yet.</div>';
+					return '<div><div class="assign-group-title">' + label + "</div>" + body + "</div>";
+				}).join("");
+			}
+
+			async function loadPlayerTrainings() {
+				const wrap = document.querySelector("[data-player-trainings]");
+				if (!wrap) return;
+				let res;
+				try { res = await fetch("/api/me/trainings", { credentials: "include" }); } catch (e) { return; }
+				if (res.status === 403) { wrap.innerHTML = '<div class="player-locked">Your coach has not shared trainings with you yet.</div>'; return; }
+				if (!res.ok) { wrap.innerHTML = '<div class="player-locked">Could not load trainings.</div>'; return; }
+				const trainings = await res.json();
+				if (!trainings.length) { wrap.innerHTML = '<div class="player-locked">No trainings yet.</div>'; return; }
+				wrap.innerHTML = trainings.map((t) =>
+					'<div class="training-item"><h4>' + escapeHtml(t.name || t.sport) + "</h4>" +
+					'<div class="training-item-meta">' + escapeHtml(t.sport) + " · " + t.duration_minutes + " min</div>" +
+					t.drills.map((d) => '<div class="training-drill">• ' + escapeHtml(d.name) + " (" + (d.repeats > 1 ? d.repeats + "×" : "") + d.duration_minutes + " min)" + (d.notes ? " — " + escapeHtml(d.notes) : "") + "</div>").join("") +
+					"</div>"
+				).join("");
+			}
+
+			async function enterPlayerApp(user) {
+				landing.classList.remove("is-active");
+				authGate.classList.remove("is-active");
+				dashboard.style.display = "none";
+				logoutButton.hidden = true;
+				closeAllModals();
+				const pa = document.querySelector("[data-player-app]");
+				if (pa) pa.style.display = "";
+				document.body.dataset.role = "player";
+				const nameEl = document.querySelector("[data-player-name]");
+				if (nameEl) nameEl.textContent = user.display_name;
+				await Promise.all([loadPlayerProfile(), loadPlayerAssignments(), loadPlayerTrainings()]);
+				setChatBubbleVisible(true);
+			}
+
+			(function wirePlayerApp() {
+				const wrap = document.querySelector("[data-player-assignments]");
+				if (wrap) wrap.addEventListener("click", async (event) => {
+					const btn = event.target.closest("[data-my-assign]");
+					if (!btn) return;
+					const done = btn.dataset.done !== "1";
+					await fetch("/api/me/assignments/" + btn.dataset.myAssign, { method: "PATCH", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ done }) });
+					await loadPlayerAssignments();
+				});
+				const lo = document.querySelector("[data-player-logout]");
+				if (lo) lo.addEventListener("click", async () => {
+					await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
+					hidePlayerView();
+					document.body.removeAttribute("data-role");
+					currentUser = null;
+					setAuthMode("login");
+					showAuthGate();
+				});
+			})();
+
+			// ---------------- Chat bubble / popup (both roles) ----------------
+			async function openChatPopup() {
+				const { popup } = chatEls();
+				if (!popup) return;
+				popup.hidden = false;
+				const sel = popup.querySelector("[data-chat-player]");
+				const title = popup.querySelector("[data-chat-title]");
+				if (chatMyRole() === "player") {
+					if (sel) sel.hidden = true;
+					if (title) title.textContent = "Your coach";
+					await loadPopupThread(null);
+				} else {
+					if (sel) {
+						sel.hidden = false;
+						if (!commsPlayers.length) { try { const r = await fetch("/api/players", { credentials: "include" }); if (r.ok) commsPlayers = await r.json(); } catch (e) {} }
+						sel.innerHTML = commsPlayers.map((p) => '<option value="' + p.id + '">' + escapeHtml(p.name) + "</option>").join("") || '<option value="">No players yet</option>';
+						if (commsSelectedId && commsPlayers.some((p) => p.id === commsSelectedId)) sel.value = commsSelectedId;
+					}
+					if (title) title.textContent = "Messages";
+					await loadPopupThread(sel && sel.value ? sel.value : null);
+				}
+				const input = popup.querySelector("[data-chat-input]");
+				if (input) input.focus();
+			}
+
+			async function loadPopupThread(playerId) {
+				const { popup } = chatEls();
+				if (!popup) return;
+				const body = popup.querySelector("[data-chat-messages]");
+				let msgs = [];
+				const url = chatMyRole() === "player" ? "/api/me/messages" : (playerId ? "/api/players/" + playerId + "/messages" : null);
+				if (url) { try { const r = await fetch(url, { credentials: "include" }); if (r.ok) msgs = await r.json(); } catch (e) {} }
+				renderThread(body, msgs, chatMyRole());
+			}
+
+			(function wireChat() {
+				const bubble = document.querySelector("[data-chat-bubble]");
+				const popup = document.querySelector("[data-chat-popup]");
+				if (bubble) bubble.addEventListener("click", () => {
+					if (popup && !popup.hidden) { popup.hidden = true; return; }
+					openChatPopup();
+				});
+				if (!popup) return;
+				const closeBtn = popup.querySelector("[data-chat-close]");
+				if (closeBtn) closeBtn.addEventListener("click", () => { popup.hidden = true; });
+				const sel = popup.querySelector("[data-chat-player]");
+				if (sel) sel.addEventListener("change", () => loadPopupThread(sel.value || null));
+				const form = popup.querySelector("[data-chat-form]");
+				if (form) form.addEventListener("submit", async (event) => {
+					event.preventDefault();
+					const input = popup.querySelector("[data-chat-input]");
+					const body = (input.value || "").trim();
+					if (!body) return;
+					input.value = "";
+					if (chatMyRole() === "player") {
+						await fetch("/api/me/messages", { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ body }) });
+						await loadPopupThread(null);
+					} else {
+						const pid = sel && sel.value ? sel.value : null;
+						if (!pid) return;
+						await fetch("/api/players/" + pid + "/messages", { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ body }) });
+						await loadPopupThread(pid);
+					}
+				});
+			})();
+
+			// ---------------- Coach Communication page ----------------
+			async function loadComms() {
+				try { const r = await fetch("/api/players", { credentials: "include" }); commsPlayers = r.ok ? await r.json() : []; } catch (e) { commsPlayers = []; }
+				if (commsSelectedId && !commsPlayers.some((p) => p.id === commsSelectedId)) commsSelectedId = null;
+				if (!commsSelectedId && commsPlayers.length) commsSelectedId = commsPlayers[0].id;
+				renderCommsPlayers();
+				if (commsSelectedId) loadCommsDetail(commsSelectedId); else renderCommsDetailEmpty();
+			}
+
+			function renderCommsPlayers() {
+				const wrap = document.querySelector("[data-comms-players]");
+				if (!wrap) return;
+				if (!commsPlayers.length) { wrap.innerHTML = '<div class="comms-empty">Add players first on the Players tab.</div>'; return; }
+				wrap.innerHTML = commsPlayers.map((p) =>
+					'<button class="comms-player ' + (p.id === commsSelectedId ? "is-active" : "") + '" type="button" data-comms-select="' + p.id + '">' +
+					'<span class="comms-player-dot ' + (p.login_user_id ? "on" : "") + '"></span>' +
+					'<span class="comms-player-name">' + escapeHtml(p.name) + "</span></button>"
+				).join("");
+			}
+
+			function renderCommsDetailEmpty() {
+				const d = document.querySelector("[data-comms-detail]");
+				if (d) d.innerHTML = '<div class="comms-empty">Select a player to message them and set assignments.</div>';
+			}
+
+			async function loadCommsDetail(playerId) {
+				const player = commsPlayers.find((p) => p.id === playerId);
+				if (!player) { renderCommsDetailEmpty(); return; }
+				let assignments = [], messages = [];
+				try {
+					const [ar, mr] = await Promise.all([
+						fetch("/api/players/" + playerId + "/assignments", { credentials: "include" }),
+						fetch("/api/players/" + playerId + "/messages", { credentials: "include" }),
+					]);
+					if (ar.ok) assignments = await ar.json();
+					if (mr.ok) messages = await mr.json();
+				} catch (e) {}
+				renderCommsDetail(player, assignments, messages);
+			}
+
+			function renderCommsDetail(player, assignments, messages) {
+				const d = document.querySelector("[data-comms-detail]");
+				if (!d) return;
+				const loginRow = player.login_user_id
+					? '<span class="comms-login-status">Login enabled ✓</span> <button type="button" data-reset-login>Reset password</button>'
+					: '<button type="button" data-show-login>Enable player login</button>';
+				const assignHtml = ASSIGN_CATS.map(([cat, label]) => {
+					const list = assignments.filter((a) => a.category === cat);
+					const body = list.length ? list.map((a) =>
+						'<div class="assign-item ' + (a.done ? "done" : "") + '"><span class="assign-item-title">' + escapeHtml(a.title) + (a.done ? ' <span style="color:var(--accent);font-size:0.72rem">DONE</span>' : "") + "</span>" +
+						'<button class="assign-del" type="button" data-assign-del="' + a.id + '" aria-label="Delete">×</button></div>'
+					).join("") : '<div class="assign-empty">None yet.</div>';
+					return '<div><div class="assign-group-title">' + label + "</div>" + body + "</div>";
+				}).join("");
+				d.innerHTML =
+					'<div class="comms-detail-head"><span class="comms-detail-name">' + escapeHtml(player.name) + "</span>" +
+					'<label class="comms-toggle"><input type="checkbox" data-access-toggle ' + (player.can_view_trainings ? "checked" : "") + '><span class="comms-switch"></span>Can view trainings</label></div>' +
+					'<div class="comms-login-form" data-login-area>' + loginRow + "</div>" +
+					'<div class="comms-section-title">Messages</div>' +
+					'<div class="chat-thread" data-comms-thread></div>' +
+					'<form class="chat-form" data-comms-chat-form><input type="text" data-comms-chat-input placeholder="Message ' + escapeHtml(player.name) + '…" maxlength="4000" autocomplete="off"><button type="submit">Send</button></form>' +
+					'<div class="comms-section-title">Assignments (home &amp; gym)</div>' +
+					'<form class="assign-add" data-assign-form><select data-assign-cat><option value="skills">Skills</option><option value="strength">Strength &amp; Conditioning</option><option value="recovery">Recovery</option></select><input type="text" data-assign-title placeholder="Add a task…" maxlength="200" autocomplete="off"><button type="submit">Add</button></form>' +
+					'<div class="assign-groups">' + assignHtml + "</div>";
+				renderThread(d.querySelector("[data-comms-thread]"), messages, "coach");
+			}
+
+			(function wireComms() {
+				const playersWrap = document.querySelector("[data-comms-players]");
+				if (playersWrap) playersWrap.addEventListener("click", (event) => {
+					const b = event.target.closest("[data-comms-select]");
+					if (b) { commsSelectedId = b.dataset.commsSelect; renderCommsPlayers(); loadCommsDetail(commsSelectedId); }
+				});
+				const detail = document.querySelector("[data-comms-detail]");
+				if (!detail) return;
+				detail.addEventListener("click", async (event) => {
+					if (event.target.closest("[data-show-login]") || event.target.closest("[data-reset-login]")) {
+						const area = detail.querySelector("[data-login-area]");
+						if (area) area.innerHTML = '<input type="email" data-login-email placeholder="player email" autocomplete="off"><input type="text" data-login-pass placeholder="password (8+ chars)" autocomplete="off"><button type="button" data-save-login>Save login</button>';
+						return;
+					}
+					if (event.target.closest("[data-save-login]")) {
+						const email = ((detail.querySelector("[data-login-email]") || {}).value || "").trim();
+						const password = (detail.querySelector("[data-login-pass]") || {}).value || "";
+						const r = await fetch("/api/players/" + commsSelectedId + "/account", { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, password }) });
+						if (!r.ok) {
+							const area = detail.querySelector("[data-login-area]");
+							if (area) area.insertAdjacentHTML("beforeend", '<span class="comms-login-status" style="color:#ff8a8a">' + escapeHtml(await parseErrorMessage(r)) + "</span>");
+							return;
+						}
+						await loadComms();
+						return;
+					}
+					const del = event.target.closest("[data-assign-del]");
+					if (del) {
+						await fetch("/api/players/" + commsSelectedId + "/assignments/" + del.dataset.assignDel, { method: "DELETE", credentials: "include" });
+						loadCommsDetail(commsSelectedId);
+						return;
+					}
+				});
+				detail.addEventListener("change", async (event) => {
+					if (event.target.matches("[data-access-toggle]")) {
+						await fetch("/api/players/" + commsSelectedId + "/training-access", { method: "PATCH", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ can_view_trainings: event.target.checked }) });
+					}
+				});
+				detail.addEventListener("submit", async (event) => {
+					if (event.target.matches("[data-comms-chat-form]")) {
+						event.preventDefault();
+						const input = detail.querySelector("[data-comms-chat-input]");
+						const body = (input.value || "").trim();
+						if (!body) return;
+						input.value = "";
+						await fetch("/api/players/" + commsSelectedId + "/messages", { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ body }) });
+						loadCommsDetail(commsSelectedId);
+						return;
+					}
+					if (event.target.matches("[data-assign-form]")) {
+						event.preventDefault();
+						const cat = (detail.querySelector("[data-assign-cat]") || {}).value || "skills";
+						const title = ((detail.querySelector("[data-assign-title]") || {}).value || "").trim();
+						if (!title) return;
+						await fetch("/api/players/" + commsSelectedId + "/assignments", { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ category: cat, title }) });
+						loadCommsDetail(commsSelectedId);
+						return;
+					}
+				});
+			})();
+
 
 			(async () => {
 				syncDuration('60');

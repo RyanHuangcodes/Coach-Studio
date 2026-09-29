@@ -8,7 +8,7 @@ from app.database import get_db
 from app.models import AttendanceRecord, Player, Practice, PracticeGroup, PracticeGroupPlayer, Tier, User
 from app.routers.practices import get_or_create_today_practice_row
 from app.schemas import GroupGenerateRequest, GroupGenerateResponse, GroupsSaveRequest, SavedGroupsOut
-from app.security import get_current_user
+from app.security import get_current_coach
 
 router = APIRouter(prefix="/api", tags=["groups"])
 
@@ -72,7 +72,7 @@ def _group_out(db: DbSession, practice: Practice, current_user: User):
 @router.post("/groups/generate", response_model=GroupGenerateResponse)
 def generate_groups(
     payload: GroupGenerateRequest,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     if payload.practice_id is not None:
@@ -140,7 +140,7 @@ def generate_groups(
 @router.get("/practices/{practice_id}/groups", response_model=SavedGroupsOut)
 def get_saved_groups(
     practice_id: str,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     practice = _get_owned_practice(db, practice_id, current_user)
@@ -151,7 +151,7 @@ def get_saved_groups(
 def save_groups(
     practice_id: str,
     payload: GroupsSaveRequest,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     practice = _get_owned_practice(db, practice_id, current_user)

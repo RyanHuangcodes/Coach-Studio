@@ -11,7 +11,7 @@ from app.schemas import (
     RosterOut,
     RosterUpdate,
 )
-from app.security import get_current_user
+from app.security import get_current_coach
 
 router = APIRouter(prefix="/api/rosters", tags=["rosters"])
 
@@ -39,7 +39,7 @@ def _roster_out(roster: Roster, player_count: int) -> RosterOut:
 
 @router.get("", response_model=list[RosterOut])
 def list_rosters(
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     rows = (
@@ -56,7 +56,7 @@ def list_rosters(
 @router.post("", response_model=RosterOut, status_code=status.HTTP_201_CREATED)
 def create_roster(
     payload: RosterCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     max_order = (
@@ -78,7 +78,7 @@ def create_roster(
 def update_roster(
     roster_id: str,
     payload: RosterUpdate,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     roster = _get_owned_roster(db, roster_id, current_user)
@@ -99,7 +99,7 @@ def update_roster(
 @router.delete("/{roster_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_roster(
     roster_id: str,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     roster = _get_owned_roster(db, roster_id, current_user)
@@ -111,7 +111,7 @@ def delete_roster(
 @router.get("/{roster_id}/players", response_model=list[PlayerOut])
 def list_roster_players(
     roster_id: str,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     roster = _get_owned_roster(db, roster_id, current_user)
@@ -128,7 +128,7 @@ def list_roster_players(
 def add_roster_players(
     roster_id: str,
     payload: RosterMembersAdd,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     roster = _get_owned_roster(db, roster_id, current_user)
@@ -163,7 +163,7 @@ def add_roster_players(
 def remove_roster_player(
     roster_id: str,
     player_id: str,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     roster = _get_owned_roster(db, roster_id, current_user)

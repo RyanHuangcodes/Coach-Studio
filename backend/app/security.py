@@ -67,3 +67,10 @@ def get_current_user(request: Request, db: DbSession = Depends(get_db)) -> User:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
 
     return user
+
+
+def get_current_coach(current_user: User = Depends(get_current_user)) -> User:
+    """Guards coach-only endpoints; a player login gets 403."""
+    if current_user.role != "coach":
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Coaches only")
+    return current_user

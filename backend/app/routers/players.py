@@ -2,20 +2,23 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy import func
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session as DbSession
 
 from app.database import get_db
 from app.models import AttendanceRecord, Player, Practice, Roster, RosterPlayer, Tier, User
 from app.rate_limit import limiter
 from app.schemas import (
+    PlayerAccountCreate,
     PlayerAttendanceOut,
     PlayerCreate,
     PlayerMove,
     PlayerOut,
     RosterImageRequest,
     RosterImageResponse,
+    TrainingAccessUpdate,
 )
-from app.security import get_current_user
+from app.security import get_current_coach, get_current_user, hash_password
 from app.vision import extract_roster_names
 
 router = APIRouter(prefix="/api/players", tags=["players"])
@@ -56,7 +59,7 @@ def _next_rank_in_tier(db: DbSession, user_id: str, tier_id: str) -> int:
 @router.get("", response_model=list[PlayerOut])
 def list_players(
     roster_id: Optional[str] = None,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     query = db.query(Player).filter(Player.user_id == current_user.id)
@@ -70,7 +73,7 @@ def list_players(
 @router.post("", response_model=PlayerOut, status_code=status.HTTP_201_CREATED)
 def create_player(
     payload: PlayerCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     _validate_tier(db, payload.tier_id, current_user)
@@ -98,7 +101,7 @@ def create_player(
 def player_attendance(
     player_id: str,
     roster_id: Optional[str] = None,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     """Every training date this player was checked in for (optionally within a
@@ -120,7 +123,7 @@ def player_attendance(
 def extract_players_from_image(
     payload: RosterImageRequest,
     request: Request,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
 ):
     # The image is processed for name extraction and never stored server-side.
     names = extract_roster_names(payload.image_base64, payload.media_type)
@@ -131,7 +134,7 @@ def extract_players_from_image(
 def update_player(
     player_id: str,
     payload: PlayerCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     player = _get_owned_player(db, player_id, current_user)
@@ -152,7 +155,7 @@ def update_player(
 def move_player(
     player_id: str,
     payload: PlayerMove,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     player = _get_owned_player(db, player_id, current_user)
@@ -180,9 +183,80 @@ def move_player(
 @router.delete("/{player_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_player(
     player_id: str,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     player = _get_owned_player(db, player_id, current_user)
     db.delete(player)
     db.commit()
+
+
+@router.post("/{player_id}/account", response_model=PlayerOut)
+def create_player_account(
+    player_id: str,
+    payload: PlayerAccountCreate,
+    current_user: User = Depends(get_current_coach),
+    db: DbSession = Depends(get_db),
+):
+    """Enable (or reset) a login for one of the coach's players. Sets an email +
+    password the player uses on the sign-in page; auto-linked to this player."""
+    player = _get_owned_player(db, player_id, current_user)
+
+    clash = db.query(User).filter(User.email == payload.email).first()
+    if clash is not None and clash.id != player.login_user_id:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="That email is already in use")
+
+    user = None
+    if player.login_user_id is not None:
+        user = db.query(User).filter(User.id == player.login_user_id).first()
+    if user is not None:
+        user.email = payload.email
+        user.password_hash = hash_password(payload.password)
+        user.display_name = player.name
+    else:
+        user = User(
+            email=payload.email,
+            password_hash=hash_password(payload.password),
+            display_name=player.name,
+            role="player",
+        )
+        db.add(user)
+        db.flush()
+        player.login_user_id = user.id
+
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="That email is already in use")
+    db.refresh(player)
+    return player
+
+
+@router.delete("/{player_id}/account", response_model=PlayerOut)
+def delete_player_account(
+    player_id: str,
+    current_user: User = Depends(get_current_coach),
+    db: DbSession = Depends(get_db),
+):
+    player = _get_owned_player(db, player_id, current_user)
+    if player.login_user_id is not None:
+        db.query(User).filter(User.id == player.login_user_id, User.role == "player").delete()
+        player.login_user_id = None
+        db.commit()
+        db.refresh(player)
+    return player
+
+
+@router.patch("/{player_id}/training-access", response_model=PlayerOut)
+def set_training_access(
+    player_id: str,
+    payload: TrainingAccessUpdate,
+    current_user: User = Depends(get_current_coach),
+    db: DbSession = Depends(get_db),
+):
+    player = _get_owned_player(db, player_id, current_user)
+    player.can_view_trainings = payload.can_view_trainings
+    db.commit()
+    db.refresh(player)
+    return player

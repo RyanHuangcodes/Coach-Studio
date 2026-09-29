@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session as DbSession
 from app.database import get_db
 from app.models import Drill, Plan, User
 from app.schemas import DrillCreate, DrillMove, DrillOut
-from app.security import get_current_user
+from app.security import get_current_coach
 
 router = APIRouter(prefix="/api", tags=["drills"])
 
@@ -32,7 +32,7 @@ def _get_owned_drill(db: DbSession, drill_id: str, current_user: User) -> Drill:
 @router.get("/plans/{plan_id}/drills", response_model=list[DrillOut])
 def list_drills(
     plan_id: str,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     plan = _get_owned_plan(db, plan_id, current_user)
@@ -48,7 +48,7 @@ def list_drills(
 def create_drill(
     plan_id: str,
     payload: DrillCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     plan = _get_owned_plan(db, plan_id, current_user)
@@ -72,7 +72,7 @@ def create_drill(
 def update_drill(
     drill_id: str,
     payload: DrillCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     drill = _get_owned_drill(db, drill_id, current_user)
@@ -90,7 +90,7 @@ def update_drill(
 def move_drill(
     drill_id: str,
     payload: DrillMove,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     drill = _get_owned_drill(db, drill_id, current_user)
@@ -111,7 +111,7 @@ def move_drill(
 @router.delete("/drills/{drill_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_drill(
     drill_id: str,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     drill = _get_owned_drill(db, drill_id, current_user)

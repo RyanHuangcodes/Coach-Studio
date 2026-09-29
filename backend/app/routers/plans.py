@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session as DbSession
 from app.database import get_db
 from app.models import Draft, Plan, User
 from app.schemas import PlanCreate, PlanOut
-from app.security import get_current_user
+from app.security import get_current_coach
 from app.sports import InvalidSportError, resolve_sport
 
 router = APIRouter(prefix="/api/plans", tags=["plans"])
@@ -12,7 +12,7 @@ router = APIRouter(prefix="/api/plans", tags=["plans"])
 
 @router.get("", response_model=list[PlanOut])
 def list_plans(
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     return (
@@ -26,7 +26,7 @@ def list_plans(
 @router.post("", response_model=PlanOut, status_code=status.HTTP_201_CREATED)
 def create_plan(
     payload: PlanCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     try:
@@ -65,7 +65,7 @@ def create_plan(
 @router.delete("/{plan_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_plan(
     plan_id: str,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     plan = db.query(Plan).filter(Plan.id == plan_id, Plan.user_id == current_user.id).first()

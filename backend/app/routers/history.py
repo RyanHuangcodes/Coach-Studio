@@ -16,7 +16,7 @@ from app.models import (
 )
 from app.routers.practices import get_or_create_today_practice_row
 from app.schemas import HistoryCreate, HistoryDetail, HistoryListItem
-from app.security import get_current_user
+from app.security import get_current_coach
 
 router = APIRouter(prefix="/api/history", tags=["history"])
 
@@ -34,7 +34,7 @@ def _get_owned_session(db: DbSession, session_id: str, current_user: User) -> Co
 
 @router.get("", response_model=list[HistoryListItem])
 def list_history(
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     sessions = (
@@ -59,7 +59,7 @@ def list_history(
 @router.get("/{session_id}", response_model=HistoryDetail)
 def get_history(
     session_id: str,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     session = _get_owned_session(db, session_id, current_user)
@@ -71,7 +71,7 @@ def get_history(
 @router.post("", response_model=HistoryDetail, status_code=status.HTTP_201_CREATED)
 def complete_session(
     payload: HistoryCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     # Resolve the plan (optional — a freestyle session can still be logged).
@@ -166,7 +166,7 @@ def complete_session(
 @router.delete("/{session_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_history(
     session_id: str,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_coach),
     db: DbSession = Depends(get_db),
 ):
     session = _get_owned_session(db, session_id, current_user)

@@ -38,6 +38,7 @@ class UserOut(BaseModel):
     id: str
     email: str
     display_name: str
+    role: str = "coach"
 
     model_config = {"from_attributes": True}
 
@@ -172,6 +173,8 @@ class PlayerOut(BaseModel):
     tier_id: Optional[str]
     rank: Optional[int]
     notes: Optional[str]
+    login_user_id: Optional[str] = None
+    can_view_trainings: bool = False
     created_at: datetime
 
     model_config = {"from_attributes": True}
@@ -521,3 +524,104 @@ class HistoryDetail(BaseModel):
     completed_at: datetime
     players: list[HistoryPlayerOut]
     drills: list[HistoryDrillOut]
+
+
+# ---- Player accounts + communication ----
+
+_ASSIGNMENT_CATEGORIES = {"skills", "strength", "recovery"}
+
+
+class PlayerAccountCreate(BaseModel):
+    email: EmailStr
+    password: str = Field(min_length=8, max_length=200)
+
+    @field_validator("email")
+    @classmethod
+    def _lower_email(cls, value: str) -> str:
+        return _normalize_email(value)
+
+
+class TrainingAccessUpdate(BaseModel):
+    can_view_trainings: bool
+
+
+class AssignmentCreate(BaseModel):
+    category: str
+    title: str = Field(min_length=1, max_length=200)
+    notes: Optional[str] = Field(default=None, max_length=4000)
+
+    @field_validator("category")
+    @classmethod
+    def _category(cls, value: str) -> str:
+        if value not in _ASSIGNMENT_CATEGORIES:
+            raise ValueError("category must be one of: " + ", ".join(sorted(_ASSIGNMENT_CATEGORIES)))
+        return value
+
+    @field_validator("title")
+    @classmethod
+    def _strip_title(cls, value: str) -> str:
+        stripped = value.strip()
+        if not stripped:
+            raise ValueError("title must not be blank")
+        return stripped
+
+
+class AssignmentOut(BaseModel):
+    id: str
+    category: str
+    title: str
+    notes: Optional[str]
+    done: bool
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
+class AssignmentDoneUpdate(BaseModel):
+    done: bool
+
+
+class MessageCreate(BaseModel):
+    body: str = Field(min_length=1, max_length=4000)
+
+    @field_validator("body")
+    @classmethod
+    def _strip_body(cls, value: str) -> str:
+        stripped = value.strip()
+        if not stripped:
+            raise ValueError("body must not be blank")
+        return stripped
+
+
+class MessageOut(BaseModel):
+    id: str
+    sender_role: str
+    body: str
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
+class MeProfileOut(BaseModel):
+    player_name: str
+    coach_name: str
+    can_view_trainings: bool
+
+
+class MeTrainingDrill(BaseModel):
+    name: str
+    duration_minutes: int
+    repeats: int
+    notes: Optional[str]
+    position: int
+
+    model_config = {"from_attributes": True}
+
+
+class MeTrainingOut(BaseModel):
+    id: str
+    sport: str
+    name: Optional[str] = None
+    session_date: Optional[dt.date] = None
+    duration_minutes: int
+    drills: list[MeTrainingDrill]
