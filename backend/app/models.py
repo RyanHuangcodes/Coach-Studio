@@ -142,6 +142,9 @@ class Player(Base):
         UUID(as_uuid=False), ForeignKey("users.id", ondelete="SET NULL"), nullable=True, unique=True
     )
     can_view_trainings: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="false")
+    # When each side last opened this player's chat thread — drives unread counts.
+    coach_last_read_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    player_last_read_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, nullable=False)
 
 
@@ -277,6 +280,7 @@ class Assignment(Base):
     category: Mapped[str] = mapped_column(String(20), nullable=False)
     title: Mapped[str] = mapped_column(String(200), nullable=False)
     notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    due_date: Mapped[Optional[datetime]] = mapped_column(Date, nullable=True)
     done: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="false")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, nullable=False)
     done_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
@@ -286,6 +290,22 @@ class Assignment(Base):
             "category IN ('skills', 'strength', 'recovery')", name="assignment_category_valid"
         ),
     )
+
+
+class PushSubscription(Base):
+    """A browser Web Push subscription for a user (coach or player), used to
+    notify them of new messages even when the app is closed."""
+
+    __tablename__ = "push_subscriptions"
+
+    id: Mapped[str] = mapped_column(UUID(as_uuid=False), primary_key=True, default=_uuid)
+    user_id: Mapped[str] = mapped_column(
+        UUID(as_uuid=False), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    endpoint: Mapped[str] = mapped_column(Text, nullable=False, unique=True)
+    p256dh: Mapped[str] = mapped_column(Text, nullable=False)
+    auth: Mapped[str] = mapped_column(Text, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, nullable=False)
 
 
 class Message(Base):
@@ -306,6 +326,26 @@ class Message(Base):
 
     __table_args__ = (
         CheckConstraint("sender_role IN ('coach', 'player')", name="message_sender_role_valid"),
+    )
+
+
+class Feedback(Base):
+    """Coach-written feedback for a player, optionally tied to a session
+    (session_label is free text, e.g. a date or plan name)."""
+
+    __tablename__ = "feedback"
+
+    id: Mapped[str] = mapped_column(UUID(as_uuid=False), primary_key=True, default=_uuid)
+    coach_id: Mapped[str] = mapped_column(
+        UUID(as_uuid=False), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    player_id: Mapped[str] = mapped_column(
+        UUID(as_uuid=False), ForeignKey("players.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    session_label: Mapped[Optional[str]] = mapped_column(String(120), nullable=True)
+    body: Mapped[str] = mapped_column(Text, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=_now, nullable=False, index=True
     )
 
 

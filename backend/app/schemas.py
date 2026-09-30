@@ -549,6 +549,7 @@ class AssignmentCreate(BaseModel):
     category: str
     title: str = Field(min_length=1, max_length=200)
     notes: Optional[str] = Field(default=None, max_length=4000)
+    due_date: Optional[dt.date] = None
 
     @field_validator("category")
     @classmethod
@@ -571,6 +572,7 @@ class AssignmentOut(BaseModel):
     category: str
     title: str
     notes: Optional[str]
+    due_date: Optional[dt.date] = None
     done: bool
     created_at: datetime
 
@@ -606,6 +608,63 @@ class MeProfileOut(BaseModel):
     player_name: str
     coach_name: str
     can_view_trainings: bool
+
+
+class FeedbackCreate(BaseModel):
+    session_label: Optional[str] = Field(default=None, max_length=120)
+    body: str = Field(min_length=1, max_length=4000)
+
+    @field_validator("session_label")
+    @classmethod
+    def _strip_label(cls, value: Optional[str]) -> Optional[str]:
+        if value is None:
+            return None
+        stripped = value.strip()
+        return stripped or None
+
+    @field_validator("body")
+    @classmethod
+    def _strip_body(cls, value: str) -> str:
+        stripped = value.strip()
+        if not stripped:
+            raise ValueError("body must not be blank")
+        return stripped
+
+
+class FeedbackOut(BaseModel):
+    id: str
+    session_label: Optional[str]
+    body: str
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
+class MeUnreadOut(BaseModel):
+    count: int
+
+
+class CommsUnreadOut(BaseModel):
+    total: int
+    by_player: dict[str, int]
+
+
+class VapidKeyOut(BaseModel):
+    public_key: str
+
+
+class PushKeys(BaseModel):
+    p256dh: str
+    auth: str
+
+
+class PushSubscribeRequest(BaseModel):
+    endpoint: str = Field(min_length=1, max_length=2000)
+    keys: PushKeys
+
+
+class PushUnsubscribeRequest(BaseModel):
+    endpoint: str = Field(min_length=1, max_length=2000)
 
 
 class MeTrainingDrill(BaseModel):

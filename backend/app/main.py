@@ -19,6 +19,7 @@ from app.routers import (
     players,
     plans,
     practices,
+    push,
     rosters,
     tiers,
 )
@@ -46,6 +47,7 @@ app.include_router(insights.router)
 app.include_router(history.router)
 app.include_router(analytics.router)
 app.include_router(comms.router)
+app.include_router(push.router)
 
 _FRONTEND_PATH = Path(__file__).resolve().parent / "static" / "Front.html"
 _SW_PATH = _STATIC_DIR / "sw.js"

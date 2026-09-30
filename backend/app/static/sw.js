@@ -1,7 +1,7 @@
 // Coach Studio service worker — makes the app installable (Android/Chrome +
 // iOS) and lets the shell load offline. Live data still needs a connection;
 // API calls are never cached.
-const CACHE = 'coach-studio-v1';
+const CACHE = 'coach-studio-v2';
 const APP_SHELL = [
 	'/',
 	'/static/manifest.webmanifest',
@@ -63,6 +63,33 @@ self.addEventListener('fetch', (event) => {
 				})
 				.catch(() => cached);
 			return cached || network;
+		})
+	);
+});
+
+// ---- Web Push: show a notification, and focus/open the app on click ----
+self.addEventListener('push', (event) => {
+	let data = {};
+	try { data = event.data ? event.data.json() : {}; } catch (e) {}
+	const title = data.title || 'Coach Studio';
+	const options = {
+		body: data.body || 'New message',
+		icon: '/static/icon-192.png',
+		badge: '/static/icon-192.png',
+		data: { url: data.url || '/' },
+	};
+	event.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener('notificationclick', (event) => {
+	event.notification.close();
+	const url = (event.notification.data && event.notification.data.url) || '/';
+	event.waitUntil(
+		clients.matchAll({ type: 'window', includeUncontrolled: true }).then((wins) => {
+			for (const w of wins) {
+				if ('focus' in w) { w.focus(); if (w.navigate) { try { w.navigate(url); } catch (e) {} } return; }
+			}
+			if (clients.openWindow) return clients.openWindow(url);
 		})
 	);
 });

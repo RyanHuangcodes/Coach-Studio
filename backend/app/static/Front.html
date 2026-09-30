@@ -3421,6 +3421,23 @@
       .comms-player { flex: 0 0 auto; }
     }
 
+
+    .chat-badge { position: absolute; top: -4px; right: -4px; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 999px; background: #ff453a; color: #fff; font-size: 0.7rem; font-weight: 800; display: grid; place-items: center; border: 2px solid #0b0b0c; }
+    .chat-badge[hidden] { display: none; }
+    .comms-player-badge { min-width: 20px; height: 20px; padding: 0 5px; border-radius: 999px; background: #ff453a; color: #fff; font-size: 0.7rem; font-weight: 800; display: grid; place-items: center; flex: 0 0 auto; }
+
+
+    .assign-due { font-size: 0.72rem; color: var(--accent); font-weight: 700; }
+    .assign-progress { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .assign-progress-track { flex: 1; height: 8px; border-radius: 999px; background: rgba(255,255,255,0.1); overflow: hidden; }
+    .assign-progress-fill { height: 100%; background: var(--accent); border-radius: 999px; }
+    .assign-progress span { font-size: 0.8rem; color: var(--muted); font-weight: 700; white-space: nowrap; }
+    .feedback-list { display: grid; gap: 10px; }
+    .feedback-item { position: relative; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 12px 40px 12px 14px; background: rgba(255,255,255,0.02); }
+    .feedback-meta { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); font-weight: 800; margin-bottom: 4px; }
+    .feedback-body { color: var(--text); line-height: 1.5; }
+    .feedback-item .assign-del { position: absolute; top: 8px; right: 10px; }
+
 	</style>
 </head>
 <body>
@@ -3879,6 +3896,10 @@
 				<h2 class="player-card-title">Your assignments</h2>
 				<div class="assign-groups" data-player-assignments></div>
 			</section>
+			<section class="player-card">
+				<h2 class="player-card-title">Coach feedback</h2>
+				<div class="feedback-list" data-player-feedback></div>
+			</section>
 			<section class="player-card" data-player-trainings-card>
 				<h2 class="player-card-title">Your trainings</h2>
 				<div data-player-trainings></div>
@@ -3886,7 +3907,7 @@
 		</div>
 	</main>
 
-	<button class="chat-bubble" type="button" data-chat-bubble hidden aria-label="Messages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5h14a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9l-4 4V6a1 1 0 0 1 1-1z"/></svg></button>
+	<button class="chat-bubble" type="button" data-chat-bubble hidden aria-label="Messages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5h14a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9l-4 4V6a1 1 0 0 1 1-1z"/></svg><span class="chat-badge" data-chat-badge hidden></span></button>
 	<div class="chat-popup" data-chat-popup hidden>
 		<div class="chat-popup-head">
 			<span class="chat-popup-title" data-chat-title>Messages</span>
@@ -5326,6 +5347,7 @@
 				}
 
 				await Promise.all([loadPlans(), loadDrafts(), loadPlayers()]);
+				startCommsPolling();
 
 				// Ask "who are you coaching?" on an explicit login, or whenever there
 				// is no remembered roster to fall back on.
@@ -5432,6 +5454,7 @@
 
 			logoutButton.addEventListener('click', async () => {
 				await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+				stopCommsPolling();
 				plans = [];
 				drafts = [];
 				renderPlans();
@@ -8038,6 +8061,8 @@
 			// ==================== Communication (coach + player) ====================
 			let commsPlayers = [];
 			let commsSelectedId = null;
+			let commsUnread = { total: 0, by_player: {} };
+			let commsPollTimer = null;
 			const ASSIGN_CATS = [["skills", "Skills"], ["strength", "Strength & Conditioning"], ["recovery", "Recovery"]];
 
 			function chatEls() {
@@ -8057,6 +8082,8 @@
 				return currentUser && currentUser.role === "player" ? "player" : "coach";
 			}
 
+			function fmtDate(iso) { try { return new Date(iso).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }); } catch (e) { return ""; } }
+			function fmtDue(d) { try { return new Date(d + "T00:00:00").toLocaleDateString(undefined, { month: "short", day: "numeric" }); } catch (e) { return d; } }
 			function renderThread(container, messages, myRole) {
 				if (!container) return;
 				if (!messages.length) {
@@ -8085,17 +8112,22 @@
 				} catch (e) {}
 			}
 
-			async function loadPlayerAssignments() {
+						async function loadPlayerAssignments() {
 				const wrap = document.querySelector("[data-player-assignments]");
 				if (!wrap) return;
 				let items = [];
 				try { const res = await fetch("/api/me/assignments", { credentials: "include" }); if (res.ok) items = await res.json(); } catch (e) {}
-				wrap.innerHTML = ASSIGN_CATS.map(([cat, label]) => {
+				const total = items.length;
+				const done = items.filter((a) => a.done).length;
+				const pct = total ? Math.round((done / total) * 100) : 0;
+				const progress = total ? '<div class="assign-progress"><div class="assign-progress-track"><div class="assign-progress-fill" style="width:' + pct + '%"></div></div><span>' + done + " of " + total + " done</span></div>" : "";
+				const dueTxt = (a) => a.due_date ? ' <span class="assign-due">due ' + escapeHtml(fmtDue(a.due_date)) + "</span>" : "";
+				wrap.innerHTML = progress + ASSIGN_CATS.map(([cat, label]) => {
 					const list = items.filter((a) => a.category === cat);
 					const body = list.length ? list.map((a) =>
 						'<div class="assign-item ' + (a.done ? "done" : "") + '">' +
 						'<button class="assign-check ' + (a.done ? "on" : "") + '" type="button" data-my-assign="' + a.id + '" data-done="' + (a.done ? "1" : "0") + '" aria-label="Toggle done">' + (a.done ? "✓" : "") + "</button>" +
-						'<span class="assign-item-title">' + escapeHtml(a.title) + (a.notes ? ' — <span style="color:var(--muted);font-weight:500">' + escapeHtml(a.notes) + "</span>" : "") + "</span></div>"
+						'<span class="assign-item-title">' + escapeHtml(a.title) + dueTxt(a) + (a.notes ? ' — <span style="color:var(--muted);font-weight:500">' + escapeHtml(a.notes) + "</span>" : "") + "</span></div>"
 					).join("") : '<div class="assign-empty">Nothing here yet.</div>';
 					return '<div><div class="assign-group-title">' + label + "</div>" + body + "</div>";
 				}).join("");
@@ -8118,6 +8150,16 @@
 				).join("");
 			}
 
+			async function loadPlayerFeedback() {
+				const wrap = document.querySelector("[data-player-feedback]");
+				if (!wrap) return;
+				let items = [];
+				try { const res = await fetch("/api/me/feedback", { credentials: "include" }); if (res.ok) items = await res.json(); } catch (e) {}
+				wrap.innerHTML = items.length ? items.map((f) =>
+					'<div class="feedback-item"><div class="feedback-meta">' + (f.session_label ? escapeHtml(f.session_label) + " \u00b7 " : "") + escapeHtml(fmtDate(f.created_at)) + '</div><div class="feedback-body">' + escapeHtml(f.body) + "</div></div>"
+				).join("") : '<div class="assign-empty">No feedback yet.</div>';
+			}
+
 			async function enterPlayerApp(user) {
 				landing.classList.remove("is-active");
 				authGate.classList.remove("is-active");
@@ -8129,8 +8171,9 @@
 				document.body.dataset.role = "player";
 				const nameEl = document.querySelector("[data-player-name]");
 				if (nameEl) nameEl.textContent = user.display_name;
-				await Promise.all([loadPlayerProfile(), loadPlayerAssignments(), loadPlayerTrainings()]);
+				await Promise.all([loadPlayerProfile(), loadPlayerAssignments(), loadPlayerFeedback(), loadPlayerTrainings()]);
 				setChatBubbleVisible(true);
+				startCommsPolling();
 			}
 
 			(function wirePlayerApp() {
@@ -8145,6 +8188,7 @@
 				const lo = document.querySelector("[data-player-logout]");
 				if (lo) lo.addEventListener("click", async () => {
 					await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
+					stopCommsPolling();
 					hidePlayerView();
 					document.body.removeAttribute("data-role");
 					currentUser = null;
@@ -8186,6 +8230,8 @@
 				const url = chatMyRole() === "player" ? "/api/me/messages" : (playerId ? "/api/players/" + playerId + "/messages" : null);
 				if (url) { try { const r = await fetch(url, { credentials: "include" }); if (r.ok) msgs = await r.json(); } catch (e) {} }
 				renderThread(body, msgs, chatMyRole());
+				markThreadRead(playerId);
+				updateUnreadBadges();
 			}
 
 			(function wireChat() {
@@ -8193,6 +8239,7 @@
 				const popup = document.querySelector("[data-chat-popup]");
 				if (bubble) bubble.addEventListener("click", () => {
 					if (popup && !popup.hidden) { popup.hidden = true; return; }
+					ensurePushSubscribed(true);
 					openChatPopup();
 				});
 				if (!popup) return;
@@ -8235,7 +8282,7 @@
 				wrap.innerHTML = commsPlayers.map((p) =>
 					'<button class="comms-player ' + (p.id === commsSelectedId ? "is-active" : "") + '" type="button" data-comms-select="' + p.id + '">' +
 					'<span class="comms-player-dot ' + (p.login_user_id ? "on" : "") + '"></span>' +
-					'<span class="comms-player-name">' + escapeHtml(p.name) + "</span></button>"
+					'<span class="comms-player-name">' + escapeHtml(p.name) + "</span>" + (((commsUnread.by_player || {})[p.id] || 0) > 0 ? '<span class="comms-player-badge">' + (((commsUnread.by_player || {})[p.id] || 0) > 99 ? "99+" : ((commsUnread.by_player || {})[p.id] || 0)) + "</span>" : "") + "</button>"
 				).join("");
 			}
 
@@ -8247,42 +8294,56 @@
 			async function loadCommsDetail(playerId) {
 				const player = commsPlayers.find((p) => p.id === playerId);
 				if (!player) { renderCommsDetailEmpty(); return; }
-				let assignments = [], messages = [];
+				let assignments = [], messages = [], feedback = [];
 				try {
-					const [ar, mr] = await Promise.all([
+					const [ar, mr, fr] = await Promise.all([
 						fetch("/api/players/" + playerId + "/assignments", { credentials: "include" }),
 						fetch("/api/players/" + playerId + "/messages", { credentials: "include" }),
+						fetch("/api/players/" + playerId + "/feedback", { credentials: "include" }),
 					]);
 					if (ar.ok) assignments = await ar.json();
 					if (mr.ok) messages = await mr.json();
+					if (fr.ok) feedback = await fr.json();
 				} catch (e) {}
-				renderCommsDetail(player, assignments, messages);
+				renderCommsDetail(player, assignments, messages, feedback);
+				markThreadRead(playerId);
+				updateUnreadBadges();
 			}
 
-			function renderCommsDetail(player, assignments, messages) {
+						function renderCommsDetail(player, assignments, messages, feedback) {
 				const d = document.querySelector("[data-comms-detail]");
 				if (!d) return;
+				feedback = feedback || [];
 				const loginRow = player.login_user_id
-					? '<span class="comms-login-status">Login enabled ✓</span> <button type="button" data-reset-login>Reset password</button>'
+					? '<span class="comms-login-status">Login enabled</span> <button type="button" data-reset-login>Reset password</button>'
 					: '<button type="button" data-show-login>Enable player login</button>';
+				const dueTxt = (a) => a.due_date ? ' <span class="assign-due">due ' + escapeHtml(fmtDue(a.due_date)) + "</span>" : "";
 				const assignHtml = ASSIGN_CATS.map(([cat, label]) => {
 					const list = assignments.filter((a) => a.category === cat);
 					const body = list.length ? list.map((a) =>
-						'<div class="assign-item ' + (a.done ? "done" : "") + '"><span class="assign-item-title">' + escapeHtml(a.title) + (a.done ? ' <span style="color:var(--accent);font-size:0.72rem">DONE</span>' : "") + "</span>" +
+						'<div class="assign-item ' + (a.done ? "done" : "") + '"><span class="assign-item-title">' + escapeHtml(a.title) + dueTxt(a) + (a.done ? ' <span style="color:var(--accent);font-size:0.72rem">DONE</span>' : "") + "</span>" +
 						'<button class="assign-del" type="button" data-assign-del="' + a.id + '" aria-label="Delete">×</button></div>'
 					).join("") : '<div class="assign-empty">None yet.</div>';
 					return '<div><div class="assign-group-title">' + label + "</div>" + body + "</div>";
 				}).join("");
+				const fbHtml = feedback.length ? feedback.map((f) =>
+					'<div class="feedback-item"><div class="feedback-meta">' + (f.session_label ? escapeHtml(f.session_label) + " · " : "") + escapeHtml(fmtDate(f.created_at)) + "</div>" +
+					'<div class="feedback-body">' + escapeHtml(f.body) + "</div>" +
+					'<button class="assign-del" type="button" data-feedback-del="' + f.id + '" aria-label="Delete">×</button></div>'
+				).join("") : '<div class="assign-empty">No feedback yet.</div>';
 				d.innerHTML =
 					'<div class="comms-detail-head"><span class="comms-detail-name">' + escapeHtml(player.name) + "</span>" +
 					'<label class="comms-toggle"><input type="checkbox" data-access-toggle ' + (player.can_view_trainings ? "checked" : "") + '><span class="comms-switch"></span>Can view trainings</label></div>' +
 					'<div class="comms-login-form" data-login-area>' + loginRow + "</div>" +
 					'<div class="comms-section-title">Messages</div>' +
 					'<div class="chat-thread" data-comms-thread></div>' +
-					'<form class="chat-form" data-comms-chat-form><input type="text" data-comms-chat-input placeholder="Message ' + escapeHtml(player.name) + '…" maxlength="4000" autocomplete="off"><button type="submit">Send</button></form>' +
+					'<form class="chat-form" data-comms-chat-form><input type="text" data-comms-chat-input placeholder="Message ' + escapeHtml(player.name) + '" maxlength="4000" autocomplete="off"><button type="submit">Send</button></form>' +
 					'<div class="comms-section-title">Assignments (home &amp; gym)</div>' +
-					'<form class="assign-add" data-assign-form><select data-assign-cat><option value="skills">Skills</option><option value="strength">Strength &amp; Conditioning</option><option value="recovery">Recovery</option></select><input type="text" data-assign-title placeholder="Add a task…" maxlength="200" autocomplete="off"><button type="submit">Add</button></form>' +
-					'<div class="assign-groups">' + assignHtml + "</div>";
+					'<form class="assign-add" data-assign-form><select data-assign-cat><option value="skills">Skills</option><option value="strength">Strength &amp; Conditioning</option><option value="recovery">Recovery</option></select><input type="text" data-assign-title placeholder="Add a task" maxlength="200" autocomplete="off"><input type="date" data-assign-due aria-label="Due date"><button type="submit">Add</button></form>' +
+					'<div class="assign-groups">' + assignHtml + "</div>" +
+					'<div class="comms-section-title">Session feedback</div>' +
+					'<form class="assign-add" data-feedback-form><input type="text" data-feedback-label placeholder="Session (optional)" maxlength="120" autocomplete="off"><input type="text" data-feedback-body placeholder="Write feedback" maxlength="4000" autocomplete="off"><button type="submit">Post</button></form>' +
+					'<div class="feedback-list">' + fbHtml + "</div>";
 				renderThread(d.querySelector("[data-comms-thread]"), messages, "coach");
 			}
 
@@ -8318,6 +8379,12 @@
 						loadCommsDetail(commsSelectedId);
 						return;
 					}
+					const fdel = event.target.closest("[data-feedback-del]");
+					if (fdel) {
+						await fetch("/api/players/" + commsSelectedId + "/feedback/" + fdel.dataset.feedbackDel, { method: "DELETE", credentials: "include" });
+						loadCommsDetail(commsSelectedId);
+						return;
+					}
 				});
 				detail.addEventListener("change", async (event) => {
 					if (event.target.matches("[data-access-toggle]")) {
@@ -8339,13 +8406,123 @@
 						event.preventDefault();
 						const cat = (detail.querySelector("[data-assign-cat]") || {}).value || "skills";
 						const title = ((detail.querySelector("[data-assign-title]") || {}).value || "").trim();
+						const due = (detail.querySelector("[data-assign-due]") || {}).value || null;
 						if (!title) return;
-						await fetch("/api/players/" + commsSelectedId + "/assignments", { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ category: cat, title }) });
+						await fetch("/api/players/" + commsSelectedId + "/assignments", { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ category: cat, title, due_date: due || null }) });
+						loadCommsDetail(commsSelectedId);
+						return;
+					}
+					if (event.target.matches("[data-feedback-form]")) {
+						event.preventDefault();
+						const label = ((detail.querySelector("[data-feedback-label]") || {}).value || "").trim();
+						const fbody = ((detail.querySelector("[data-feedback-body]") || {}).value || "").trim();
+						if (!fbody) return;
+						await fetch("/api/players/" + commsSelectedId + "/feedback", { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ session_label: label || null, body: fbody }) });
 						loadCommsDetail(commsSelectedId);
 						return;
 					}
 				});
 			})();
+
+
+			// ---- live updates (polling) + unread badges ----
+			async function markThreadRead(playerId) {
+				try {
+					if (chatMyRole() === "player") {
+						await fetch("/api/me/messages/read", { method: "POST", credentials: "include" });
+					} else if (playerId) {
+						await fetch("/api/players/" + playerId + "/messages/read", { method: "POST", credentials: "include" });
+					}
+				} catch (e) {}
+			}
+			async function updateUnreadBadges() {
+				let total = 0;
+				try {
+					if (chatMyRole() === "player") {
+						const r = await fetch("/api/me/unread", { credentials: "include" });
+						if (r.ok) { const d = await r.json(); total = d.count; commsUnread = { total: d.count, by_player: {} }; }
+					} else {
+						const r = await fetch("/api/comms/unread", { credentials: "include" });
+						if (r.ok) { commsUnread = await r.json(); total = commsUnread.total || 0; }
+					}
+				} catch (e) { return; }
+				const badge = document.querySelector("[data-chat-badge]");
+				if (badge) {
+					if (total > 0) { badge.textContent = total > 99 ? "99+" : String(total); badge.hidden = false; }
+					else { badge.hidden = true; }
+				}
+				if (chatMyRole() === "coach" && dashboard.dataset.page === "comms") { renderCommsPlayers(); }
+			}
+			async function refreshCommsThreadOnly(playerId) {
+				const d = document.querySelector("[data-comms-detail]");
+				const threadEl = d ? d.querySelector("[data-comms-thread]") : null;
+				if (!threadEl) return;
+				let messages = [];
+				try { const r = await fetch("/api/players/" + playerId + "/messages", { credentials: "include" }); if (r.ok) messages = await r.json(); } catch (e) {}
+				renderThread(threadEl, messages, "coach");
+				markThreadRead(playerId);
+			}
+			async function refreshOpenThread() {
+				const { popup } = chatEls();
+				if (popup && !popup.hidden) {
+					const sel = popup.querySelector("[data-chat-player]");
+					const pid = chatMyRole() === "player" ? null : (sel && sel.value ? sel.value : null);
+					await loadPopupThread(pid);
+				}
+				if (chatMyRole() === "coach" && dashboard.dataset.page === "comms" && commsSelectedId) {
+					await refreshCommsThreadOnly(commsSelectedId);
+				}
+			}
+			function startCommsPolling() {
+				stopCommsPolling();
+				ensurePushSubscribed(false);
+				updateUnreadBadges();
+				commsPollTimer = setInterval(async () => {
+					if (document.hidden) return;
+					await refreshOpenThread();
+					await updateUnreadBadges();
+				}, 6000);
+			}
+			function stopCommsPolling() {
+				if (commsPollTimer) { clearInterval(commsPollTimer); commsPollTimer = null; }
+				const badge = document.querySelector("[data-chat-badge]");
+				if (badge) badge.hidden = true;
+			}
+
+
+			// ---- Web Push subscription ----
+			function urlBase64ToUint8Array(base64String) {
+				const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+				const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+				const raw = atob(base64);
+				const out = new Uint8Array(raw.length);
+				for (let i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
+				return out;
+			}
+			async function ensurePushSubscribed(askPermission) {
+				if (!("serviceWorker" in navigator) || !("PushManager" in window) || !("Notification" in window)) return;
+				if (!currentUser) return;
+				let perm = Notification.permission;
+				if (perm === "denied") return;
+				if (perm === "default") {
+					if (!askPermission) return;
+					try { perm = await Notification.requestPermission(); } catch (e) { return; }
+					if (perm !== "granted") return;
+				}
+				try {
+					const reg = await navigator.serviceWorker.ready;
+					let sub = await reg.pushManager.getSubscription();
+					if (!sub) {
+						const r = await fetch("/api/push/key", { credentials: "include" });
+						if (!r.ok) return;
+						const data = await r.json();
+						if (!data.public_key) return;
+						sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: urlBase64ToUint8Array(data.public_key) });
+					}
+					const json = sub.toJSON();
+					await fetch("/api/push/subscribe", { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ endpoint: json.endpoint, keys: { p256dh: json.keys.p256dh, auth: json.keys.auth } }) });
+				} catch (e) {}
+			}
 
 
 			(async () => {

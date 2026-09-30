@@ -9,3 +9,4 @@ email-validator
 alembic
 anthropic
 slowapi
+pywebpush==2.1.2
