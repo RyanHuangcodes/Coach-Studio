@@ -3438,9 +3438,14 @@
     .feedback-body { color: var(--text); line-height: 1.5; }
     .feedback-item .assign-del { position: absolute; top: 8px; right: 10px; }
 
+
+    .offline-banner { position: fixed; top: 0; left: 0; right: 0; z-index: 200; padding: 10px 16px; padding-top: calc(10px + env(safe-area-inset-top, 0px)); text-align: center; font-size: 0.85rem; font-weight: 800; color: #1b1508; background: #e0b84a; box-shadow: 0 2px 10px rgba(0,0,0,0.35); }
+    .offline-banner[hidden] { display: none; }
+
 	</style>
 </head>
 <body>
+	<div class="offline-banner" data-offline-banner hidden>Can’t reach the server — retrying…</div>
 	<section class="landing is-active" data-landing>
 		<div class="landing-announce">
 			<span><b>New</b> — group rotation timers &amp; AI drill ideas are here.</span>
@@ -8524,6 +8529,19 @@
 				} catch (e) {}
 			}
 
+
+			(function wireServerHealth() {
+				const banner = document.querySelector("[data-offline-banner]");
+				let down = false;
+				function setDown(v) { if (v === down) return; down = v; if (banner) banner.hidden = !v; }
+				async function pingServer() {
+					try { const r = await fetch("/api/health", { cache: "no-store" }); setDown(!r.ok); } catch (e) { setDown(true); }
+				}
+				window.addEventListener("online", pingServer);
+				window.addEventListener("offline", () => setDown(true));
+				setInterval(pingServer, 15000);
+				pingServer();
+			})();
 
 			(async () => {
 				syncDuration('60');

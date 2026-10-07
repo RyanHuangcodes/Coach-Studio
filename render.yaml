@@ -1,0 +1,36 @@
+# Render Blueprint — provisions the app + a managed Postgres in one go.
+# In Render: New -> Blueprint -> pick this repo. Then fill the `sync:false`
+# secrets (Anthropic + VAPID) in the dashboard. Adjust plan names if Render has
+# renamed them.
+services:
+  - type: web
+    name: coach-studio
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: starter
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: coach-studio-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true          # Render generates a strong random value
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: SESSION_COOKIE_NAME
+        value: session
+      - key: ANTHROPIC_API_KEY
+        sync: false                   # set in dashboard (optional: AI + photo import)
+      - key: VAPID_PUBLIC_KEY
+        sync: false                   # set in dashboard (push notifications)
+      - key: VAPID_PRIVATE_KEY
+        sync: false
+      - key: VAPID_SUBJECT
+        sync: false
+
+databases:
+  - name: coach-studio-db
+    plan: basic-256mb
+    databaseName: coach_studio
+    user: coach

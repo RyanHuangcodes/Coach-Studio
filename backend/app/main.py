@@ -53,6 +53,12 @@ _FRONTEND_PATH = Path(__file__).resolve().parent / "static" / "Front.html"
 _SW_PATH = _STATIC_DIR / "sw.js"
 
 
+@app.get("/api/health")
+def health():
+    # Tiny, auth-free endpoint the frontend pings to detect the server being down.
+    return {"status": "ok"}
+
+
 @app.get("/", response_class=HTMLResponse)
 def serve_frontend():
     return _FRONTEND_PATH.read_text(encoding="utf-8")

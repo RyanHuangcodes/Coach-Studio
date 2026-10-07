@@ -1,0 +1,11 @@
+backend/.venv/
+**/__pycache__/
+**/*.pyc
+backend/.env
+backend/tests/
+.git/
+.gitignore
+legacy/
+Front.html
+*.md
+docker-compose.yml
