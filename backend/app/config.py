@@ -11,9 +11,12 @@ class Settings(BaseSettings):
     @classmethod
     def _normalize_database_url(cls, value: str) -> str:
         # Managed hosts (Render/Heroku/etc.) often hand out a "postgres://" URL,
-        # which SQLAlchemy 2.0 no longer accepts. Normalize to "postgresql://".
-        if value.startswith("postgres://"):
-            return value.replace("postgres://", "postgresql://", 1)
+        # which SQLAlchemy 2.0 no longer accepts. Pin the driver to psycopg2 too:
+        # newer SQLAlchemy defaults bare "postgresql://" to psycopg (v3), which
+        # isn't installed.
+        for prefix in ("postgres://", "postgresql://"):
+            if value.startswith(prefix):
+                return "postgresql+psycopg2://" + value[len(prefix):]
         return value
     secret_key: str
     cookie_secure: bool = True
