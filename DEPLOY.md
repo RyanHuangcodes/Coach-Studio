@@ -70,6 +70,7 @@ The container listens on `$PORT` (default 8000) and binds `0.0.0.0`.
 ---
 
 ## Notes
+- **Free-tier cold starts:** the app keeps itself awake by pinging `/api/health` every 10 min using `RENDER_EXTERNAL_URL` (which Render sets automatically) — so there's no slow wake-up on the first visit. This keeps one free web service running ~24/7 (roughly 730 of the 750 free instance-hours/month, enough for a single service). To point it at a different base URL set `KEEP_WARM_URL`; to turn it off, unset both. On a paid instance it's harmless (the instance never sleeps anyway).
 - The frontend uses same-origin relative URLs, so it works under any domain with no rebuild.
 - Push/installability need HTTPS (or `localhost`); they will not work over a plain-IP `http://` origin.
 - Run `backend/tests` before deploying: `cd backend && .venv/bin/python -m pytest tests -q` (needs Postgres up — `docker compose up -d db`).

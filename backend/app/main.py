@@ -1,3 +1,7 @@
+import asyncio
+import logging
+import os
+import urllib.request
 from pathlib import Path
 
 from fastapi import FastAPI
@@ -73,3 +77,32 @@ def serve_service_worker():
         media_type="application/javascript",
         headers={"Cache-Control": "no-cache", "Service-Worker-Allowed": "/"},
     )
+
+
+@app.on_event("startup")
+async def _start_keep_warm():
+    """Free hosting tiers (e.g. Render Free) sleep a service after ~15 min idle,
+    making the next visit a slow cold start. Pinging our own public URL every
+    10 minutes keeps inbound traffic flowing so the container stays warm.
+
+    Active only when a public URL is configured: `RENDER_EXTERNAL_URL` is set
+    automatically on Render, or set `KEEP_WARM_URL` yourself. Unset locally and
+    in tests, so this is a no-op there.
+    """
+    base = os.environ.get("KEEP_WARM_URL") or os.environ.get("RENDER_EXTERNAL_URL")
+    if not base:
+        return
+    ping_url = base.rstrip("/") + "/api/health"
+    log = logging.getLogger(__name__)
+
+    async def _loop():
+        while True:
+            await asyncio.sleep(600)  # 10 min < the ~15 min idle timeout
+            try:
+                await asyncio.get_running_loop().run_in_executor(
+                    None, lambda: urllib.request.urlopen(ping_url, timeout=10).read()
+                )
+            except Exception as exc:  # a failed ping must never crash the app
+                log.debug("keep-warm ping failed: %s", exc)
+
+    asyncio.create_task(_loop())
