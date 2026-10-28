@@ -87,3 +87,25 @@ def test_training_access_gate():
     coach.post("/api/plans", json={"sport": "Badminton", "duration_minutes": 60, "name": "Footwork"})
     tr = pc.get("/api/me/trainings")
     assert tr.status_code == 200 and len(tr.json()) == 1
+
+
+def test_coach_account_deletion():
+    email = _email("coach")
+    c = TestClient(app)
+    assert c.post("/api/auth/signup", json={"email": email, "password": "password123", "display_name": "C"}).status_code == 201
+    rid = c.get("/api/rosters").json()[0]["id"]
+    c.post("/api/players", json={"name": "Al", "roster_id": rid})
+    assert c.delete("/api/auth/account").status_code == 204
+    assert c.get("/api/auth/me").status_code == 401  # session cleared
+    # account truly gone — cannot log back in
+    assert TestClient(app).post("/api/auth/login", json={"email": email, "password": "password123"}).status_code == 401
+
+
+def test_player_account_deletion_keeps_athlete_on_roster():
+    coach = signup_coach()
+    pid, pc = make_player(coach)
+    assert pc.delete("/api/auth/account").status_code == 204
+    assert pc.get("/api/auth/me").status_code == 401
+    players = coach.get("/api/players").json()
+    athlete = next(p for p in players if p["id"] == pid)
+    assert athlete["login_user_id"] is None  # athlete stays, login removed

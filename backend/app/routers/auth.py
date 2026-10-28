@@ -82,3 +82,21 @@ def logout(request: Request, response: Response, db: DbSession = Depends(get_db)
 @router.get("/me", response_model=UserOut)
 def me(current_user: User = Depends(get_current_user)):
     return current_user
+
+
+@router.delete("/account", status_code=status.HTTP_204_NO_CONTENT)
+def delete_account(
+    request: Request,
+    response: Response,
+    current_user: User = Depends(get_current_user),
+    db: DbSession = Depends(get_db),
+):
+    """Permanently delete the signed-in account and its data. For a coach this
+    cascades to everything they own (rosters, players, plans, practices,
+    assignments, messages, …). For a player it removes their login — the athlete
+    stays on their coach's roster (Player.login_user_id is set NULL), just can no
+    longer sign in. Then the session + cookie are cleared."""
+    token = request.cookies.get(settings.session_cookie_name)
+    db.query(User).filter(User.id == current_user.id).delete()
+    db.commit()
+    clear_session(db, response, token)

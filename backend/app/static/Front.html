@@ -3490,6 +3490,12 @@
       .nav-item .icon { width: 42px; height: 42px; }
     }
 
+
+    .avatar[data-account-open] { cursor: pointer; }
+    .account-email { color: var(--muted); font-size: 0.9rem; margin: 0 0 6px; word-break: break-all; }
+    .account-danger-note { color: var(--muted); font-size: 0.85rem; line-height: 1.5; margin: 6px 0 12px; }
+    .account-danger-link { background: transparent; border: 0; color: #ff8a8a; font: inherit; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
+
 	</style>
 </head>
 <body>
@@ -3720,6 +3726,18 @@
 		</div>
 	</div>
 
+	<div class="modal-layer" data-modal="account" aria-hidden="true">
+		<div class="modal-card">
+			<div class="modal-head"><div><div class="modal-eyebrow">Account</div><h3>Your account</h3></div><button class="modal-close" type="button" data-close-modal aria-label="Close dialog">x</button></div>
+			<div class="modal-body">
+				<p class="account-email" data-account-email></p>
+				<div class="rm-section-title">Danger zone</div>
+				<p class="account-danger-note">Permanently delete your account and all of your data — rosters, players, plans, attendance, messages and assignments. This cannot be undone.</p>
+				<button class="rm-delete" type="button" data-delete-account>Delete account &amp; data</button>
+			</div>
+		</div>
+	</div>
+
 	<main class="dashboard" data-page="home" style="display:none">
 		<div class="home-content">
 		<header class="topbar">
@@ -3730,7 +3748,7 @@
 			<div class="topbar-actions">
 				<button class="install-btn" type="button" data-install-app hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v10"/><path d="M8 11l4 4 4-4"/><path d="M5 19h14"/></svg><span>Install app</span></button>
 				<button class="roster-pill" type="button" data-roster-switch title="Switch roster"><span class="roster-pill-kind" data-roster-pill-kind>Team</span><span class="roster-pill-name" data-roster-pill-name>All Players</span><svg class="roster-pill-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
-				<div class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.6"/><path d="M5.5 19.5c0-3.6 2.9-5.6 6.5-5.6s6.5 2 6.5 5.6"/></svg></div>
+				<div class="avatar" data-account-open role="button" tabindex="0" title="Account" aria-label="Account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.6"/><path d="M5.5 19.5c0-3.6 2.9-5.6 6.5-5.6s6.5 2 6.5 5.6"/></svg></div>
 				<button class="logout-button" type="button" data-logout hidden>Log out</button>
 			</div>
 		</header>
@@ -3937,6 +3955,7 @@
 			<div class="player-topbar-actions">
 				<span class="player-hi">Hi, <strong data-player-name>Player</strong></span>
 				<button class="logout-button" type="button" data-player-logout>Log out</button>
+				<button class="account-danger-link" type="button" data-player-delete>Delete account</button>
 			</div>
 		</header>
 		<div class="player-content">
@@ -8590,6 +8609,33 @@
 				setInterval(pingServer, 15000);
 				pingServer();
 			})();
+
+			async function deleteMyAccount() {
+				if (!window.confirm("Delete your account and ALL your data? This cannot be undone.")) return;
+				if (!window.confirm("Are you absolutely sure? This is permanent.")) return;
+				try {
+					const r = await fetch("/api/auth/account", { method: "DELETE", credentials: "include" });
+					if (!(r.ok || r.status === 204)) { window.alert("Could not delete the account — please try again."); return; }
+				} catch (e) { window.alert("Could not reach the server."); return; }
+				try { stopCommsPolling(); } catch (e) {}
+				currentUser = null;
+				document.body.removeAttribute("data-role");
+				closeAllModals();
+				hidePlayerView();
+				setAuthMode("login");
+				showLanding();
+			}
+			document.addEventListener("click", (event) => {
+				if (event.target.closest("[data-account-open]")) {
+					const emailEl = document.querySelector("[data-account-email]");
+					if (emailEl && currentUser) emailEl.textContent = currentUser.email || "";
+					openModal("account");
+					return;
+				}
+				if (event.target.closest("[data-delete-account]") || event.target.closest("[data-player-delete]")) {
+					deleteMyAccount();
+				}
+			});
 
 			(async () => {
 				syncDuration('60');
