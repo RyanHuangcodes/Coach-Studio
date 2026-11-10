@@ -6,6 +6,8 @@ I built this because I coach badminton, and the coordination problem is real: pl
 
 **Stack:** HTML · CSS · JavaScript · Python (FastAPI) · PostgreSQL
 
+**Deployment:** containerized with Docker and deployed on Render — a web service plus a managed PostgreSQL database, served over HTTPS. Database migrations run automatically on each deploy.
+
 ---
 
 ## Features
@@ -33,7 +35,6 @@ Modelling feedback as a child of both a session and an athlete — rather than a
 
 ## What I'd build next
 
-- Deploy it so coaches can use it without running anything locally.
 - Rebuild the front end in React with TypeScript — the current vanilla JS rendering is the part that gets hardest to extend as views multiply.
 - Email notifications when a coach publishes feedback.
 
